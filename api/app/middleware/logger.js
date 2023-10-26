@@ -11,12 +11,14 @@ const createFile = () => {
   });
 };
 
+
 const logRequest = (req, res, next) => {
   const apiKey = req.headers['x-api-key'];
 
   if (!fs.existsSync(logFile)) {
     createFile();
   }
+  
   const logMessage = `${new Date().toISOString()} - API Key: ${apiKey} - URL: ${req.originalUrl} - Method: ${req.method}\n`;
   fs.appendFile(logFile, logMessage, (err) => {
     if (err) {

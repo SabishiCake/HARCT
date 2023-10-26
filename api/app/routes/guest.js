@@ -43,4 +43,33 @@ router.get('/', (req, res) => {
     });
 });
 
+
+// Get all data related to a specific GuestID
+router.get('/:guestId', (req, res) => {
+    const guestId = req.params.guestId;
+    const sql = `SELECT * FROM Guest WHERE GuestID = ?;
+              SELECT * FROM Reservation WHERE GuestID = ?;
+              SELECT * FROM Orders WHERE GuestID = ?;
+              SELECT * FROM Payments WHERE GuestID = ?;
+              SELECT * FROM Feedback WHERE GuestID = ?`;
+    db.query(sql, [guestId, guestId, guestId, guestId, guestId], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json({ error: 'Error retrieving guest data from database' });
+        } else {
+            const [guestInfo, reservations, orders, payments, feedback] = result;
+            const responseData = {
+                guestInfo: {
+                    ...guestInfo[0],
+                    reservations: reservations,
+                    orders: orders,
+                    payments: payments,
+                    feedback: feedback
+                }
+            };
+            res.status(200).json(responseData);
+        }
+    });
+});
+
 module.exports = router;

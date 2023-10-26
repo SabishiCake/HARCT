@@ -1,4 +1,4 @@
 .env
-./app/logs/
+/api/app/logs/
 node_modules/
 package-lock.json

@@ -29,6 +29,11 @@ DB_PASSWORD= // your database password
 DB_NAME=harctmydb // your database name
 ```
 
+Should look like this:
+
+![Alt text](../api/media/Screenshot%202023-10-26%20173045.png)
+
+
 4. Create a MySQL database named `harctmydb` and import the `createHarctDb_sqlScript.sql` file in the database.
 
 # Start the server
@@ -47,10 +52,13 @@ The server will be running on `http://localhost:3000`. but you still needs to ch
 
 ### Available Routes
 
-- **POST /guest:** Create a new guest.
-- **GET /guests:** Retrieve all guests.
-- **GET /rooms:** Retrieve all rooms. 
-- **GET /mebuItems:** Retrieve all menu items.
+- **POST /guest** Create a new guest.
+- **GET /guests** Retrieve all guests.
+- **GET /guests/:id:** Retrieve all information about a guest.
+- **GET /rooms** Retrieve all rooms. 
+- **GET /rooms/occupied** Retrieve all available rooms.
+- **GET /rooms/unoccupied** Retrieve all unavailable rooms.
+- **GET /menuItems** Retrieve all menu items.
 - Coming soon...
 
 ### Database Schema
