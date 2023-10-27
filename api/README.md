@@ -144,7 +144,7 @@ node generateApiKey.js
 ```
 copy it and store it in a safe place.
 
-
+# Javascript
 To use the API key authentication in your requests, you need to include the API key in the headers of your requests. Here is an example of how you can make a request with API key authentication in Javascript using the `axios` library:
 
 ```javascript
@@ -185,14 +185,82 @@ axios.post(apiUrl, data, { headers })
   });
 ```
 
+Make sure to handle any potential errors and exceptions that may occur during the HTTP requests. Adjust the URLs and data payload based on your specific API endpoint and the required parameters.
+
 In this example, replace `'YOUR_API_KEY'` with the actual API key you have generated. Adjust the `apiUrl` variable to match the specific endpoint you want to access. Make sure to install the `axios` library if you haven't already by running `npm install axios`.
 
 Ensure that the `x-api-key` header is included in the request with the correct API key value, and the server will use the `authenticateApiKey` middleware to validate the API key before processing the request.
 
+# PHP
+
+To use the API and API key in PHP, you can make use of the `cURL` library to send HTTP requests to the API. Here's an example of how you can use the API and API key in PHP:
+
+```php
+<?php
+
+$apiKey = "YOUR_API_KEY_HERE"; // Replace with your actual API key
+$apiUrl = "http://localhost:3000/api"; // Replace with your API URL
+
+// Function to make a GET request
+function getRequest($url, $apiKey) {
+    $ch = curl_init();
+
+    // Set the URL and other options
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'x-api-key: ' . $apiKey
+    ));
+
+    // Execute the cURL session
+    $response = curl_exec($ch);
+
+    // Close cURL session
+    curl_close($ch);
+
+    return $response;
+}
+
+// Function to make a POST request
+function postRequest($url, $data, $apiKey) {
+    $ch = curl_init();
+
+    // Set the URL and other options
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'x-api-key: ' . $apiKey
+    ));
+
+    // Execute the cURL session
+    $response = curl_exec($ch);
+
+    // Close cURL session
+    curl_close($ch);
+
+    return $response;
+}
+
+// Example usage of GET request
+$response = getRequest($apiUrl, $apiKey);
+echo $response;
+
+// Example usage of POST request
+$data = array(
+    'name' => 'John Doe',
+    'email' => 'johndoe@example.com'
+);
+$postResponse = postRequest($apiUrl, $data, $apiKey);
+echo $postResponse;
+
+?>
+```
 
 ### Security
 
-Ensure that you handle input validation and prevent SQL injection attacks by using parameterized queries.
+Ensure that you still handle input validation and prevent SQL injection attacks by using parameterized queries.
 
 ## Contributing
 
