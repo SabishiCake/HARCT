@@ -2,6 +2,14 @@ const express = require('express');
 const db = require('../db');
 const router = express.Router();
 
+/**
+ * @name authenticateApiKey
+ * @description Middleware to authenticate API key
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+
 const authenticateApiKey = (req, res, next) => {
   const apiKey = req.headers['x-api-key'];
 

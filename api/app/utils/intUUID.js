@@ -3,6 +3,12 @@
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 
+/**
+ * @name generateUniqueID
+ * @description Generates a unique ID from a UUID
+ * @returns {number} unique ID
+ */
+
 const generateUniqueID = () => {
   const uuid = uuidv4();
   const hash = crypto.createHash('sha1').update(uuid).digest('hex');

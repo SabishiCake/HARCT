@@ -2,6 +2,11 @@ const fs = require('fs');
 const logName = `${new Date().toISOString().slice(0, 10)}.log`;
 const logFile = __dirname + '/../logs/' + logName;
 
+/**
+ * @name createFile
+ * @description Creates log file
+ */
+
 const createFile = () => {
   fs.writeFile(logFile, '', (err) => {
     if (err) {
@@ -9,6 +14,14 @@ const createFile = () => {
     }
   });
 };
+
+/**
+ * @name logRequest
+ * @description Middleware to log requests
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 
 const logRequest = (req, res, next) => {
   const apiKey = req.headers['x-api-key'];

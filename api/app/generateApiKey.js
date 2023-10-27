@@ -1,6 +1,12 @@
 const crypto = require('crypto');
 const db = require(__dirname + '/db');
 
+/**
+ * @name generateApiKey
+ * @description Generates API key
+ * @returns {string} API key
+ */
+
 const generateApiKey = () => {
   return crypto.randomBytes(20).toString('hex');
 };
