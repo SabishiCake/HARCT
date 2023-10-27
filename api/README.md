@@ -6,11 +6,11 @@ This is an Express.js API designed for a hotel management and Restaurant Core sy
 
 ### Prerequisites
 
-- Node.js
-- MySQL
+- [Node.js](https://nodejs.org/en/)
+- [MySQL](https://dev.mysql.com/downloads/installer/)
 
 ### Development Prerequisites (Optional)
-- Postman
+- [Postman](https://www.postman.com/)
 
 ### Installation
 
@@ -140,8 +140,11 @@ Make sure to set up your database according to the provided schema.
 first is you must generate an API key first by using the script below:
 
 ```bash
-node generateApiKey.js
+npm run generateKey
 ```
+should look like this:
+![Alt text](/api/media/apiKey.png)
+
 copy it and store it in a safe place.
 
 #### Javascript
