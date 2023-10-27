@@ -144,7 +144,7 @@ node generateApiKey.js
 ```
 copy it and store it in a safe place.
 
-# Javascript
+#### Javascript
 To use the API key authentication in your requests, you need to include the API key in the headers of your requests. Here is an example of how you can make a request with API key authentication in Javascript using the `axios` library:
 
 ```javascript
@@ -191,7 +191,7 @@ In this example, replace `'YOUR_API_KEY'` with the actual API key you have gener
 
 Ensure that the `x-api-key` header is included in the request with the correct API key value, and the server will use the `authenticateApiKey` middleware to validate the API key before processing the request.
 
-# PHP
+#### PHP
 
 To use the API and API key in PHP, you can make use of the `cURL` library to send HTTP requests to the API. Here's an example of how you can use the API and API key in PHP:
 
