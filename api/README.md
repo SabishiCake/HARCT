@@ -1,6 +1,6 @@
-# Express.js API for Hotel Management
+# Express.js API for HARCT
 
-This is an Express.js API designed for a hotel management system. It interacts with a MySQL database to perform CRUD (Create, Read, Update, Delete) operations on different entities including Guest, Room, Reservation, Staff, Orders, MenuItems, OrderItems, Payments, and Feedback.
+This is an Express.js API designed for a hotel management and Restaurant Core system that me and my classmates are developing for our paper. It interacts with a MySQL database to perform CRUD (Create, Read, Update, Delete) operations on different entities including Guest, Room, Reservation, Staff, Orders, MenuItems, OrderItems, Payments, and Feedback.
 
 ## Getting Started
 
@@ -52,14 +52,69 @@ The server will be running on `http://localhost:3000`. but you still needs to ch
 
 ### Available Routes
 
+- **GET /allData** Retrieve all data from all tables in the database.
+---
+- **POST /feedback** Create a new feedback.
+- **DELETE/feedback/:feedbackID** Delete a feedback.
+- **GET /feedback** Retrieve all feedbacks.
+- **GET /feedback/:feedbackID** Retrieve all information about a feedback.
+- **PUT /feedback/:feedbackID** Update a feedback.
+---
+
 - **POST /guest** Create a new guest.
+- **DELETE/guest/:guestID** Delete a guest.
 - **GET /guests** Retrieve all guests.
-- **GET /guests/:id:** Retrieve all information about a guest.
-- **GET /rooms** Retrieve all rooms. 
-- **GET /rooms/occupied** Retrieve all available rooms.
-- **GET /rooms/unoccupied** Retrieve all unavailable rooms.
+- **GET /guests/:guestID** Retrieve all information about a guest.
+- **PUT /guests/:guestID** Update a guest.
+---
+- **POST /menuItems** Create a new menu item.
+- **DELETE/menuItems/:menuItemsID** Delete a menu item.
 - **GET /menuItems** Retrieve all menu items.
-- Coming soon...
+- **GET /menuItems/:menuItemsID** Retrieve all information about a menu item.
+- **PUT /menuItems/:menuItemsID** Update a menu item.
+---
+- **POST /order** Create a new order.
+- **DELETE/order/:orderID** Delete an order.
+- **GET /order** Retrieve all orders.
+- **GET /order/:orderID** Retrieve all information about an order.
+- **PUT /order/:orderID** Update an order.
+---
+- **POST /orderItem** Create a new order item.
+- **DELETE/orderItem/:orderItemID** Delete an order item.
+- **GET /orderItem** Retrieve all order items.
+- **GET /orderItem/:orderItemID** Retrieve all information about an order item.
+- **PUT /orderItem/:orderItemID** Update an order item.
+---
+- **POST /payment** Create a new payment.
+- **DELETE/payment/:paymentID** Delete a payment.
+- **GET /payment** Retrieve all payments.
+- **GET /payment/:paymentID** Retrieve all information about a payment.
+- **PUT /payment/:paymentID** Update a payment.
+---
+- **POST /reservation** Create a new reservation.
+- **DELETE/reservation/:reservationID** Delete a reservation.
+- **GET /reservation** Retrieve all reservations.
+- **GET /reservation/:reservationID** Retrieve all information about a reservation.
+- **GET /reservation/guest/:guestID** Retrieve all reservations of a guest.
+- **PUT /reservation/:reservationID** Update a reservation.
+---
+- **POST /room** Create a new room.
+- **DELETE/room/:roomID** Delete a room.
+- **GET /room** Retrieve all rooms. 
+- **GET /room/available** Retrieve all available rooms.
+- **GET /room/unavailable** Retrieve all unavailable rooms.
+- **GET /room/:roomID** Retrieve all information about a room.
+- **PUT /room/:roomID** Update a room.
+- **PUT /room/:roomID/available** Update a room's availability.
+- **PUT /room/:roomID/unavailable** Update a room's availability.
+---
+- **POST /staff** Create a new staff.
+- **DELETE/staff/:staffID** Delete a staff.
+- **GET /staff** Retrieve all staffs.
+- **GET /staff/:staffID** Retrieve all information about a staff.
+- **PUT /staff/:staffID** Update a staff.
+---
+
 
 ### Database Schema
 
