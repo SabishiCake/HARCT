@@ -16,32 +16,32 @@ const allDataRouter = require(__dirname + '/routes/allData');
 
 
 const apiKeysRouter = require(__dirname + '/routes/apiKeys');
-const guestRouter = require(__dirname + '/routes/guest');
-const roomRouter = require(__dirname + '/routes/room');
-const menuItemsRouter = require(__dirname + '/routes/menuItems');
-const reservationRouter = require(__dirname + '/routes/reservation');
-const staffRouter = require(__dirname + '/routes/staff');
 const feedbackRouter = require(__dirname + '/routes/feedback');
-const paymentRouter = require(__dirname + '/routes/payment');
+const guestRouter = require(__dirname + '/routes/guest');
+const menuItemsRouter = require(__dirname + '/routes/menuItems');
 const orderRouter = require(__dirname + '/routes/order');
 const orderItemRouter = require(__dirname + '/routes/orderItems');
+const paymentRouter = require(__dirname + '/routes/payment');
+const reservationRouter = require(__dirname + '/routes/reservation');
+const roomRouter = require(__dirname + '/routes/room');
+const staffRouter = require(__dirname + '/routes/staff');
 
+// Authentication middleware, all routes below this require an API key
+// Put this after the routes that don't require authentication
+app.use(authenticateApiKey);
 
 // Routers
 app.use('/allData', allDataRouter);
-
-
 app.use('/apiKeys', apiKeysRouter);
-app.use(authenticateApiKey);
-app.use('/guest', guestRouter);
-app.use('/room', roomRouter);
-app.use('/menuItems', menuItemsRouter);
-app.use('/reservation', reservationRouter);
-app.use('/staff', staffRouter);
 app.use('/feedback', feedbackRouter);
-app.use('/payment', paymentRouter);
+app.use('/guest', guestRouter);
+app.use('/menuItems', menuItemsRouter);
 app.use('/order', orderRouter);
 app.use('/orderItem', orderItemRouter);
+app.use('/payment', paymentRouter);
+app.use('/reservation', reservationRouter);
+app.use('/room', roomRouter);
+app.use('/staff', staffRouter);
 
 
 app.listen(port, address, () => {

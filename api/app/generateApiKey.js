@@ -25,6 +25,8 @@ const saveApiKeyToDatabase = (apiKey, description, keyType) => {
             console.error('Error saving API key to database:', err);
         } else {
             console.log('API key saved to database');
+            console.log('API key:', apiKey);
+            console.log('Copy this Key and save it somewhere safe.');
         }
     });
 };
