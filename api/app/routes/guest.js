@@ -23,6 +23,24 @@ router.post('/', (req, res) => {
     });
 });
 
+// Delete Guest by GuestID
+router.delete('/:guestId', (req, res) => {
+    const guestId = req.params.guestId;
+    const sql = 'DELETE FROM Guest WHERE GuestID = ?';
+    db.query(sql, [guestId], (err, result) => {
+        if (err) {
+            res.status(500).send(`Error in deleting guest from database: ${err}`);
+        } else {
+            console.log('Guest deleted from database');
+            // res.status(200).send('Guest deleted from database');
+            res.status(200).json({
+                message: `Guest deleted from database with GuestID ${guestId}`,
+                deletedGuest: result
+            });
+        }
+    });
+});
+
 // Get all Guests
 router.get('/', (req, res) => {
     const sql = 'SELECT * FROM Guest';
@@ -68,6 +86,26 @@ router.get('/:guestId', (req, res) => {
                 }
             };
             res.status(200).json(responseData);
+        }
+    });
+});
+
+
+// Update Guest by GuestID
+router.put('/:guestId', (req, res) => {
+    const guestId = req.params.guestId;
+    const { LastName, FirstName, Email, Phone, Address } = req.body;
+    const sql = 'UPDATE Guest SET LastName = ?, FirstName = ?, Email = ?, Phone = ?, Address = ? WHERE GuestID = ?';
+    db.query(sql, [LastName, FirstName, Email, Phone, Address, guestId], (err, result) => {
+        if (err) {
+            res.status(500).send(`Error in updating guest in database: ${err}`);
+        } else {
+            console.log('Guest updated in database');
+            // res.status(200).send('Guest updated in database');
+            res.status(200).json({
+                message: `Guest updated in database with GuestID ${guestId}`,
+                updatedGuest: result
+            });
         }
     });
 });

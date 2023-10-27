@@ -23,6 +23,19 @@ router.post('/', (req, res) => {
     });
 });
 
+// Delete reservation by ReservationID
+router.delete('/:reservationID', (req, res) => {
+    const reservationID = req.params.reservationID;
+    const sql = 'DELETE FROM Reservation WHERE ReservationID = ?';
+    db.query(sql, [reservationID], (err, result) => {
+        if (err) {
+            res.status(500).json({ error: 'Error deleting reservation from database' });
+        } else {
+            res.status(200).json({ message: 'Reservation deleted from database' });
+        }
+    });
+});
+
 // Get all reservations
 router.get('/', (req, res) => {
     const sql = 'SELECT * FROM Reservation';
@@ -35,39 +48,45 @@ router.get('/', (req, res) => {
     });
 });
 
-// Get all occupied reservations
-router.get('/occupied/', (req, res) => {
-    const sql = `SELECT R.ReservationID, R.CheckInDate, R.CheckOutDate, G.FirstName, G.LastName, 
-                Ro.RoomNumber, Ro.Type
-                FROM Reservation R
-                INNER JOIN Guest G ON R.GuestID = G.GuestID
-                INNER JOIN Room Ro ON R.RoomID = Ro.RoomID
-                WHERE Ro.IsOccupied = true`;
-    db.query(sql, (err, result) => {
+// Get reservation by ReservationID
+router.get('/:reservationID', (req, res) => {
+    const reservationID = req.params.reservationID;
+    const sql = 'SELECT * FROM Reservation WHERE ReservationID = ?';
+    db.query(sql, [reservationID], (err, result) => {
         if (err) {
-            res.status(500).json({ error: 'Error retrieving occupied reservations from database' });
+            res.status(500).json({ error: 'Error retrieving reservation from database' });
         } else {
             res.status(200).json(result);
         }
     });
 });
 
-// Get all unoccupied reservations
-router.get('/unoccupied/', (req, res) => {
-    const sql = `SELECT R.ReservationID, R.CheckInDate, R.CheckOutDate, G.FirstName, G.LastName, 
-                Ro.RoomNumber, Ro.Type
-                FROM Reservation R
-                INNER JOIN Guest G ON R.GuestID = G.GuestID
-                INNER JOIN Room Ro ON R.RoomID = Ro.RoomID
-                WHERE Ro.IsOccupied = false`;
-    db.query(sql, (err, result) => {
+// Get reservation by GuestID
+router.get('/guest/:guestID', (req, res) => {
+    const guestID = req.params.guestID;
+    const sql = 'SELECT * FROM Reservation WHERE GuestID = ?';
+    db.query(sql, [guestID], (err, result) => {
         if (err) {
-            res.status(500).json({ error: 'Error retrieving occupied reservations from database' });
+            res.status(500).json({ error: 'Error retrieving reservation from database' });
         } else {
             res.status(200).json(result);
         }
     });
 });
 
+
+// Update reservation by ReservationID
+router.put('/:reservationID', (req, res) => {
+    const reservationID = req.params.reservationID;
+    const { GuestID, RoomID, CheckInDate, CheckOutDate, TotalCost } = req.body;
+    const sql = 'UPDATE Reservation SET GuestID = ?, RoomID = ?, CheckInDate = ?, CheckOutDate = ?, TotalCost = ? WHERE ReservationID = ?';
+    db.query(sql, [GuestID, RoomID, CheckInDate, CheckOutDate, TotalCost, reservationID], (err, result) => {
+        if (err) {
+            res.status(500).json({ error: 'Error updating reservation in database' });
+        } else {
+            res.status(200).json({ message: 'Reservation updated in database' });
+        }
+    });
+});
 
 module.exports = router;
