@@ -34,7 +34,7 @@ Should look like this:
 ![Alt text](../api/media/Screenshot%202023-10-26%20173045.png)
 
 
-4. Create a MySQL database named `harctmydb` and import the `createHarctDb_sqlScript.sql` file in the database.
+4. Create a MySQL database named `harctmydb` and import the `createHarctDb_sqlScript.sql` file in the database which will create the required tables.
 
 # Start the server
 
@@ -50,7 +50,7 @@ npm run dev
 
 The server will be running on `http://localhost:3000`. but you still needs to check your console/terminal for the correct address.
 
-### Available Routes
+# Available Routes
 
 - **GET /allData** Retrieve all data from all tables in the database.
 ---
@@ -133,9 +133,9 @@ The API is designed to work with the following database schema:
 Make sure to set up your database according to the provided schema.
 
 
-### API Documentation
+# API Documentation
 
-# Authentication
+### Authentication
 
 first is you must generate an API key first by using the script below:
 
@@ -167,6 +167,15 @@ axios.get(apiUrl, { headers })
     console.error('Error:', error.message);
   });
 
+// Example GET request via guestID parameter
+axios.get(apiUrl + '/1', { headers }) // 1 is the guestID
+  .then(response => {
+    console.log('Response data:', response.data);
+  })
+  .catch(error => {
+    console.error('Error:', error.message);
+  });
+
 // Example POST request
 const data = {
   LastName: 'Doe',
@@ -187,9 +196,7 @@ axios.post(apiUrl, data, { headers })
 
 Make sure to handle any potential errors and exceptions that may occur during the HTTP requests. Adjust the URLs and data payload based on your specific API endpoint and the required parameters.
 
-In this example, replace `'YOUR_API_KEY'` with the actual API key you have generated. Adjust the `apiUrl` variable to match the specific endpoint you want to access. Make sure to install the `axios` library if you haven't already by running `npm install axios`.
-
-Ensure that the `x-api-key` header is included in the request with the correct API key value, and the server will use the `authenticateApiKey` middleware to validate the API key before processing the request.
+In this example, replace `'YOUR_API_KEY'` with the actual API key you have generated. Adjust the `apiUrl` variable to match the specific endpoint you want to access. Make sure to install the `axios` library if you haven't already by running `npm install axios` if you're using nodeJS.
 
 #### PHP
 
@@ -247,6 +254,13 @@ function postRequest($url, $data, $apiKey) {
 $response = getRequest($apiUrl, $apiKey);
 echo $response;
 
+// Example usage of GET request with guestID parameter
+
+$guestID = 1;
+$guestResponse = getRequest($apiUrl . '/guests/' . $guestID, $apiKey);
+echo $guestResponse;
+
+
 // Example usage of POST request
 $data = array(
     'name' => 'John Doe',
@@ -258,9 +272,12 @@ echo $postResponse;
 ?>
 ```
 
-### Security
 
-Ensure that you still handle input validation and prevent SQL injection attacks by using parameterized queries.
+Ensure that the `x-api-key` header is included in the request with the correct API key value, and the server will use the `authenticateApiKey` middleware to validate the API key before processing the request.
+
+## Security
+
+Ensure that you still handle input validation to prevent SQL injection attacks by using parameterized queries.
 
 ## Contributing
 
