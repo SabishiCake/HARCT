@@ -8,12 +8,13 @@ const port = process.env.EXP_PORT || 3000;
 const address = process.env.EXP_ADDR || 'localhost';
 
 app.use(express.json());
-const authenticateApiKey = require(__dirname + '/middleware/authenticateApiKey');
+const authenticateApiKey = require(
+  __dirname + '/middleware/authenticateApiKey'
+);
 const logRequest = require(__dirname + '/middleware/logger');
 
 app.use(logRequest);
 const allDataRouter = require(__dirname + '/routes/allData');
-
 
 const apiKeysRouter = require(__dirname + '/routes/apiKeys');
 const feedbackRouter = require(__dirname + '/routes/feedback');
@@ -43,12 +44,7 @@ app.use('/reservation', reservationRouter);
 app.use('/room', roomRouter);
 app.use('/staff', staffRouter);
 
-
 app.listen(port, address, () => {
-    console.log(`Server listening on http://${address}:${port}`);
-    console.log(`With available endpoints:`);
-    console.log(`http://${address}:${port}/guest`);
-    console.log(`http://${address}:${port}/room`);
-
-    console.log('Press Ctrl+C to quit.');
+  console.log(`Server listening on http://${address}:${port}`);
+  console.log('Press Ctrl+C to quit.');
 });

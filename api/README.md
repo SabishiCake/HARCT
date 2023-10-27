@@ -10,12 +10,14 @@ This is an Express.js API designed for a hotel management and Restaurant Core sy
 - [MySQL](https://dev.mysql.com/downloads/installer/)
 
 ### Development Prerequisites (Optional)
+
 - [Postman](https://www.postman.com/)
 
 ### Installation
 
 1. Clone the repository.
 2. Install dependencies using the following command:
+
 ```bash
 npm install
 ```
@@ -33,17 +35,18 @@ Should look like this:
 
 ![Alt text](../api/media/Screenshot%202023-10-26%20173045.png)
 
-
 4. Create a MySQL database named `harctmydb` and import the `createHarctDb_sqlScript.sql` file in the database which will create the required tables.
 
 # Start the server
 
 Start the server using the following command:
+
 ```bash
 npm start
 ```
 
 # development
+
 ```bash
 npm run dev
 ```
@@ -53,12 +56,15 @@ The server will be running on `http://localhost:3000`. but you still needs to ch
 # Available Routes
 
 - **GET /allData** Retrieve all data from all tables in the database.
+
 ---
+
 - **POST /feedback** Create a new feedback.
 - **DELETE/feedback/:feedbackID** Delete a feedback.
 - **GET /feedback** Retrieve all feedbacks.
 - **GET /feedback/:feedbackID** Retrieve all information about a feedback.
 - **PUT /feedback/:feedbackID** Update a feedback.
+
 ---
 
 - **POST /guest** Create a new guest.
@@ -66,55 +72,69 @@ The server will be running on `http://localhost:3000`. but you still needs to ch
 - **GET /guests** Retrieve all guests.
 - **GET /guests/:guestID** Retrieve all information about a guest.
 - **PUT /guests/:guestID** Update a guest.
+
 ---
+
 - **POST /menuItems** Create a new menu item.
 - **DELETE/menuItems/:menuItemsID** Delete a menu item.
 - **GET /menuItems** Retrieve all menu items.
 - **GET /menuItems/:menuItemsID** Retrieve all information about a menu item.
 - **PUT /menuItems/:menuItemsID** Update a menu item.
+
 ---
+
 - **POST /order** Create a new order.
 - **DELETE/order/:orderID** Delete an order.
 - **GET /order** Retrieve all orders.
 - **GET /order/:orderID** Retrieve all information about an order.
 - **PUT /order/:orderID** Update an order.
+
 ---
+
 - **POST /orderItem** Create a new order item.
 - **DELETE/orderItem/:orderItemID** Delete an order item.
 - **GET /orderItem** Retrieve all order items.
 - **GET /orderItem/:orderItemID** Retrieve all information about an order item.
 - **PUT /orderItem/:orderItemID** Update an order item.
+
 ---
+
 - **POST /payment** Create a new payment.
 - **DELETE/payment/:paymentID** Delete a payment.
 - **GET /payment** Retrieve all payments.
 - **GET /payment/:paymentID** Retrieve all information about a payment.
 - **PUT /payment/:paymentID** Update a payment.
+
 ---
+
 - **POST /reservation** Create a new reservation.
 - **DELETE/reservation/:reservationID** Delete a reservation.
 - **GET /reservation** Retrieve all reservations.
 - **GET /reservation/:reservationID** Retrieve all information about a reservation.
 - **GET /reservation/guest/:guestID** Retrieve all reservations of a guest.
 - **PUT /reservation/:reservationID** Update a reservation.
+
 ---
+
 - **POST /room** Create a new room.
 - **DELETE/room/:roomID** Delete a room.
-- **GET /room** Retrieve all rooms. 
+- **GET /room** Retrieve all rooms.
 - **GET /room/available** Retrieve all available rooms.
 - **GET /room/unavailable** Retrieve all unavailable rooms.
 - **GET /room/:roomID** Retrieve all information about a room.
 - **PUT /room/:roomID** Update a room.
 - **PUT /room/:roomID/available** Update a room's availability.
 - **PUT /room/:roomID/unavailable** Update a room's availability.
+
 ---
+
 - **POST /staff** Create a new staff.
 - **DELETE/staff/:staffID** Delete a staff.
 - **GET /staff** Retrieve all staffs.
 - **GET /staff/:staffID** Retrieve all information about a staff.
 - **PUT /staff/:staffID** Update a staff.
----
 
+---
 
 ### Database Schema
 
@@ -132,7 +152,6 @@ The API is designed to work with the following database schema:
 
 Make sure to set up your database according to the provided schema.
 
-
 # API Documentation
 
 ### Authentication
@@ -142,12 +161,15 @@ first is you must generate an API key first by using the script below:
 ```bash
 npm run generateKey
 ```
+
 should look like this:
+
 ![Alt text](/api/media/apiKey.png)
 
 copy it and store it in a safe place.
 
 #### Javascript
+
 To use the API key authentication in your requests, you need to include the API key in the headers of your requests. Here is an example of how you can make a request with API key authentication in Javascript using the `axios` library:
 
 ```javascript
@@ -162,20 +184,22 @@ const headers = {
 };
 
 // Example GET request
-axios.get(apiUrl, { headers })
-  .then(response => {
+axios
+  .get(apiUrl, { headers })
+  .then((response) => {
     console.log('Response data:', response.data);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Error:', error.message);
   });
 
 // Example GET request via guestID parameter
-axios.get(apiUrl + '/1', { headers }) // 1 is the guestID
-  .then(response => {
+axios
+  .get(apiUrl + '/1', { headers }) // 1 is the guestID
+  .then((response) => {
     console.log('Response data:', response.data);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Error:', error.message);
   });
 
@@ -188,11 +212,12 @@ const data = {
   Address: '123 Main Street',
 };
 
-axios.post(apiUrl, data, { headers })
-  .then(response => {
+axios
+  .post(apiUrl, data, { headers })
+  .then((response) => {
     console.log('Response data:', response.data);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('Error:', error.message);
   });
 ```
@@ -274,7 +299,6 @@ echo $postResponse;
 
 ?>
 ```
-
 
 Ensure that the `x-api-key` header is included in the request with the correct API key value, and the server will use the `authenticateApiKey` middleware to validate the API key before processing the request.
 

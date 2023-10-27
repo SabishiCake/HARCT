@@ -17,10 +17,13 @@ const logRequest = (req, res, next) => {
     createFile();
   }
 
-  const logMessage = `${new Date().toISOString()} - API Key: ${apiKey} - URL: ${req.originalUrl} - Method: ${req.method}`;
+  const logMessage = `${new Date().toISOString()} - API Key: ${apiKey} - URL: ${
+    req.originalUrl
+  } - Method: ${req.method}`;
   res.on('finish', () => {
     const statusCode = res.statusCode;
-    const granted = (statusCode >= 200 && statusCode < 300) ? 'Granted' : 'Denied';
+    const granted =
+      statusCode >= 200 && statusCode < 300 ? 'Granted' : 'Denied';
     const logWithStatus = `${logMessage} - Status: ${statusCode} - Access: ${granted}\n`;
     fs.appendFile(logFile, logWithStatus, (err) => {
       if (err) {
@@ -30,6 +33,5 @@ const logRequest = (req, res, next) => {
   });
   next();
 };
-
 
 module.exports = logRequest;
