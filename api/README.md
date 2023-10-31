@@ -53,7 +53,7 @@ npm run dev
 
 The server will be running on `http://localhost:3000`. but you still needs to check your console/terminal for the correct address.
 
-# Available Routes
+# Available private Routes
 
 - **GET /allData** Retrieve all data from all tables in the database.
 
@@ -176,7 +176,7 @@ To use the API key authentication in your requests, you need to include the API 
 const axios = require('axios');
 
 const apiKey = 'YOUR_API_KEY';
-const apiUrl = 'http://localhost:3000/guests'; // Change the URL as needed
+const apiUrl = 'http://localhost:3000/private/guest'; // Change the URL as needed
 
 const headers = {
   'Content-Type': 'application/json',
@@ -285,7 +285,7 @@ echo $response;
 // Example usage of GET request with guestID parameter
 
 $guestID = 1;
-$guestResponse = getRequest($apiUrl . '/guests/' . $guestID, $apiKey);
+$guestResponse = getRequest($apiUrl . '/private/guest/' . $guestID, $apiKey);
 echo $guestResponse;
 
 
