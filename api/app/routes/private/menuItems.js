@@ -1,7 +1,7 @@
 const express = require('express');
-const db = require('../db');
+const db = require('../../db');
 const router = express.Router();
-const id = require(__dirname + '/../utils/intUUID.js');
+const id = require('../../utils/intUUID');
 
 // Create a new menu item
 router.post('/', (req, res) => {

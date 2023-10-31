@@ -1,7 +1,7 @@
 const express = require('express');
-const db = require('../db');
+const db = require('../../db');
 const router = express.Router();
-const intUUID = require(__dirname + '/../utils/intUUID.js');
+const intUUID = require('../../utils/intUUID');
 
 // Create Guest
 router.post('/', (req, res) => {

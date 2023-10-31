@@ -1,5 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
 
 dotenv.config();
 
@@ -8,43 +10,25 @@ const port = process.env.EXP_PORT || 3000;
 const address = process.env.EXP_ADDR || 'localhost';
 
 app.use(express.json());
-const authenticateApiKey = require(
-  __dirname + '/middleware/authenticateApiKey'
-);
 const logRequest = require(__dirname + '/middleware/logger');
-
 app.use(logRequest);
-const allDataRouter = require(__dirname + '/routes/allData');
 
-const apiKeysRouter = require(__dirname + '/routes/apiKeys');
-const feedbackRouter = require(__dirname + '/routes/feedback');
-const guestRouter = require(__dirname + '/routes/guest');
-const menuItemsRouter = require(__dirname + '/routes/menuItems');
-const orderRouter = require(__dirname + '/routes/order');
-const orderItemRouter = require(__dirname + '/routes/orderItems');
-const paymentRouter = require(__dirname + '/routes/payment');
-const reservationRouter = require(__dirname + '/routes/reservation');
-const roomRouter = require(__dirname + '/routes/room');
-const staffRouter = require(__dirname + '/routes/staff');
+// Load routes from the private and public folders
+const routeFolders = ['private', 'public'];
 
-// Authentication middleware, all routes below this require an API key
-// Put this after the routes that don't require authentication
-app.use(authenticateApiKey);
+routeFolders.forEach((folder) => {
+  const routePath = path.join(__dirname, 'routes', folder);
 
-// Routers
-app.use('/allData', allDataRouter);
-app.use('/apiKeys', apiKeysRouter);
-app.use('/feedback', feedbackRouter);
-app.use('/guest', guestRouter);
-app.use('/menuItems', menuItemsRouter);
-app.use('/order', orderRouter);
-app.use('/orderItem', orderItemRouter);
-app.use('/payment', paymentRouter);
-app.use('/reservation', reservationRouter);
-app.use('/room', roomRouter);
-app.use('/staff', staffRouter);
+  fs.readdirSync(routePath).forEach((file) => {
+    const routeFilePath = path.join(routePath, file);
+    const route = require(routeFilePath);
+    const fileName = path.parse(file).name;
+    app.use(`/${folder}/${fileName}`, route);
+  });
+});
 
-app.listen(port, address, () => {
-  console.log(`Server listening on http://${address}:${port}`);
-  console.log('Press Ctrl+C to quit.');
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
