@@ -25,10 +25,11 @@ npm install
 3. create a `.env` file in the root directory of the project and add the following environment variables:
 
 ```bash
-DB_HOST=localhost // your database host
-DB_USER=root // your database username
-DB_PASSWORD= // your database password
-DB_NAME=harctmydb // your database name
+MYSQL_HOST=localhost
+MYSQL_PORT=3307
+MYSQL_USER=root
+MYSQL_PASS=
+MYSQL_DB=harctmydb
 ```
 
 Should look like this:
