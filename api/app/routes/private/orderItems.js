@@ -1,8 +1,27 @@
+/**
+ * @fileoverview Provides routes to manage order items in the database.
+ * @module routes/orderItems
+ * @requires express
+ * @requires ../../db
+ */
+
 const express = require('express');
 const db = require('../../db');
 const router = express.Router();
 
-// Create a new order item
+/**
+ * Route to create a new order item.
+ * @name POST/orderItems
+ * @function
+ * @memberof module:routes/orderItems
+ * @param {Object} req - The request object.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.OrderID - The ID of the order associated with the item.
+ * @param {string} req.body.ItemID - The ID of the item in the order.
+ * @param {number} req.body.Quantity - The quantity of the item in the order.
+ * @param {Object} res - The response object.
+ */
+
 router.post('/', (req, res) => {
   const { OrderID, ItemID, Quantity } = req.body;
   const sql =
@@ -16,7 +35,17 @@ router.post('/', (req, res) => {
   });
 });
 
-// Delete order item by OrderItemID
+/**
+ * Route to delete an order item by OrderItemID.
+ * @name DELETE/orderItems/:orderItemID
+ * @function
+ * @memberof module:routes/orderItems
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.orderItemID - The ID of the order item to be deleted.
+ * @param {Object} res - The response object.
+ */
+
 router.delete('/:orderItemID', (req, res) => {
   const orderItemID = req.params.orderItemID;
   const sql = 'DELETE FROM OrderItems WHERE OrderItemID = ?';
@@ -31,7 +60,15 @@ router.delete('/:orderItemID', (req, res) => {
   });
 });
 
-// Get all order items
+/**
+ * Route to get all order items.
+ * @name GET/orderItems
+ * @function
+ * @memberof module:routes/orderItems
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/', (req, res) => {
   const sql = 'SELECT * FROM OrderItems';
   db.query(sql, (err, result) => {
@@ -45,7 +82,17 @@ router.get('/', (req, res) => {
   });
 });
 
-// Get order item by OrderItemID
+/**
+ * Route to get an order item by OrderItemID.
+ * @name GET/orderItems/:orderItemID
+ * @function
+ * @memberof module:routes/orderItems
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.orderItemID - The ID of the order item to be retrieved.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/:orderItemID', (req, res) => {
   const orderItemID = req.params.orderItemID;
   const sql = 'SELECT * FROM OrderItems WHERE OrderItemID = ?';
@@ -60,7 +107,21 @@ router.get('/:orderItemID', (req, res) => {
   });
 });
 
-// Update order item by OrderItemID
+/**
+ * Route to update an order item by OrderItemID.
+ * @name PUT/orderItems/:orderItemID
+ * @function
+ * @memberof module:routes/orderItems
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.orderItemID - The ID of the order item to be updated.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.OrderID - The ID of the order associated with the item.
+ * @param {string} req.body.ItemID - The ID of the item in the order.
+ * @param {number} req.body.Quantity - The quantity of the item in the order.
+ * @param {Object} res - The response object.
+ */
+
 router.put('/:orderItemID', (req, res) => {
   const orderItemID = req.params.orderItemID;
   const { OrderID, ItemID, Quantity } = req.body;

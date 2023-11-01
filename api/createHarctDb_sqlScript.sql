@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `harctmydb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `harctmydb`;
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: harctmydb
@@ -64,6 +66,67 @@ CREATE TABLE `guest` (
   `Phone` varchar(255) DEFAULT NULL,
   `Address` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`GuestID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `housekeepingtasks`
+--
+
+DROP TABLE IF EXISTS `housekeepingtasks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `housekeepingtasks` (
+  `TaskID` int NOT NULL,
+  `TaskName` varchar(255) DEFAULT NULL,
+  `Description` text,
+  `RoomNumber` varchar(50) DEFAULT NULL,
+  `Status` enum('Pending','In Progress','Completed') DEFAULT NULL,
+  `CreatedAt` timestamp NULL DEFAULT (now()),
+  `UpdatedAt` timestamp NULL DEFAULT (now()),
+  PRIMARY KEY (`TaskID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `laundryitems`
+--
+
+DROP TABLE IF EXISTS `laundryitems`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `laundryitems` (
+  `ItemID` int NOT NULL,
+  `OrderID` int DEFAULT NULL,
+  `ItemName` varchar(255) DEFAULT NULL,
+  `Quantity` int DEFAULT NULL,
+  `Status` enum('Pending','In Progress','Completed') DEFAULT NULL,
+  `CreatedAt` timestamp NULL DEFAULT (now()),
+  `UpdatedAt` timestamp NULL DEFAULT (now()),
+  PRIMARY KEY (`ItemID`),
+  KEY `OrderID` (`OrderID`),
+  CONSTRAINT `laundryitems_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `laundryorders` (`OrderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `laundryorders`
+--
+
+DROP TABLE IF EXISTS `laundryorders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `laundryorders` (
+  `OrderID` int NOT NULL,
+  `GuestID` int DEFAULT NULL,
+  `PickupDate` date DEFAULT NULL,
+  `DeliveryDate` date DEFAULT NULL,
+  `Status` enum('Pending','In Progress','Completed') DEFAULT NULL,
+  `CreatedAt` timestamp NULL DEFAULT (now()),
+  `UpdatedAt` timestamp NULL DEFAULT (now()),
+  PRIMARY KEY (`OrderID`),
+  KEY `GuestID` (`GuestID`),
+  CONSTRAINT `laundryorders_ibfk_1` FOREIGN KEY (`GuestID`) REFERENCES `guest` (`GuestID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -162,6 +225,24 @@ CREATE TABLE `reservation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `reservations`
+--
+
+DROP TABLE IF EXISTS `reservations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reservations` (
+  `ReservationID` int NOT NULL,
+  `GuestID` int DEFAULT NULL,
+  `TableNumber` int DEFAULT NULL,
+  `ReservationDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`ReservationID`),
+  KEY `GuestID` (`GuestID`),
+  CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`GuestID`) REFERENCES `guest` (`GuestID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `room`
 --
 
@@ -177,6 +258,72 @@ CREATE TABLE `room` (
   `IsOccupied` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`RoomID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `room_details`
+--
+
+DROP TABLE IF EXISTS `room_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `room_details` (
+  `RoomID` int NOT NULL AUTO_INCREMENT,
+  `RoomNumber` varchar(255) NOT NULL,
+  `TypeID` int NOT NULL,
+  `IsOccupied` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`RoomID`),
+  KEY `TypeID` (`TypeID`),
+  CONSTRAINT `room_details_ibfk_1` FOREIGN KEY (`TypeID`) REFERENCES `room_types` (`TypeID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `room_facilities`
+--
+
+DROP TABLE IF EXISTS `room_facilities`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `room_facilities` (
+  `FacilityID` int NOT NULL AUTO_INCREMENT,
+  `FacilityName` varchar(255) NOT NULL,
+  `Description` text,
+  PRIMARY KEY (`FacilityID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `room_facility_mapping`
+--
+
+DROP TABLE IF EXISTS `room_facility_mapping`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `room_facility_mapping` (
+  `RoomID` int NOT NULL,
+  `FacilityID` int NOT NULL,
+  PRIMARY KEY (`RoomID`,`FacilityID`),
+  KEY `FacilityID` (`FacilityID`),
+  CONSTRAINT `room_facility_mapping_ibfk_1` FOREIGN KEY (`RoomID`) REFERENCES `room_details` (`RoomID`),
+  CONSTRAINT `room_facility_mapping_ibfk_2` FOREIGN KEY (`FacilityID`) REFERENCES `room_facilities` (`FacilityID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `room_types`
+--
+
+DROP TABLE IF EXISTS `room_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `room_types` (
+  `TypeID` int NOT NULL AUTO_INCREMENT,
+  `TypeName` varchar(255) NOT NULL,
+  `Description` text,
+  `Rate` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`TypeID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -205,4 +352,4 @@ CREATE TABLE `staff` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-27 13:04:11
+-- Dump completed on 2023-11-01 12:47:59

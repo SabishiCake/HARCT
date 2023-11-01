@@ -1,9 +1,31 @@
+/**
+ * @fileoverview Provides routes to manage guest data in the database.
+ * @module routes/guest
+ * @requires express
+ * @requires ../../db
+ * @requires ../../utils/intUUID
+ */
+
 const express = require('express');
 const db = require('../../db');
 const router = express.Router();
 const intUUID = require('../../utils/intUUID');
 
-// Create Guest
+/**
+ * Route to create a new guest.
+ * @name POST/guest
+ * @function
+ * @memberof module:routes/guest
+ * @param {Object} req - The request object.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.LastName - The last name of the guest.
+ * @param {string} req.body.FirstName - The first name of the guest.
+ * @param {string} req.body.Email - The email address of the guest.
+ * @param {string} req.body.Phone - The phone number of the guest.
+ * @param {string} req.body.Address - The address of the guest.
+ * @param {Object} res - The response object.
+ */
+
 router.post('/', (req, res) => {
   const GuestID = intUUID();
   console.log(`GuestID: ${GuestID}`);
@@ -28,7 +50,17 @@ router.post('/', (req, res) => {
   );
 });
 
-// Delete Guest by GuestID
+/**
+ * Route to delete a guest by GuestID.
+ * @name DELETE/guest/:guestId
+ * @function
+ * @memberof module:routes/guest
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.guestId - The ID of the guest to be deleted.
+ * @param {Object} res - The response object.
+ */
+
 router.delete('/:guestId', (req, res) => {
   const guestId = req.params.guestId;
   const sql = 'DELETE FROM Guest WHERE GuestID = ?';
@@ -46,7 +78,15 @@ router.delete('/:guestId', (req, res) => {
   });
 });
 
-// Get all Guests
+/**
+ * Route to get all guests.
+ * @name GET/guest
+ * @function
+ * @memberof module:routes/guest
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/', (req, res) => {
   const sql = 'SELECT * FROM Guest';
   db.query(sql, (err, result) => {
@@ -66,7 +106,17 @@ router.get('/', (req, res) => {
   });
 });
 
-// Get all data related to a specific GuestID
+/**
+ * Route to get all data related to a specific GuestID.
+ * @name GET/guest/:guestId
+ * @function
+ * @memberof module:routes/guest
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.guestId - The ID of the guest to retrieve data for.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/:guestId', (req, res) => {
   const guestId = req.params.guestId;
   const sql = `SELECT * FROM Guest WHERE GuestID = ?;
@@ -100,7 +150,23 @@ router.get('/:guestId', (req, res) => {
   );
 });
 
-// Update Guest by GuestID
+/**
+ * Route to update a guest by GuestID.
+ * @name PUT/guest/:guestId
+ * @function
+ * @memberof module:routes/guest
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.guestId - The ID of the guest to be updated.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.LastName - The last name of the guest.
+ * @param {string} req.body.FirstName - The first name of the guest.
+ * @param {string} req.body.Email - The email address of the guest.
+ * @param {string} req.body.Phone - The phone number of the guest.
+ * @param {string} req.body.Address - The address of the guest.
+ * @param {Object} res - The response object.
+ */
+
 router.put('/:guestId', (req, res) => {
   const guestId = req.params.guestId;
   const { LastName, FirstName, Email, Phone, Address } = req.body;

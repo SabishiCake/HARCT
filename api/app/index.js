@@ -2,19 +2,16 @@ const express = require('express');
 const dotenv = require('dotenv');
 const fs = require('fs');
 const path = require('path');
+const logger = require('./middleware/logger');
 const authenticateApiKey = require('./middleware/authenticateApiKey');
 
-dotenv.config();
+dotenv.config(); // Load environment variables from .env file
 
 const app = express();
-const port = process.env.EXP_PORT || 3000;
-const address = process.env.EXP_ADDR || 'localhost';
-
 app.use(express.json());
-const logRequest = require(__dirname + '/middleware/logger');
-app.use(logRequest);
+app.use(logger);
 
-// Load routes from the private and public folders
+// Loop through the route folders and load the route files dynamically
 const routeFolders = ['private', 'public'];
 
 routeFolders.forEach((folder) => {
@@ -31,12 +28,13 @@ routeFolders.forEach((folder) => {
     }
   });
 
+  // Create an endpoint to list all private routes
   if (folder === 'private') {
     const privateRoutes = fs.readdirSync(routePath).map((file) => {
       const routeFileName = path.parse(file).name;
       return `/${folder}/${routeFileName}`;
     });
-
+    // Create an endpoint to list all public routes
     app.get(`/${folder}`, (req, res) => {
       res.json({ routes: privateRoutes });
     });

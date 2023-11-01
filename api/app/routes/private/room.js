@@ -1,8 +1,29 @@
+/**
+ * @fileoverview Provides routes to manage hotel rooms in the database.
+ * @module routes/rooms
+ * @requires express
+ * @requires ../../db
+ */
+
 const express = require('express');
 const db = require('../../db');
 const router = express.Router();
 
-// Create Room
+/**
+ * Route to create a new room.
+ * @name POST/rooms
+ * @function
+ * @memberof module:routes/rooms
+ * @param {Object} req - The request object.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.RoomID - The ID of the room.
+ * @param {string} req.body.RoomNumber - The room number.
+ * @param {string} req.body.Type - The type of the room.
+ * @param {string} req.body.Description - The description of the room.
+ * @param {number} req.body.Price - The price of the room.
+ * @param {Object} res - The response object.
+ */
+
 router.post('/', (req, res) => {
   const { RoomID, RoomNumber, Type, Description, Price } = req.body;
   const sql =
@@ -21,7 +42,17 @@ router.post('/', (req, res) => {
   );
 });
 
-// DELETE Room by RoomID
+/**
+ * Route to delete a room by RoomID.
+ * @name DELETE/rooms/:roomID
+ * @function
+ * @memberof module:routes/rooms
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.roomID - The ID of the room to be deleted.
+ * @param {Object} res - The response object.
+ */
+
 router.delete('/:roomID', (req, res) => {
   const roomID = req.params.roomID;
   const sql = 'DELETE FROM Room WHERE RoomID = ?';
@@ -35,7 +66,15 @@ router.delete('/:roomID', (req, res) => {
   });
 });
 
-// Get all Rooms
+/**
+ * Route to get all rooms.
+ * @name GET/rooms
+ * @function
+ * @memberof module:routes/rooms
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/', (req, res) => {
   const sql = 'SELECT * FROM Room';
   db.query(sql, (err, result) => {
@@ -47,7 +86,17 @@ router.get('/', (req, res) => {
   });
 });
 
-// Get Room by RoomID
+/**
+ * Route to get a room by RoomID.
+ * @name GET/rooms/:roomID
+ * @function
+ * @memberof module:routes/rooms
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.roomID - The ID of the room to be retrieved.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/:roomID', (req, res) => {
   const roomID = req.params.roomID;
   const sql = 'SELECT * FROM Room WHERE RoomID = ?';
@@ -60,7 +109,15 @@ router.get('/:roomID', (req, res) => {
   });
 });
 
-// Get all available Rooms
+/**
+ * Route to get all available rooms.
+ * @name GET/rooms/available
+ * @function
+ * @memberof module:routes/rooms
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/available', (req, res) => {
   const sql = 'SELECT * FROM Room WHERE IsOccupied = false';
   db.query(sql, (err, result) => {

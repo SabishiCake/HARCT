@@ -1,8 +1,27 @@
+/**
+ * @fileoverview Provides routes to manage payments in the database.
+ * @module routes/payments
+ * @requires express
+ * @requires ../../db
+ */
+
 const express = require('express');
 const db = require('../../db');
 const router = express.Router();
 
-// Create a new payment
+/**
+ * Route to create a new payment.
+ * @name POST/payments
+ * @function
+ * @memberof module:routes/payments
+ * @param {Object} req - The request object.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.GuestID - The ID of the guest associated with the payment.
+ * @param {number} req.body.Amount - The amount of the payment.
+ * @param {string} req.body.PaymentDate - The date of the payment.
+ * @param {Object} res - The response object.
+ */
+
 router.post('/', (req, res) => {
   const { GuestID, Amount, PaymentDate } = req.body;
   const sql =
@@ -16,7 +35,17 @@ router.post('/', (req, res) => {
   });
 });
 
-// Delete payment by PaymentID
+/**
+ * Route to delete a payment by PaymentID.
+ * @name DELETE/payments/:paymentID
+ * @function
+ * @memberof module:routes/payments
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.paymentID - The ID of the payment to be deleted.
+ * @param {Object} res - The response object.
+ */
+
 router.delete('/:paymentID', (req, res) => {
   const paymentID = req.params.paymentID;
   const sql = 'DELETE FROM Payments WHERE PaymentID = ?';
@@ -29,7 +58,15 @@ router.delete('/:paymentID', (req, res) => {
   });
 });
 
-// Get all payments
+/**
+ * Route to get all payments.
+ * @name GET/payments
+ * @function
+ * @memberof module:routes/payments
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/', (req, res) => {
   const sql = 'SELECT * FROM Payments';
   db.query(sql, (err, result) => {
@@ -43,7 +80,17 @@ router.get('/', (req, res) => {
   });
 });
 
-// Get payment by PaymentID
+/**
+ * Route to get a payment by PaymentID.
+ * @name GET/payments/:paymentID
+ * @function
+ * @memberof module:routes/payments
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.paymentID - The ID of the payment to be retrieved.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/:paymentID', (req, res) => {
   const paymentID = req.params.paymentID;
   const sql = 'SELECT * FROM Payments WHERE PaymentID = ?';
@@ -56,7 +103,21 @@ router.get('/:paymentID', (req, res) => {
   });
 });
 
-// Update payment by PaymentID
+/**
+ * Route to update a payment by PaymentID.
+ * @name PUT/payments/:paymentID
+ * @function
+ * @memberof module:routes/payments
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.paymentID - The ID of the payment to be updated.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.GuestID - The ID of the guest associated with the payment.
+ * @param {number} req.body.Amount - The amount of the payment.
+ * @param {string} req.body.PaymentDate - The date of the payment.
+ * @param {Object} res - The response object.
+ */
+
 router.put('/:paymentID', (req, res) => {
   const paymentID = req.params.paymentID;
   const { GuestID, Amount, PaymentDate } = req.body;

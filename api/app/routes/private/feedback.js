@@ -1,10 +1,27 @@
-// routes/feedback.js
+/**
+ * @fileoverview Provides routes to manage feedback data in the database.
+ * @module routes/feedback
+ * @requires express
+ * @requires ../../db
+ */
 
 const express = require('express');
 const db = require('../../db');
 const router = express.Router();
 
-// Create new feedback
+/**
+ * Route to create new feedback.
+ * @name POST/feedback
+ * @function
+ * @memberof module:routes/feedback
+ * @param {Object} req - The request object.
+ * @param {Object} req.body - The request body.
+ * @param {number} req.body.GuestID - The ID of the guest who provided the feedback.
+ * @param {string} req.body.Comment - The comment provided in the feedback.
+ * @param {number} req.body.Rating - The rating provided in the feedback.
+ * @param {Object} res - The response object.
+ */
+
 router.post('/', (req, res) => {
   const { GuestID, Comment, Rating } = req.body;
   const sql =
@@ -18,7 +35,17 @@ router.post('/', (req, res) => {
   });
 });
 
-// Delete feedback by FeedbackID
+/**
+ * Route to delete feedback by FeedbackID.
+ * @name DELETE/feedback/:feedbackID
+ * @function
+ * @memberof module:routes/feedback
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.feedbackID - The ID of the feedback to be deleted.
+ * @param {Object} res - The response object.
+ */
+
 router.delete('/:feedbackID', (req, res) => {
   const feedbackID = req.params.feedbackID;
   const sql = 'DELETE FROM Feedback WHERE FeedbackID = ?';
@@ -31,7 +58,15 @@ router.delete('/:feedbackID', (req, res) => {
   });
 });
 
-// Get all feedback
+/**
+ * Route to get all feedback.
+ * @name GET/feedback
+ * @function
+ * @memberof module:routes/feedback
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/', (req, res) => {
   const sql = 'SELECT * FROM Feedback';
   db.query(sql, (err, result) => {
@@ -45,7 +80,17 @@ router.get('/', (req, res) => {
   });
 });
 
-// Get feedback by FeedbackID
+/**
+ * Route to get feedback by FeedbackID.
+ * @name GET/feedback/:feedbackID
+ * @function
+ * @memberof module:routes/feedback
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.feedbackID - The ID of the feedback to be retrieved.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/:feedbackID', (req, res) => {
   const feedbackID = req.params.feedbackID;
   const sql = 'SELECT * FROM Feedback WHERE FeedbackID = ?';
@@ -60,7 +105,21 @@ router.get('/:feedbackID', (req, res) => {
   });
 });
 
-// Update feedback by FeedbackID
+/**
+ * Route to update feedback by FeedbackID.
+ * @name PUT/feedback/:feedbackID
+ * @function
+ * @memberof module:routes/feedback
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.feedbackID - The ID of the feedback to be updated.
+ * @param {Object} req.body - The request body.
+ * @param {number} req.body.GuestID - The ID of the guest who provided the feedback.
+ * @param {string} req.body.Comment - The comment provided in the feedback.
+ * @param {number} req.body.Rating - The rating provided in the feedback.
+ * @param {Object} res - The response object.
+ */
+
 router.put('/:feedbackID', (req, res) => {
   const feedbackID = req.params.feedbackID;
   const { GuestID, Comment, Rating } = req.body;

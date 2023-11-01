@@ -1,8 +1,29 @@
+/**
+ * @fileoverview Provides routes to manage reservations in the database.
+ * @module routes/reservations
+ * @requires express
+ * @requires ../../db
+ */
+
 const express = require('express');
 const db = require('../../db');
 const router = express.Router();
 
-// Create a new reservation
+/**
+ * Route to create a new reservation.
+ * @name POST/reservations
+ * @function
+ * @memberof module:routes/reservations
+ * @param {Object} req - The request object.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.GuestID - The ID of the guest making the reservation.
+ * @param {string} req.body.RoomID - The ID of the room reserved.
+ * @param {string} req.body.CheckInDate - The check-in date for the reservation.
+ * @param {string} req.body.CheckOutDate - The check-out date for the reservation.
+ * @param {number} req.body.TotalCost - The total cost of the reservation.
+ * @param {Object} res - The response object.
+ */
+
 router.post('/', (req, res) => {
   const { GuestID, RoomID, CheckInDate, CheckOutDate, TotalCost } = req.body;
   const sql =
@@ -30,7 +51,17 @@ router.post('/', (req, res) => {
   );
 });
 
-// Delete reservation by ReservationID
+/**
+ * Route to delete a reservation by ReservationID.
+ * @name DELETE/reservations/:reservationID
+ * @function
+ * @memberof module:routes/reservations
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.reservationID - The ID of the reservation to be deleted.
+ * @param {Object} res - The response object.
+ */
+
 router.delete('/:reservationID', (req, res) => {
   const reservationID = req.params.reservationID;
   const sql = 'DELETE FROM Reservation WHERE ReservationID = ?';
@@ -45,7 +76,15 @@ router.delete('/:reservationID', (req, res) => {
   });
 });
 
-// Get all reservations
+/**
+ * Route to get all reservations.
+ * @name GET/reservations
+ * @function
+ * @memberof module:routes/reservations
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/', (req, res) => {
   const sql = 'SELECT * FROM Reservation';
   db.query(sql, (err, result) => {
@@ -59,7 +98,17 @@ router.get('/', (req, res) => {
   });
 });
 
-// Get reservation by ReservationID
+/**
+ * Route to get a reservation by ReservationID.
+ * @name GET/reservations/:reservationID
+ * @function
+ * @memberof module:routes/reservations
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.reservationID - The ID of the reservation to be retrieved.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/:reservationID', (req, res) => {
   const reservationID = req.params.reservationID;
   const sql = 'SELECT * FROM Reservation WHERE ReservationID = ?';
@@ -74,7 +123,17 @@ router.get('/:reservationID', (req, res) => {
   });
 });
 
-// Get reservation by GuestID
+/**
+ * Route to get a reservation by GuestID.
+ * @name GET/reservations/guest/:guestID
+ * @function
+ * @memberof module:routes/reservations
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.guestID - The ID of the guest for whom reservations are to be retrieved.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/guest/:guestID', (req, res) => {
   const guestID = req.params.guestID;
   const sql = 'SELECT * FROM Reservation WHERE GuestID = ?';
@@ -89,7 +148,23 @@ router.get('/guest/:guestID', (req, res) => {
   });
 });
 
-// Update reservation by ReservationID
+/**
+ * Route to update a reservation by ReservationID.
+ * @name PUT/reservations/:reservationID
+ * @function
+ * @memberof module:routes/reservations
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.reservationID - The ID of the reservation to be updated.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.GuestID - The ID of the guest making the reservation.
+ * @param {string} req.body.RoomID - The ID of the room reserved.
+ * @param {string} req.body.CheckInDate - The check-in date for the reservation.
+ * @param {string} req.body.CheckOutDate - The check-out date for the reservation.
+ * @param {number} req.body.TotalCost - The total cost of the reservation.
+ * @param {Object} res - The response object.
+ */
+
 router.put('/:reservationID', (req, res) => {
   const reservationID = req.params.reservationID;
   const { GuestID, RoomID, CheckInDate, CheckOutDate, TotalCost } = req.body;

@@ -1,9 +1,28 @@
+/**
+ * @fileoverview Provides routes to manage menu items in the database.
+ * @module routes/menuItems
+ * @requires express
+ * @requires ../../db
+ */
+
 const express = require('express');
 const db = require('../../db');
 const router = express.Router();
 const id = require('../../utils/intUUID');
 
-// Create a new menu item
+/**
+ * Route to create a new menu item.
+ * @name POST/menuItems
+ * @function
+ * @memberof module:routes/menuItems
+ * @param {Object} req - The request object.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.Name - The name of the menu item.
+ * @param {string} req.body.Description - The description of the menu item.
+ * @param {number} req.body.Price - The price of the menu item.
+ * @param {Object} res - The response object.
+ */
+
 router.post('/', (req, res) => {
   const { Name, Description, Price } = req.body;
   const MenuItemID = id();
@@ -18,7 +37,17 @@ router.post('/', (req, res) => {
   });
 });
 
-// Delete menu item by ItemID
+/**
+ * Route to delete a menu item by ItemID.
+ * @name DELETE/menuItems/:itemID
+ * @function
+ * @memberof module:routes/menuItems
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.itemID - The ID of the menu item to be deleted.
+ * @param {Object} res - The response object.
+ */
+
 router.delete('/:itemID', (req, res) => {
   const itemID = req.params.itemID;
   const sql = 'DELETE FROM MenuItems WHERE ItemID = ?';
@@ -31,7 +60,15 @@ router.delete('/:itemID', (req, res) => {
   });
 });
 
-// Get all menu items
+/**
+ * Route to get all menu items.
+ * @name GET/menuItems
+ * @function
+ * @memberof module:routes/menuItems
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/', (req, res) => {
   const sql = 'SELECT * FROM MenuItems';
   db.query(sql, (err, result) => {
@@ -45,7 +82,17 @@ router.get('/', (req, res) => {
   });
 });
 
-// Get menu item by ItemID
+/**
+ * Route to get a menu item by ItemID.
+ * @name GET/menuItems/:itemID
+ * @function
+ * @memberof module:routes/menuItems
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.itemID - The ID of the menu item to be retrieved.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/:itemID', (req, res) => {
   const itemID = req.params.itemID;
   const sql = 'SELECT * FROM MenuItems WHERE ItemID = ?';
@@ -60,7 +107,21 @@ router.get('/:itemID', (req, res) => {
   });
 });
 
-// Update menu item by ItemID
+/**
+ * Route to update a menu item by ItemID.
+ * @name PUT/menuItems/:itemID
+ * @function
+ * @memberof module:routes/menuItems
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.itemID - The ID of the menu item to be updated.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.Name - The name of the menu item.
+ * @param {string} req.body.Description - The description of the menu item.
+ * @param {number} req.body.Price - The price of the menu item.
+ * @param {Object} res - The response object.
+ */
+
 router.put('/:itemID', (req, res) => {
   const itemID = req.params.itemID;
   const { Name, Description, Price } = req.body;

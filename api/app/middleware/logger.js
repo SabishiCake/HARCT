@@ -4,7 +4,7 @@ const logFile = __dirname + '/../logs/' + logName;
 
 /**
  * @name createFile
- * @description Creates log file
+ * @description Creates a new log file if it doesn't already exist.
  */
 
 const createFile = () => {
@@ -17,19 +17,21 @@ const createFile = () => {
 
 /**
  * @name logRequest
- * @description Middleware to log requests
- * @param {*} req
- * @param {*} res
- * @param {*} next
+ * @description Middleware function for logging incoming requests.
+ * @param {*} req - The request object.
+ * @param {*} res - The response object.
+ * @param {*} next - The next middleware function.
  */
 
 const logRequest = (req, res, next) => {
   const apiKey = req.headers['x-api-key'];
 
+  // Check if the log file exists, if not, create it
   if (!fs.existsSync(logFile)) {
     createFile();
   }
 
+  // Log request details to the log file
   const logMessage = `${new Date().toISOString()} - API Key: ${apiKey} - URL: ${
     req.originalUrl
   } - Method: ${req.method}`;
