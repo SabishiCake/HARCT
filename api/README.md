@@ -25,19 +25,18 @@ npm install
 3. create a `.env` file in the root directory of the project and add the following environment variables:
 
 ```bash
-MYSQL_HOST=127.0.0.1
+MYSQL_HOST=localhost
+MYSQL_PORT=3307
 MYSQL_USER=root
-MYSQL_PASS=password
+MYSQL_PASS=
 MYSQL_DB=harctmydb
-EXP_ADDR=
-EXP_PORT=
 ```
 
 Should look like this:
 
 ![Alt text](../api/media/Screenshot%202023-10-26%20173045.png)
 
-4. Create a MySQL database named `harctmydb` and import the `createHarctDb_sqlScript.sql` file in the database which will create the required tables.
+4. Create a MySQL database named `harctmydb` and import the `createHarctDb_sqlScript.sql` file in the database which will create the required tables. [See Database Schema](https://dbdiagram.io/d/HARCT_2_dev2-653fa008ffbf5169f0bade64)
 
 # Start the server
 
@@ -55,88 +54,9 @@ npm run dev
 
 The server will be running on `http://localhost:3000`. but you still needs to check your console/terminal for the correct address.
 
-# Available Routes
+### Routes
 
-- **GET /allData** Retrieve all data from all tables in the database.
-
----
-
-- **POST /feedback** Create a new feedback.
-- **DELETE/feedback/:feedbackID** Delete a feedback.
-- **GET /feedback** Retrieve all feedbacks.
-- **GET /feedback/:feedbackID** Retrieve all information about a feedback.
-- **PUT /feedback/:feedbackID** Update a feedback.
-
----
-
-- **POST /guest** Create a new guest.
-- **DELETE/guest/:guestID** Delete a guest.
-- **GET /guests** Retrieve all guests.
-- **GET /guests/:guestID** Retrieve all information about a guest.
-- **PUT /guests/:guestID** Update a guest.
-
----
-
-- **POST /menuItems** Create a new menu item.
-- **DELETE/menuItems/:menuItemsID** Delete a menu item.
-- **GET /menuItems** Retrieve all menu items.
-- **GET /menuItems/:menuItemsID** Retrieve all information about a menu item.
-- **PUT /menuItems/:menuItemsID** Update a menu item.
-
----
-
-- **POST /order** Create a new order.
-- **DELETE/order/:orderID** Delete an order.
-- **GET /order** Retrieve all orders.
-- **GET /order/:orderID** Retrieve all information about an order.
-- **PUT /order/:orderID** Update an order.
-
----
-
-- **POST /orderItem** Create a new order item.
-- **DELETE/orderItem/:orderItemID** Delete an order item.
-- **GET /orderItem** Retrieve all order items.
-- **GET /orderItem/:orderItemID** Retrieve all information about an order item.
-- **PUT /orderItem/:orderItemID** Update an order item.
-
----
-
-- **POST /payment** Create a new payment.
-- **DELETE/payment/:paymentID** Delete a payment.
-- **GET /payment** Retrieve all payments.
-- **GET /payment/:paymentID** Retrieve all information about a payment.
-- **PUT /payment/:paymentID** Update a payment.
-
----
-
-- **POST /reservation** Create a new reservation.
-- **DELETE/reservation/:reservationID** Delete a reservation.
-- **GET /reservation** Retrieve all reservations.
-- **GET /reservation/:reservationID** Retrieve all information about a reservation.
-- **GET /reservation/guest/:guestID** Retrieve all reservations of a guest.
-- **PUT /reservation/:reservationID** Update a reservation.
-
----
-
-- **POST /room** Create a new room.
-- **DELETE/room/:roomID** Delete a room.
-- **GET /room** Retrieve all rooms.
-- **GET /room/available** Retrieve all available rooms.
-- **GET /room/unavailable** Retrieve all unavailable rooms.
-- **GET /room/:roomID** Retrieve all information about a room.
-- **PUT /room/:roomID** Update a room.
-- **PUT /room/:roomID/available** Update a room's availability.
-- **PUT /room/:roomID/unavailable** Update a room's availability.
-
----
-
-- **POST /staff** Create a new staff.
-- **DELETE/staff/:staffID** Delete a staff.
-- **GET /staff** Retrieve all staffs.
-- **GET /staff/:staffID** Retrieve all information about a staff.
-- **PUT /staff/:staffID** Update a staff.
-
----
+to be written...
 
 ### Database Schema
 
@@ -178,7 +98,7 @@ To use the API key authentication in your requests, you need to include the API 
 const axios = require('axios');
 
 const apiKey = 'YOUR_API_KEY';
-const apiUrl = 'http://localhost:3000/guests'; // Change the URL as needed
+const apiUrl = 'http://localhost:3000/private/guest'; // Change the URL as needed
 
 const headers = {
   'Content-Type': 'application/json',
@@ -197,7 +117,7 @@ axios
 
 // Example GET request via guestID parameter
 axios
-  .get(apiUrl + '/1', { headers }) // 1 is the guestID
+  .get(apiUrl + '/101', { headers }) // 101 is the guestID
   .then((response) => {
     console.log('Response data:', response.data);
   })
@@ -286,7 +206,7 @@ echo $response;
 
 // Example usage of GET request with guestID parameter
 $guestID = 1;
-$guestResponse = getRequest($apiUrl . '/guests/' . $guestID, $apiKey);
+$guestResponse = getRequest($apiUrl . '/private/guest/' . $guestID, $apiKey);
 echo $guestResponse;
 
 

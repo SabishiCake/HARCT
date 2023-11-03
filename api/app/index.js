@@ -1,50 +1,48 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
+const logger = require('./middleware/logger');
+const authenticateApiKey = require('./middleware/authenticateApiKey');
 
-dotenv.config();
+dotenv.config(); // Load environment variables from .env file
 
 const app = express();
-const port = process.env.EXP_PORT || 3000;
-const address = process.env.EXP_ADDR || 'localhost';
-
 app.use(express.json());
-const authenticateApiKey = require(
-  __dirname + '/middleware/authenticateApiKey'
-);
-const logRequest = require(__dirname + '/middleware/logger');
+app.use(logger);
 
-app.use(logRequest);
-const allDataRouter = require(__dirname + '/routes/allData');
+// Loop through the route folders and load the route files dynamically
+const routeFolders = ['private', 'public'];
 
-const apiKeysRouter = require(__dirname + '/routes/apiKeys');
-const feedbackRouter = require(__dirname + '/routes/feedback');
-const guestRouter = require(__dirname + '/routes/guest');
-const menuItemsRouter = require(__dirname + '/routes/menuItems');
-const orderRouter = require(__dirname + '/routes/order');
-const orderItemRouter = require(__dirname + '/routes/orderItems');
-const paymentRouter = require(__dirname + '/routes/payment');
-const reservationRouter = require(__dirname + '/routes/reservation');
-const roomRouter = require(__dirname + '/routes/room');
-const staffRouter = require(__dirname + '/routes/staff');
+routeFolders.forEach((folder) => {
+  const routePath = path.join(__dirname, 'routes', folder);
 
-// Authentication middleware, all routes below this require an API key
-// Put this after the routes that don't require authentication
-app.use(authenticateApiKey);
+  fs.readdirSync(routePath).forEach((file) => {
+    const routeFilePath = path.join(routePath, file);
+    const route = require(routeFilePath);
+    const fileName = path.parse(file).name;
+    if (folder === 'private') {
+      app.use(`/${folder}/${fileName}`, authenticateApiKey, route);
+    } else {
+      app.use(`/${folder}/${fileName}`, route);
+    }
+  });
 
-// Routers
-app.use('/allData', allDataRouter);
-app.use('/apiKeys', apiKeysRouter);
-app.use('/feedback', feedbackRouter);
-app.use('/guest', guestRouter);
-app.use('/menuItems', menuItemsRouter);
-app.use('/order', orderRouter);
-app.use('/orderItem', orderItemRouter);
-app.use('/payment', paymentRouter);
-app.use('/reservation', reservationRouter);
-app.use('/room', roomRouter);
-app.use('/staff', staffRouter);
+  // Create an endpoint to list all private routes
+  if (folder === 'private') {
+    const privateRoutes = fs.readdirSync(routePath).map((file) => {
+      const routeFileName = path.parse(file).name;
+      return `/${folder}/${routeFileName}`;
+    });
+    // Create an endpoint to list all public routes
+    app.get(`/${folder}`, (req, res) => {
+      res.json({ routes: privateRoutes });
+    });
+  }
+});
 
-app.listen(port, address, () => {
-  console.log(`Server listening on http://${address}:${port}`);
-  console.log('Press Ctrl+C to quit.');
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

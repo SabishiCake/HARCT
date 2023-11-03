@@ -1,8 +1,27 @@
+/**
+ * @fileoverview Provides routes to manage orders in the database.
+ * @module routes/orders
+ * @requires express
+ * @requires ../../db
+ */
+
 const express = require('express');
-const db = require('../db');
+const db = require('../../db');
 const router = express.Router();
 
-// Create a new order
+/**
+ * Route to create a new order.
+ * @name POST/orders
+ * @function
+ * @memberof module:routes/orders
+ * @param {Object} req - The request object.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.GuestID - The ID of the guest placing the order.
+ * @param {string} req.body.OrderDate - The date of the order.
+ * @param {number} req.body.TotalPrice - The total price of the order.
+ * @param {Object} res - The response object.
+ */
+
 router.post('/', (req, res) => {
   const { GuestID, OrderDate, TotalPrice } = req.body;
   const sql =
@@ -16,7 +35,17 @@ router.post('/', (req, res) => {
   });
 });
 
-// Delete order by OrderID
+/**
+ * Route to delete an order by OrderID.
+ * @name DELETE/orders/:orderID
+ * @function
+ * @memberof module:routes/orders
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.orderID - The ID of the order to be deleted.
+ * @param {Object} res - The response object.
+ */
+
 router.delete('/:orderID', (req, res) => {
   const orderID = req.params.orderID;
   const sql = 'DELETE FROM Orders WHERE OrderID = ?';
@@ -29,7 +58,17 @@ router.delete('/:orderID', (req, res) => {
   });
 });
 
-// Get all orders
+/**
+ * Route to get an order by OrderID.
+ * @name GET/orders/:orderID
+ * @function
+ * @memberof module:routes/orders
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.orderID - The ID of the order to be retrieved.
+ * @param {Object} res - The response object.
+ */
+
 router.get('/', (req, res) => {
   const sql = 'SELECT * FROM Orders';
   db.query(sql, (err, result) => {
@@ -54,7 +93,21 @@ router.get('/:orderID', (req, res) => {
   });
 });
 
-// Update order by OrderID
+/**
+ * Route to update an order by OrderID.
+ * @name PUT/orders/:orderID
+ * @function
+ * @memberof module:routes/orders
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.orderID - The ID of the order to be updated.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.GuestID - The ID of the guest placing the order.
+ * @param {string} req.body.OrderDate - The date of the order.
+ * @param {number} req.body.TotalPrice - The total price of the order.
+ * @param {Object} res - The response object.
+ */
+
 router.put('/:orderID', (req, res) => {
   const orderID = req.params.orderID;
   const { GuestID, OrderDate, TotalPrice } = req.body;
