@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Italianno&family=Open+Sans:wght@300&display=swap');
+
+:root{
+--bg-aside:#1d2331;
+--bg-body:#101624;
+}
+body{
+    font-family: 'Open Sans', sans-serif;
+    outline: 1px solid red;
+    background: var(--bg-body);
+}
+#logo{
+    color:#f83e42;
+    font-weight: 900;
+    letter-spacing: 5px;
+}
+.nav-aside{
+    height:100vh; 
+    width: 300px; 
+    font-size:0.9rem;
+    background: #1d2331;
+}
+.nav-aside-close{
+    display: none;
+}
+.nav-item:hover {
+    background-color: #f83e42;
+    transition: .5s;
+    border-radius: 5px;
+}
+.bg-header{
+    background: var(--bg-aside);
+}
+#datetime{
+    text-transform: uppercase !important;
+    font-weight: 900 !important;
+}
+.dcard{
+    background: #1d2331;
+    border-radius: 5px;
+}
+.lcard{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1/1;
+    width: 60px;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.open{
+    display:block !important;
+}
+
+.searchbar::placeholder{
+    color: white !important;
+}
+
+

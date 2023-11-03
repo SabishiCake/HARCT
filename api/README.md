@@ -205,7 +205,6 @@ $response = getRequest($apiUrl, $apiKey);
 echo $response;
 
 // Example usage of GET request with guestID parameter
-
 $guestID = 1;
 $guestResponse = getRequest($apiUrl . '/private/guest/' . $guestID, $apiKey);
 echo $guestResponse;
