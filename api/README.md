@@ -117,7 +117,7 @@ axios
 
 // Example GET request via guestID parameter
 axios
-  .get(apiUrl + '/1', { headers }) // 1 is the guestID
+  .get(apiUrl + '/101', { headers }) // 101 is the guestID
   .then((response) => {
     console.log('Response data:', response.data);
   })
