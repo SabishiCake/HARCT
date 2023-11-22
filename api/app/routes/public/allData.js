@@ -21,13 +21,13 @@ const router = express.Router();
 router.get('/', (req, res) => {
   const sql = `
     SELECT * FROM guest;
-    SELECT * FROM reservation;
+    SELECT * FROM room_reservations;
+    SELECT * FROM table_reservations;
     SELECT * FROM orders;
     SELECT * FROM payments;
     SELECT * FROM feedback;
-    SELECT * FROM housekeepingtasks;
-    SELECT * FROM laundryorders;
-    SELECT * FROM laundryitems;
+    SELECT * FROM tasks;
+    SELECT * FROM laundry_items;
   `;
   db.query(sql, (err, result) => {
     if (err) {
@@ -38,18 +38,22 @@ router.get('/', (req, res) => {
     } else {
       const [
         guests,
-        reservations,
+        room_reservations,
+        table_reservations,
         orders,
         payments,
         feedback,
-        housekeepingtasks,
-        laundryorders,
+        tasks,
+        // laundryorders,
         laundryitems,
       ] = result;
       const responseData = guests.map((guest) => {
         const guestId = guest.GuestID;
-        const guestReservations = reservations.filter(
-          (reservation) => reservation.GuestID === guestId
+        const guestRoomReservations = room_reservations.filter(
+          (room_reservations) => room_reservations.GuestID === guestId
+        );
+        const guestTableReservations = table_reservations.filter(
+          (table_reservations) => table_reservations.GuestID === guestId
         );
         const guestOrders = orders.filter((order) => order.GuestID === guestId);
         const guestPayments = payments.filter(
@@ -58,23 +62,24 @@ router.get('/', (req, res) => {
         const guestFeedback = feedback.filter(
           (item) => item.GuestID === guestId
         );
-        const guestHousekeepingTasks = housekeepingtasks.filter(
+        const guesttasks = tasks.filter(
           (task) => task.RoomNumber === guest.RoomNumber
         );
-        const guestLaundryOrders = laundryorders.filter(
-          (order) => order.GuestID === guestId
-        );
+        // const guestLaundryOrders = laundryorders.filter(
+        //   (order) => order.GuestID === guestId
+        // );
         const guestLaundryItems = laundryitems.filter(
           (item) => item.OrderID === guest.OrderID
         );
         return {
           ...guest,
-          reservations: guestReservations,
+          room_reservations: guestRoomReservations,
+          table_reservations: guestTableReservations,
           orders: guestOrders,
           payments: guestPayments,
           feedback: guestFeedback,
-          housekeepingtasks: guestHousekeepingTasks,
-          laundryorders: guestLaundryOrders,
+          tasks: guesttasks,
+          // laundryorders: guestLaundryOrders,
           laundryitems: guestLaundryItems,
         };
       });

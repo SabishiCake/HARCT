@@ -18,7 +18,7 @@ const authenticateApiKey = (req, res, next) => {
   }
 
   // Query the database to check if the API key exists
-  const sql = 'SELECT * FROM APIKeys WHERE APIKey = ?';
+  const sql = 'SELECT * FROM api_keys WHERE api_Key = ?';
   db.query(sql, apiKey, (err, result) => {
     if (err) {
       return res.status(500).json({ error: 'Internal server error' });

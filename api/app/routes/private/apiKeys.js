@@ -24,7 +24,7 @@ const { v4: uuidv4 } = require('uuid');
 router.post('/', (req, res) => {
   const apiKey = uuidv4();
   const description = req.body.description || 'No description provided';
-  const sql = 'INSERT INTO APIKeys (APIKey, Description) VALUES (?, ?)';
+  const sql = 'INSERT INTO api_keys (api_key, Description) VALUES (?, ?)';
   db.query(sql, [apiKey, description], (err, result) => {
     if (err) {
       res.status(500).json({ error: 'Error generating API key' });

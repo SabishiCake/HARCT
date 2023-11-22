@@ -1,6 +1,6 @@
 /**
  * @fileoverview Provides routes to manage restaurant reservations in the database.
- * @module routes/restaurantReservations
+ * @module routes/tableRes
  * @requires express
  * @requires ../../db
  */
@@ -11,15 +11,15 @@ const db = require('../../db');
 
 /**
  * Route to get all restaurant reservations.
- * @name GET/restaurantReservations
+ * @name GET/tableRes
  * @function
- * @memberof module:routes/restaurantReservations
+ * @memberof module:routes/tableRes
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
  */
 
 router.get('/', (req, res) => {
-  const sql = 'SELECT * FROM reservations';
+  const sql = 'SELECT * FROM table_reservations';
 
   db.query(sql, (err, result) => {
     if (err) {
@@ -35,9 +35,9 @@ router.get('/', (req, res) => {
 
 /**
  * Route to add a new restaurant reservation.
- * @name POST/restaurantReservations
+ * @name POST/tableRes
  * @function
- * @memberof module:routes/restaurantReservations
+ * @memberof module:routes/tableRes
  * @param {Object} req - The request object.
  * @param {Object} req.body - The request body.
  * @param {string} req.body.GuestID - The ID of the guest making the reservation.
@@ -47,11 +47,27 @@ router.get('/', (req, res) => {
  */
 
 router.post('/', (req, res) => {
-  const { GuestID, TableNumber, ReservationDate } = req.body;
+  const {
+    GuestID,
+    TableNumber,
+    ReservationDate,
+    ReservationTime,
+    NumOfGuests,
+    Status,
+    CreatedAt,
+  } = req.body;
 
   const sql =
-    'INSERT INTO reservations (GuestID, TableNumber, ReservationDate) VALUES (?, ?, ?)';
-  const values = [GuestID, TableNumber, ReservationDate];
+    'INSERT INTO table_reservations (guest_id, table_number, reservation_date, reservation_time, num_of_guests, status, created_at) VALUES (?, ?, ?)';
+  const values = [
+    GuestID,
+    TableNumber,
+    ReservationDate,
+    ReservationTime,
+    NumOfGuests,
+    Status,
+    CreatedAt,
+  ];
 
   db.query(sql, values, (err, result) => {
     if (err) {
@@ -67,9 +83,9 @@ router.post('/', (req, res) => {
 
 /**
  * Route to update a restaurant reservation by ID.
- * @name PUT/restaurantReservations/:id
+ * @name PUT/tableRes/:id
  * @function
- * @memberof module:routes/restaurantReservations
+ * @memberof module:routes/tableRes
  * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters.
  * @param {string} req.params.id - The ID of the reservation to be updated.
@@ -82,11 +98,17 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
   const reservationId = req.params.id;
-  const { GuestID, TableNumber, ReservationDate } = req.body;
+  const { GuestID, TableNumber, ReservationDate, UpdatedAt } = req.body;
 
   const sql =
-    'UPDATE reservations SET GuestID = ?, TableNumber = ?, ReservationDate = ? WHERE ReservationID = ?';
-  const values = [GuestID, TableNumber, ReservationDate, reservationId];
+    'UPDATE table_reservations SET guest_id = ?, table_number = ?, reservation_date = ?, updated_at WHERE reservation_id = ?';
+  const values = [
+    GuestID,
+    TableNumber,
+    ReservationDate,
+    reservationId,
+    UpdatedAt,
+  ];
 
   db.query(sql, values, (err, result) => {
     if (err) {
@@ -102,9 +124,9 @@ router.put('/:id', (req, res) => {
 
 /**
  * Route to delete a restaurant reservation by ID.
- * @name DELETE/restaurantReservations/:id
+ * @name DELETE/tableRes/:id
  * @function
- * @memberof module:routes/restaurantReservations
+ * @memberof module:routes/tableRes
  * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters.
  * @param {string} req.params.id - The ID of the reservation to be deleted.
@@ -113,7 +135,7 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   const reservationId = req.params.id;
-  const sql = 'DELETE FROM reservations WHERE ReservationID = ?';
+  const sql = 'DELETE FROM table_reservations WHERE reservation_id = ?';
 
   db.query(sql, reservationId, (err, result) => {
     if (err) {

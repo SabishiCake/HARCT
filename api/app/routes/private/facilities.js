@@ -1,6 +1,6 @@
 /**
  * @fileoverview Provides routes to manage room facilities in the database.
- * @module routes/roomFacilities
+ * @module routes/Facilities
  * @requires express
  * @requires ../../db
  */
@@ -11,15 +11,15 @@ const db = require('../../db');
 
 /**
  * Route to get all room facilities.
- * @name GET/roomFacilities
+ * @name GET/Facilities
  * @function
- * @memberof module:routes/roomFacilities
+ * @memberof module:routes/Facilities
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
  */
 
 router.get('/', (req, res) => {
-  const sql = 'SELECT * FROM room_facilities';
+  const sql = 'SELECT * FROM facilities';
 
   db.query(sql, (err, result) => {
     if (err) {
@@ -33,9 +33,9 @@ router.get('/', (req, res) => {
 
 /**
  * Route to add a new room facility.
- * @name POST/roomFacilities
+ * @name POST/Facilities
  * @function
- * @memberof module:routes/roomFacilities
+ * @memberof module:routes/Facilities
  * @param {Object} req - The request object.
  * @param {Object} req.body - The request body.
  * @param {string} req.body.FacilityName - The name of the facility.
@@ -47,7 +47,7 @@ router.post('/', (req, res) => {
   const { FacilityName, Description } = req.body;
 
   const sql =
-    'INSERT INTO room_facilities (FacilityName, Description) VALUES (?, ?)';
+    'INSERT INTO facilities (facility_name, description) VALUES (?, ?)';
   const values = [FacilityName, Description];
 
   db.query(sql, values, (err, result) => {
@@ -62,9 +62,9 @@ router.post('/', (req, res) => {
 
 /**
  * Route to update a room facility.
- * @name PUT/roomFacilities/:id
+ * @name PUT/Facilities/:id
  * @function
- * @memberof module:routes/roomFacilities
+ * @memberof module:routes/Facilities
  * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters.
  * @param {string} req.params.id - The ID of the room facility to be updated.
@@ -79,7 +79,7 @@ router.put('/:id', (req, res) => {
   const { FacilityName, Description } = req.body;
 
   const sql =
-    'UPDATE room_facilities SET FacilityName = ?, Description = ? WHERE FacilityID = ?';
+    'UPDATE facilities SET facility_name = ?, description = ? WHERE facility_id = ?';
   const values = [FacilityName, Description, facilityId];
 
   db.query(sql, values, (err, result) => {
@@ -94,9 +94,9 @@ router.put('/:id', (req, res) => {
 
 /**
  * Route to delete a room facility.
- * @name DELETE/roomFacilities/:id
+ * @name DELETE/Facilities/:id
  * @function
- * @memberof module:routes/roomFacilities
+ * @memberof module:routes/Facilities
  * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters.
  * @param {string} req.params.id - The ID of the room facility to be deleted.
@@ -105,7 +105,7 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   const facilityId = req.params.id;
-  const sql = 'DELETE FROM room_facilities WHERE FacilityID = ?';
+  const sql = 'DELETE FROM facilities WHERE facility_id = ?';
 
   db.query(sql, facilityId, (err, result) => {
     if (err) {

@@ -25,7 +25,7 @@ const router = express.Router();
 router.post('/', (req, res) => {
   const { GuestID, Comment, Rating } = req.body;
   const sql =
-    'INSERT INTO Feedback (GuestID, Comment, Rating) VALUES (?, ?, ?)';
+    'INSERT INTO Feedback (guest_id, Comment, Rating) VALUES (?, ?, ?)';
   db.query(sql, [GuestID, Comment, Rating], (err, result) => {
     if (err) {
       res.status(500).json({ error: 'Error adding feedback to database' });
@@ -48,7 +48,7 @@ router.post('/', (req, res) => {
 
 router.delete('/:feedbackID', (req, res) => {
   const feedbackID = req.params.feedbackID;
-  const sql = 'DELETE FROM Feedback WHERE FeedbackID = ?';
+  const sql = 'DELETE FROM Feedback WHERE feedback_id = ?';
   db.query(sql, [feedbackID], (err, result) => {
     if (err) {
       res.status(500).json({ error: 'Error deleting feedback from database' });
@@ -93,7 +93,7 @@ router.get('/', (req, res) => {
 
 router.get('/:feedbackID', (req, res) => {
   const feedbackID = req.params.feedbackID;
-  const sql = 'SELECT * FROM Feedback WHERE FeedbackID = ?';
+  const sql = 'SELECT * FROM Feedback WHERE feedback_id = ?';
   db.query(sql, [feedbackID], (err, result) => {
     if (err) {
       res
@@ -124,7 +124,7 @@ router.put('/:feedbackID', (req, res) => {
   const feedbackID = req.params.feedbackID;
   const { GuestID, Comment, Rating } = req.body;
   const sql =
-    'UPDATE Feedback SET GuestID = ?, Comment = ?, Rating = ? WHERE FeedbackID = ?';
+    'UPDATE Feedback SET guest_id = ?, Comment = ?, Rating = ? WHERE feedback_id = ?';
   db.query(sql, [GuestID, Comment, Rating, feedbackID], (err, result) => {
     if (err) {
       res.status(500).json({ error: 'Error updating feedback in database' });
