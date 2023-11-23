@@ -42,28 +42,36 @@ export default {
         {
           id: 1,
           name: "Dashboard",
-          route: "/dashboard/frontOffice/dashboard",
+          route: {
+            name: "frontOfficeDashboard",
+          },
           color: "primary",
           disabled: false,
         },
         {
           id: 2,
           name: "Booking",
-          route: "/dashboard/frontOffice/bookings",
+          route: {
+            name: "frontOfficeBooking",
+          },
           color: "red",
-          disabled: false,
+          disabled: true,
         },
         {
           id: 3,
           name: "Reservation",
-          route: "/dashboard/frontOffice/reservations",
+          route: {
+            name: "frontOfficeReservation",
+          },
           color: "green",
           disabled: false,
         },
         {
           id: 4,
           name: "Accounts",
-          route: "/dashboard/frontOffice/accounts",
+          route: {
+            name: "frontOfficeAccounts",
+          },
           color: "blue",
           disabled: false,
         },

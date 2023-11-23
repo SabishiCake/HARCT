@@ -183,7 +183,7 @@ export default {
         if (loginState) {
           try {
             await this.$router.push({
-              name: "accounts",
+              name: "frontOfficeDashboard",
             });
           } catch (error) {
             this.snackbar.model = true;
@@ -223,9 +223,10 @@ export default {
     if (loginStore.isLoggedIn) {
       try {
         await this.$router.push({
-          name: "accounts",
+          name: "frontOfficeDashboard",
         });
       } catch (error) {
+        console.log(error);
         this.snackbar.model = true;
         this.snackbar.text = error.message;
         this.snackbar.color = "error";

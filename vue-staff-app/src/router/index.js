@@ -10,10 +10,10 @@ import NotFound from "@/views/NotFound.vue";
 
 // guests
 import frontOfficePage from "@/views/pages/FrontOffice.vue";
-import gDashboard from "@/views/pages/frontOffice/Dashboard.vue";
-import gBookings from "@/views/pages/frontOffice/Booking.vue";
-import gReservations from "@/views/pages/frontOffice/Reservation.vue";
-import accountsPage from "@/views/pages/frontOffice/Accounts.vue";
+import foDashboard from "@/views/pages/frontOffice/Dashboard.vue";
+import foBookings from "@/views/pages/frontOffice/Booking.vue";
+import foReservations from "@/views/pages/frontOffice/Reservation.vue";
+import foAccounts from "@/views/pages/frontOffice/Accounts.vue";
 import accountCreatePage from "@/views/pages/frontOffice/AccountCreate.vue";
 import accountEditPage from "@/views/pages/frontOffice/AccountEdit.vue";
 
@@ -39,24 +39,26 @@ const routes = [
         children: [
           // Tab 1
           {
-            path: "",
-            name: "gDashboard",
-            component: gDashboard,
+            path: "FrontOfficeDashboard",
+            name: "frontOfficeDashboard",
+            component: foDashboard,
           },
           {
-            path: "bookings",
-            name: "bookings",
-            component: gBookings,
+            path: "FrontOfficeBooking",
+            name: "frontOfficeBooking",
+            component: foBookings,
           },
           {
-            path: "reservations",
-            name: "reservations",
-            component: gReservations,
+            path: "FrontOfficeReservation",
+            name: "frontOfficeReservation",
+            props: true,
+            require: false,
+            component: foReservations,
           },
           {
-            path: "accounts",
-            name: "accounts",
-            component: accountsPage,
+            path: "FrontOfficeAccounts",
+            name: "frontOfficeAccounts",
+            component: foAccounts,
           },
 
           {

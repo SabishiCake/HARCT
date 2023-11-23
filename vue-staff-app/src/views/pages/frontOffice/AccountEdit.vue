@@ -171,7 +171,7 @@
         <v-row>
           <v-col>
             <RoomResTable
-              :guest_id="accountData.guestInfo.guest_id"
+              :guest_id="accountData.guestInfo.guest_id.toString()"
               :data="accountData.room_reservations"
             />
           </v-col>

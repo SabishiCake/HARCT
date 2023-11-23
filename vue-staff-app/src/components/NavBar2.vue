@@ -133,7 +133,9 @@ export default {
         {
           title: "Front Office",
           icon: "mdi-laptop",
-          to: "/dashboard/frontOffice/accounts",
+          to: {
+            name: "frontOfficeDashboard",
+          },
           onClick: () => {
             this.$emit("changeTitle", "Front Office");
           },

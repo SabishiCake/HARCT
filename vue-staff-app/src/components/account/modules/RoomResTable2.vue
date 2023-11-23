@@ -89,6 +89,20 @@
                         readonly
                       ></v-text-field>
                     </v-col>
+                    <v-col>
+                      <v-combobox
+                        v-model="editedItem.status"
+                        :items="[
+                          'pending',
+                          'completed',
+                          'cancelled',
+                          'checkedIn',
+                        ]"
+                        label="Status"
+                        return-object
+                      >
+                      </v-combobox>
+                    </v-col>
                   </v-row>
                 </v-container>
               </v-form>
@@ -170,6 +184,12 @@
                   {{ formatDate(item.check_out_date) }}
                 </template>
 
+                <template v-slot:item.status="{ item }">
+                  <v-chip :color="toggle.statusColor(item.status)" dark small>{{
+                    item.status
+                  }}</v-chip>
+                </template>
+
                 <template v-slot:item.actions="{ item }">
                   <v-icon
                     size="small"
@@ -248,6 +268,15 @@ export default {
         btnColor: "",
       },
 
+      toggle: {
+        statusColor: (status) => {
+          if (status === "completed") return "success";
+          if (status === "checkedIn") return "success";
+          if (status === "pending") return "secondary";
+          if (status === "cancelled") return "error";
+        },
+      },
+
       selectedRoom: null,
 
       editedItem: {
@@ -257,6 +286,7 @@ export default {
         check_in_date: "",
         check_out_date: "",
         total_cost: "",
+        status: "",
       },
       defaultItem: {
         reservation_id: "",
@@ -265,6 +295,7 @@ export default {
         check_in_date: "",
         check_out_date: "",
         total_cost: "",
+        status: "",
       },
 
       roomStore: null,
@@ -321,6 +352,7 @@ export default {
         { title: "Check-In Date", value: "check_in_date" },
         { title: "Check-Out Date", value: "check_out_date" },
         { title: "Total Cost", value: "total_cost" },
+        { title: "Status", value: "status" },
         { title: "Actions", value: "actions", sortable: false },
       ];
     },
@@ -480,12 +512,13 @@ export default {
 
         apihandler.post("roomres", data).then((response) => {
           console.log("Res | Add Response: ", response);
-          this.snackbar.model = true;
-          this.snackbar.text = "Reservation Added Successfully";
-          this.snackbar.color = "success";
-          this.snackbar.btnColor = "success";
+
           this.refresh();
         });
+        this.snackbar.model = true;
+        this.snackbar.text = "Reservation Added Successfully";
+        this.snackbar.color = "success";
+        this.snackbar.btnColor = "success";
       } catch (error) {
         console.log(error);
       }
@@ -493,6 +526,8 @@ export default {
 
     updateReservation() {
       try {
+        const status = this.editedItem.status;
+        const resId = this.editedItem.reservation_id;
         const data = {
           GuestID: this.editedItem.guest_id,
           RoomID: this.editedItem.room_id,
@@ -505,12 +540,19 @@ export default {
           .put(`roomres/${this.editedItem.reservation_id}`, data)
           .then((response) => {
             console.log("Res | Update Response: ", response);
-            this.snackbar.model = true;
-            this.snackbar.text = "Reservation Updated Successfully";
-            this.snackbar.color = "success";
-            this.snackbar.btnColor = "success";
+
             this.refresh();
           });
+        this.snackbar.model = true;
+        this.snackbar.text = "Reservation Updated Successfully";
+        this.snackbar.color = "success";
+        this.snackbar.btnColor = "success";
+
+        apihandler.put(`roomres/${status}/${resId}`).then((response) => {
+          console.log("Res | Update Response: ", response);
+
+          this.refresh();
+        });
 
         // apihandler
         //   .put(`room/unOccupy/${this.defaultItem.room_id}`)
@@ -569,6 +611,7 @@ export default {
     },
 
     refresh() {
+      this.emptyFields();
       this.getAvailableRooms();
       this.getAllRooms();
     },

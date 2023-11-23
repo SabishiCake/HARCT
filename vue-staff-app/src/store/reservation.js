@@ -5,15 +5,32 @@ export const useReservationStore = defineStore("reservations", {
   state: () => ({
     loading: false,
     allReservations: [],
+    moreReservations: [],
     reservation: null,
   }),
 
   actions: {
-    getAllReservations() {
+    async getAllReservations() {
       try {
-        apiHandler.get("roomres").then((response) => {
-          this.allReservations = response.data;
-        });
+        const response = await apiHandler.get("roomres");
+        this.allReservations = response.data;
+        console.log(
+          "Store | getAllReservations | response.data: ",
+          response.data
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getAllReservationsMore() {
+      try {
+        const response = await apiHandler.get("roomres/more");
+        this.moreReservations = response.data;
+        console.log(
+          "Store | getAllReservationsMore | response.data: ",
+          response.data
+        );
       } catch (error) {
         console.log(error);
       }
@@ -29,6 +46,23 @@ export const useReservationStore = defineStore("reservations", {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    async getOccupiedRooms() {
+      try {
+        const response = await apiHandler.get("rooms/available");
+        this.allReservations = response.data;
+        console.log(
+          "Store | getOccupiedRooms | response.data: ",
+          response.data
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async setLoading(value) {
+      this.loading = value;
     },
   },
 });
