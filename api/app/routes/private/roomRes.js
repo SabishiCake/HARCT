@@ -26,11 +26,12 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
   const { GuestID, RoomID, CheckInDate, CheckOutDate, TotalCost } = req.body;
+  const Status = 'pending'; // Default status is pending
   const sql =
-    'INSERT INTO room_reservations (guest_id, room_id, check_in_date, check_out_date, total_cost) VALUES (?, ?, ?, ?, ?)';
+    'INSERT INTO room_reservations (guest_id, room_id, check_in_date, check_out_date, total_cost, status) VALUES (?, ?, ?, ?, ?, ?)';
   db.query(
     sql,
-    [GuestID, RoomID, CheckInDate, CheckOutDate, TotalCost],
+    [GuestID, RoomID, CheckInDate, CheckOutDate, TotalCost, Status],
 
     (err, result) => {
       if (err) {
@@ -42,27 +43,6 @@ router.post('/', (req, res) => {
           message: 'Room reservation added and room status updated',
         });
       }
-      // (err, result) => {
-      //   if (err) {
-      //     res
-      //       .status(500)
-      //       .json({ error: 'Error adding room reservation to database' });
-      //   } else {
-      //     // Set the room as occupied
-      //     const updateSql =
-      //       'UPDATE room_details SET is_occupied = true WHERE room_id = ?';
-      //     db.query(updateSql, [RoomID], (updateErr, updateResult) => {
-      //       if (updateErr) {
-      //         res
-      //           .status(500)
-      //           .json({ error: 'Error updating room reservation status' });
-      //       } else {
-      //         res.status(200).json({
-      //           message: 'Room reservation added and room status updated',
-      //         });
-      //       }
-      //     });
-      //   }
     }
   );
 });
@@ -113,6 +93,57 @@ router.get('/', (req, res) => {
     } else {
       res.status(200).json(result);
     }
+  });
+});
+
+router.get('/more', (req, res) => {
+  const fullInfoSql = `
+    SELECT 
+        r.reservation_id, r.room_id, r.guest_id, r.check_in_date, r.check_out_date, r.total_cost, r.status,
+        g.guest_id, g.last_name, g.first_name, g.email, g.phone, g.address,
+        rd.room_id, rd.room_number, rd.type_id, rd.is_occupied
+    FROM 
+        room_reservations r
+    JOIN 
+        guest g ON r.guest_id = g.guest_id
+    JOIN 
+        room_details rd ON r.room_id = rd.room_id
+  `;
+
+  db.query(fullInfoSql, (err, results) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: 'Error retrieving full information from database' });
+    }
+
+    const formattedResults = results.map((row) => {
+      return {
+        reservation_id: row.reservation_id,
+        room_id: row.room_id,
+        guest_id: row.guest_id,
+        check_in_date: row.check_in_date,
+        check_out_date: row.check_out_date,
+        total_cost: row.total_cost,
+        status: row.status,
+        guest: {
+          guest_id: row.guest_id,
+          last_name: row.last_name,
+          first_name: row.first_name,
+          email: row.email,
+          phone: row.phone,
+          address: row.address,
+        },
+        room: {
+          room_id: row.room_id,
+          room_number: row.room_number,
+          type_id: row.type_id,
+          is_occupied: row.is_occupied,
+        },
+      };
+    });
+
+    res.status(200).json(formattedResults);
   });
 });
 
@@ -203,6 +234,97 @@ router.put('/:reservationID', (req, res) => {
       }
     }
   );
+});
+
+router.put('/:status/:reservationID', (req, res) => {
+  const reservationID = req.params.reservationID.toLowerCase();
+
+  const getRoomOccupancy = (roomID) => {
+    const roomSql = 'SELECT is_occupied FROM room_details WHERE room_id = ?';
+    return new Promise((resolve, reject) => {
+      db.query(roomSql, [roomID], (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result[0].is_occupied);
+        }
+      });
+    });
+  };
+
+  let IsOccupied = 0;
+
+  const determineStatus = () => {
+    switch (req.params.status) {
+      case 'pending':
+        return 'pending';
+      case 'completed':
+        return 'completed';
+      case 'cancelled':
+        return 'cancelled';
+      case 'checkedin':
+        IsOccupied = 1;
+        return 'checkedIn';
+      default:
+        return 'pending';
+    }
+  };
+
+  const status = determineStatus();
+  const statusSql =
+    'UPDATE room_reservations SET status = ? WHERE reservation_id = ?';
+
+  db.query(statusSql, [status, reservationID], (err, result) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ error: 'Error updating reservation status in database' });
+    }
+
+    if (status !== 'cancelled' || status !== 'pending') {
+      // Only update room occupancy status if status is not 'cancelled' or 'pending'
+      const reservationSql = 'SELECT * FROM room_reservations'; // Modify this SQL query according to your schema
+      db.query(reservationSql, (err, reservations) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ error: 'Error retrieving reservations from database' });
+        }
+
+        const updatedReservation = reservations.find(
+          (reservation) =>
+            reservation.reservation_id === parseInt(reservationID)
+        );
+        if (!updatedReservation) {
+          return res.status(404).json({ error: 'Reservation not found' });
+        }
+
+        const roomSql =
+          'UPDATE room_details SET is_occupied = ? WHERE room_id = ?';
+        db.query(
+          roomSql,
+          [IsOccupied, updatedReservation.room_id],
+          (err, result) => {
+            if (err) {
+              return res
+                .status(500)
+                .json({ error: 'Error updating room status in database' });
+            }
+
+            return res.status(200).json({
+              message:
+                'Room reservation status updated in database and room status updated',
+            });
+          }
+        );
+      });
+    } else {
+      return res.status(200).json({
+        message:
+          'Reservation cancelled, room occupancy status remains unchanged',
+      });
+    }
+  });
 });
 
 module.exports = router;
