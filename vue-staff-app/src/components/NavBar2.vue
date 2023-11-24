@@ -30,7 +30,7 @@
             :to="item.to"
             :prepend-icon="item.icon"
             :on-click="item.onClick"
-            :disabled="rail"
+            :disabled="rail || item.disabled"
             link
             class="px-2 py-1"
           >
@@ -139,7 +139,41 @@ export default {
           onClick: () => {
             this.$emit("changeTitle", "Front Office");
           },
+          disabled: false,
         },
+
+        {
+          title: "Housekeeping And Laundry",
+          icon: "mdi-room-service-outline",
+          to: {
+            name: "housekeepingDashboard",
+          },
+          onClick: () => {
+            this.$emit("changeTitle", "Housekeeping And Laundry");
+          },
+          disabled: false,
+        },
+        {
+          title: "Room And Facilities",
+          icon: "mdi-home-city-outline",
+          to: {
+            name: "facilityDashboard",
+          },
+          onClick: () => {
+            this.$emit("changeTitle", "Room And Faciliies");
+          },
+          disabled: false,
+        },
+        {
+          title: "Supplier and Inventory",
+          icon: "mdi-truck",
+          to: "/dashboard/SupplierManagement",
+          onClick: () => {
+            this.$emit("changeTitle", "Supplier Management");
+          },
+          disabled: true,
+        },
+
         {
           title: "Kitchen And Bar",
           icon: "mdi-food",
@@ -147,22 +181,7 @@ export default {
           onClick: () => {
             this.$emit("changeTitle", "Kitchen And Bar");
           },
-        },
-        {
-          title: "Housekeeping And Laundry",
-          icon: "mdi-room-service-outline",
-          to: "/dashboard/HousekeepingAndLaundry",
-          onClick: () => {
-            this.$emit("changeTitle", "Housekeeping And Laundry");
-          },
-        },
-        {
-          title: "Supplier Management",
-          icon: "mdi-truck",
-          to: "/dashboard/SupplierManagement",
-          onClick: () => {
-            this.$emit("changeTitle", "Supplier Management");
-          },
+          disabled: true,
         },
         {
           title: "Resto Analytics",
@@ -171,6 +190,7 @@ export default {
           onClick: () => {
             this.$emit("changeTitle", "Resto Analytics");
           },
+          disabled: true,
         },
       ],
     };

@@ -8,7 +8,7 @@ import dashboardPage from "@/views/Dashboard.vue";
 import NotFound from "@/views/NotFound.vue";
 //
 
-// guests
+// Front Office and Account Management
 import frontOfficePage from "@/views/pages/FrontOffice.vue";
 import foDashboard from "@/views/pages/frontOffice/Dashboard.vue";
 import foBookings from "@/views/pages/frontOffice/Booking.vue";
@@ -16,6 +16,18 @@ import foReservations from "@/views/pages/frontOffice/Reservation.vue";
 import foAccounts from "@/views/pages/frontOffice/Accounts.vue";
 import accountCreatePage from "@/views/pages/frontOffice/AccountCreate.vue";
 import accountEditPage from "@/views/pages/frontOffice/AccountEdit.vue";
+
+// Housekeeping And Laundry
+import housekeepingPage from "@/views/pages/Housekeeping.vue";
+import hkDashboard from "@/views/pages/housekeeping/Dashboard.vue";
+import hkTask from "@/views/pages/housekeeping/Task.vue";
+
+// Room And Facility
+import facilityPage from "@/views/pages/Facilities";
+import fDashboard from "@/views/pages/facilities/Dashboard.vue";
+import facilities from "@/views/pages/facilities/Facility.vue";
+import rooms from "@/views/pages/facilities/Rooms.vue";
+import roomType from "@/views/pages/facilities/RoomType.vue";
 
 const routes = [
   {
@@ -74,10 +86,60 @@ const routes = [
           },
           // Tab 2
 
+          // {
+          //   path: "placeholder",
+          //   name: "placeholder",
+          //   component: () => import("@/views/pages/frontOffice/Booking.vue"),
+          // },
           {
-            path: "placeholder",
-            name: "placeholder",
-            component: () => import("@/views/pages/frontOffice/Booking.vue"),
+            path: "/:catchAll(.*)",
+            component: NotFound,
+          },
+        ],
+      },
+      {
+        path: "/housekeeping",
+        component: housekeepingPage,
+        children: [
+          {
+            path: "HousekeepingDashboard",
+            name: "housekeepingDashboard",
+            component: hkDashboard,
+          },
+          {
+            path: "HousekeepingTask",
+            name: "housekeepingTask",
+            component: hkTask,
+          },
+          {
+            path: "/:catchAll(.*)",
+            component: NotFound,
+          },
+        ],
+      },
+      {
+        path: "/facility",
+        component: facilityPage,
+        children: [
+          {
+            path: "FacilityDashboard",
+            name: "facilityDashboard",
+            component: fDashboard,
+          },
+          {
+            path: "Facilities",
+            name: "facilities",
+            component: facilities,
+          },
+          {
+            path: "Rooms",
+            name: "rooms",
+            component: rooms,
+          },
+          {
+            name: "RoomType",
+            path: "roomType",
+            component: roomType,
           },
           {
             path: "/:catchAll(.*)",

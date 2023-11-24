@@ -136,7 +136,7 @@ const CustomTheme = {
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
   theme: {
-    defaultTheme: "blueLight",
+    defaultTheme: "greenLight",
     themes: {
       purpleLight: {
         dark: false,

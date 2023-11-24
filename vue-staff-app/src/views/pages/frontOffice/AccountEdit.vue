@@ -184,7 +184,7 @@
 <script>
 import { useAccountStore } from "@/store/account";
 import apiHandler from "@/services/apiHandler";
-import RoomResTable from "@/components/account/modules/RoomResTable2.vue";
+import RoomResTable from "@/components/frontoffice/RoomResTable2.vue";
 
 export default {
   props: {

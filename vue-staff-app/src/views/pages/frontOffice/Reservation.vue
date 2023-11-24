@@ -52,7 +52,7 @@
                       </v-btn>
                     </v-col>
                     <v-col>
-                      <v-btn color="primary" text block @click="getAllResMore">
+                      <v-btn color="primary" text block @click="refresh">
                         <v-icon>mdi-refresh</v-icon>
                         Refresh
                       </v-btn>
@@ -252,7 +252,11 @@
             <v-btn color="success darken-1" text @click="updateReservations"
               >Save</v-btn
             >
-            <v-btn color="blue darken-1" text @click="dialog.model = false">
+            <v-btn
+              color="secondary darken-1"
+              text
+              @click="dialog.model = false"
+            >
               Close
             </v-btn>
           </v-card-actions>
@@ -514,6 +518,7 @@ export default {
       try {
         this.reservationStore.setLoading(true); // Set loading to true
         await this.getAllResMore();
+
         this.snackbar.model = true;
         this.snackbar.text = "Reservations refreshed.";
         this.snackbar.color = "success";
@@ -531,6 +536,9 @@ export default {
       try {
         const status = this.dialog.reservation.status.toLowerCase();
         const reservation_id = this.dialog.reservation.reservation_id;
+        if (!confirm("Are you sure you want to update this reservation?")) {
+          return;
+        }
 
         apiHandler
           .put(`roomres/${status}/${reservation_id}}`)

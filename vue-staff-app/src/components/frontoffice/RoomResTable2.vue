@@ -495,6 +495,8 @@ export default {
 
     addReservation() {
       try {
+        if (!confirm("Are you sure you want to add this reservation?")) return;
+
         if (!this.validate()) {
           this.snackbar.model = true;
           this.snackbar.text = "Please fill all the fields";
@@ -526,6 +528,8 @@ export default {
 
     updateReservation() {
       try {
+        if (!confirm("Are you sure you want to update this reservation?"))
+          return;
         const status = this.editedItem.status;
         const resId = this.editedItem.reservation_id;
         const data = {

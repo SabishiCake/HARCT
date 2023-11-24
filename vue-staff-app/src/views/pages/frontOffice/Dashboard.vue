@@ -76,78 +76,82 @@
                   </v-btn>
                 </v-toolbar-items>
               </v-toolbar>
+              <v-container grid-list-xs>
+                <v-row>
+                  <v-col v-if="allResToday.length === 0">
+                    <v-card-text>
+                      <div class="font-weight-bold text-uppercase">
+                        No Reservations Today
+                      </div>
+                    </v-card-text>
+                  </v-col>
 
-              <v-col v-if="allResToday.length === 0">
-                <v-card-text>
-                  <div class="font-weight-bold text-uppercase">
-                    No Reservations Today
-                  </div>
-                </v-card-text>
-              </v-col>
+                  <v-col
+                    v-for="(reservation, index) in allResToday"
+                    :key="index"
+                    cols="auto"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-card>
+                      <v-toolbar color="secondary">
+                        <v-toolbar-title>
+                          <span class="font-weight-bold text-uppercase">{{
+                            reservation.guest_name
+                          }}</span>
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-toolbar-items> </v-toolbar-items>
+                      </v-toolbar>
 
-              <v-col
-                v-for="(reservation, index) in allResToday"
-                :key="index"
-                cols="auto"
-                sm="6"
-                md="4"
-              >
-                <v-card>
-                  <v-toolbar color="secondary">
-                    <v-toolbar-title>
-                      <span class="font-weight-bold text-uppercase">{{
-                        reservation.guest_name
-                      }}</span>
-                    </v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-toolbar-items> </v-toolbar-items>
-                  </v-toolbar>
+                      <v-card-text>
+                        <div>
+                          Room: {{ reservation.room_number }}
+                          <v-chip
+                            color="green"
+                            text-color="white"
+                            v-if="reservation.room_is_occupied === 'Yes'"
+                          >
+                            <v-icon>mdi-check</v-icon>
+                            {{ reservation.room_is_occupied }}
+                          </v-chip>
+                        </div>
+                        <div>
+                          Check-in:
+                          {{ this.formatDate(reservation.check_in_date) }}
+                        </div>
+                        <div>
+                          Check-out:
+                          {{ this.formatDate(reservation.check_out_date) }}
+                        </div>
+                        <div>Total Cost: {{ reservation.total_cost }}</div>
+                        <div>
+                          Status:
+                          <v-chip
+                            color="secondary"
+                            text-color="white"
+                            v-if="reservation.status === 'pending'"
+                          >
+                            {{ reservation.status }}
+                          </v-chip>
+                        </div>
+                      </v-card-text>
 
-                  <v-card-text>
-                    <div>
-                      Room: {{ reservation.room_number }}
-                      <v-chip
-                        color="green"
-                        text-color="white"
-                        v-if="reservation.room_is_occupied === 'Yes'"
-                      >
-                        <v-icon>mdi-check</v-icon>
-                        {{ reservation.room_is_occupied }}
-                      </v-chip>
-                    </div>
-                    <div>
-                      Check-in: {{ this.formatDate(reservation.check_in_date) }}
-                    </div>
-                    <div>
-                      Check-out:
-                      {{ this.formatDate(reservation.check_out_date) }}
-                    </div>
-                    <div>Total Cost: {{ reservation.total_cost }}</div>
-                    <div>
-                      Status:
-                      <v-chip
-                        color="secondary"
-                        text-color="white"
-                        v-if="reservation.status === 'pending'"
-                      >
-                        {{ reservation.status }}
-                      </v-chip>
-                    </div>
-                  </v-card-text>
-
-                  <v-card-actions>
-                    <v-btn
-                      color="primary"
-                      text
-                      @click="editReservation(reservation)"
-                      block
-                    >
-                      <v-icon>mdi-pencil</v-icon>
-                      Edit Status
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
+                      <v-card-actions>
+                        <v-btn
+                          color="primary"
+                          text
+                          @click="editReservation(reservation)"
+                          block
+                        >
+                          <v-icon>mdi-pencil</v-icon>
+                          Edit Status
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-card>
           </v-col>
         </v-row>

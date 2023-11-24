@@ -5,8 +5,8 @@ export const useRoomStore = defineStore("rooms", {
   state: () => ({
     loading: false,
     allRooms: [],
+    allRoomTypes: [],
     roomId: null,
-    allRooms: [],
     availableRooms: [],
     unavailableRooms: [],
     room: null,
@@ -40,6 +40,18 @@ export const useRoomStore = defineStore("rooms", {
         console.log("Store | Room:", this.room);
       } catch (error) {
         console.log(error);
+      }
+    },
+
+    async getRoomTypes() {
+      try {
+        const response = await apiHandler.get("rooms/types");
+        if (response && response.data && Array.isArray(response.data)) {
+          this.allRoomTypes = response.data;
+          console.log("Store | GET roomTypes | Room Types:", this.allRoomTypes);
+        }
+      } catch (error) {
+        console.error("Error fetching room types:", error);
       }
     },
 
