@@ -64,7 +64,7 @@ router.post('/', (req, res) => {
   const { RoomID, FacilityID } = req.body;
 
   const sql =
-    'INSERT INTO room_facility_mapping (RoomID, FacilityID) VALUES (?, ?)';
+    'INSERT INTO room_facility_mapping (room_id, facility_id) VALUES (?, ?)';
   const values = [RoomID, FacilityID];
 
   db.query(sql, values, (err, result) => {
@@ -75,6 +75,31 @@ router.post('/', (req, res) => {
       res
         .status(201)
         .json({ message: 'Room facility mapping added successfully' });
+    }
+  });
+});
+
+/**
+ * Route to get a room facility mapping by room ID.
+ * @name GET/roomFacilityMapping/:roomId
+ * @function
+ * @memberof module:routes/roomFacilityMapping
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.roomId - The ID of the room.
+ *
+ */
+
+router.get('/:roomId', (req, res) => {
+  const roomId = req.params.roomId;
+  const sql = 'SELECT * FROM room_facility_mapping WHERE room_id = ?';
+
+  db.query(sql, [roomId], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error retrieving room facility mapping' });
+    } else {
+      res.status(200).json(result);
     }
   });
 });
@@ -95,7 +120,7 @@ router.delete('/:roomId/:facilityId', (req, res) => {
   const roomId = req.params.roomId;
   const facilityId = req.params.facilityId;
   const sql =
-    'DELETE FROM room_facility_mapping WHERE RoomID = ? AND FacilityID = ?';
+    'DELETE FROM room_facility_mapping WHERE room_id = ? AND facility_id = ?';
 
   db.query(sql, [roomId, facilityId], (err, result) => {
     if (err) {

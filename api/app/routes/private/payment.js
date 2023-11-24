@@ -23,16 +23,21 @@ const router = express.Router();
  */
 
 router.post('/', (req, res) => {
-  const { GuestID, Amount, PaymentDate } = req.body;
+  const { GuestID, Amount, PaymentDate, PaymentStatus, Type, TransactionId } =
+    req.body;
   const sql =
-    'INSERT INTO Payments (GuestID, Amount, PaymentDate) VALUES (?, ?, ?)';
-  db.query(sql, [GuestID, Amount, PaymentDate], (err, result) => {
-    if (err) {
-      res.status(500).json({ error: 'Error adding payment to database' });
-    } else {
-      res.status(200).json({ message: 'Payment added to database' });
+    'INSERT INTO Payments (guest_id, amount, payment_date, payment_status, type, transaction_id) VALUES (?, ?, ?)';
+  db.query(
+    sql,
+    [GuestID, Amount, PaymentDate, PaymentStatus, Type, TransactionId],
+    (err, result) => {
+      if (err) {
+        res.status(500).json({ error: 'Error adding payment to database' });
+      } else {
+        res.status(200).json({ message: 'Payment added to database' });
+      }
     }
-  });
+  );
 });
 
 /**
@@ -48,7 +53,7 @@ router.post('/', (req, res) => {
 
 router.delete('/:paymentID', (req, res) => {
   const paymentID = req.params.paymentID;
-  const sql = 'DELETE FROM Payments WHERE PaymentID = ?';
+  const sql = 'DELETE FROM Payments WHERE payment_id = ?';
   db.query(sql, [paymentID], (err, result) => {
     if (err) {
       res.status(500).json({ error: 'Error deleting payment from database' });
@@ -93,7 +98,7 @@ router.get('/', (req, res) => {
 
 router.get('/:paymentID', (req, res) => {
   const paymentID = req.params.paymentID;
-  const sql = 'SELECT * FROM Payments WHERE PaymentID = ?';
+  const sql = 'SELECT * FROM Payments WHERE payment_id = ?';
   db.query(sql, [paymentID], (err, result) => {
     if (err) {
       res.status(500).json({ error: 'Error retrieving payment from database' });

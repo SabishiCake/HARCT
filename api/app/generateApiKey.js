@@ -22,7 +22,7 @@ const saveApiKeyToDatabase = (apiKey, description, keyType) => {
     keyType = 'free';
   }
   const sql =
-    'INSERT INTO APIKeys (APIKey, Description, Type) VALUES (?, ?, ?)';
+    'INSERT INTO api_keys (api_key, Description, Type) VALUES (?, ?, ?)';
   db.query(sql, [apiKey, description, keyType], (err, result) => {
     if (err) {
       console.error('Error saving API key to database:', err);

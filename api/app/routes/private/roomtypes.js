@@ -48,7 +48,7 @@ router.post('/', (req, res) => {
   const { TypeName, Description, Rate } = req.body;
 
   const sql =
-    'INSERT INTO room_types (TypeName, Description, Rate) VALUES (?, ?, ?)';
+    'INSERT INTO room_types (type_name, description, rate) VALUES (?, ?, ?)';
   const values = [TypeName, Description, Rate];
 
   db.query(sql, values, (err, result) => {
@@ -57,6 +57,38 @@ router.post('/', (req, res) => {
       res.status(500).json({ error: 'Error adding room type' });
     } else {
       res.status(201).json({ message: 'Room type added successfully' });
+    }
+  });
+});
+
+/**
+ * Route to update a room type.
+ * @name PUT/roomTypes/:typeId
+ * @function
+ * @memberof module:routes/roomTypes
+ * @param {Object} req - The request object.
+ * @param {Object} req.params - The request parameters.
+ * @param {string} req.params.typeId - The ID of the room type.
+ * @param {Object} req.body - The request body.
+ * @param {string} req.body.TypeName - The name of the room type.
+ * @param {string} req.body.Description - The description of the room type.
+ * @param {number} req.body.Rate - The rate of the room type.
+ */
+
+router.put('/:typeId', (req, res) => {
+  const typeId = req.params.typeId;
+  const { TypeName, Description, Rate } = req.body;
+
+  const sql =
+    'UPDATE room_types SET type_name = ?, description = ?, rate = ? WHERE type_id = ?';
+  const values = [TypeName, Description, Rate, typeId];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error updating room type' });
+    } else {
+      res.status(200).json({ message: 'Room type updated successfully' });
     }
   });
 });
@@ -74,7 +106,7 @@ router.post('/', (req, res) => {
 
 router.delete('/:typeId', (req, res) => {
   const typeId = req.params.typeId;
-  const sql = 'DELETE FROM room_types WHERE TypeID = ?';
+  const sql = 'DELETE FROM room_types WHERE type_id = ?';
 
   db.query(sql, typeId, (err, result) => {
     if (err) {

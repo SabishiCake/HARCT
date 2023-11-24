@@ -1,535 +1,740 @@
-CREATE DATABASE  IF NOT EXISTS `harctmydb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `harctmydb`;
--- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1    Database: harctmydb
--- ------------------------------------------------------
--- Server version	8.0.34
+-- Host: 127.0.0.1:3307
+-- Generation Time: Nov 24, 2023 at 02:54 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.0.28
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Table structure for table `apikeys`
+-- Database: `harctmydb2`
 --
+CREATE DATABASE IF NOT EXISTS `harctmydb2` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `harctmydb2`;
 
-DROP TABLE IF EXISTS `apikeys`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `apikeys` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `APIKey` varchar(255) NOT NULL,
-  `Description` varchar(255) DEFAULT NULL,
-  `Type` varchar(45) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `apikeys`
+-- Table structure for table `account`
 --
 
-LOCK TABLES `apikeys` WRITE;
-/*!40000 ALTER TABLE `apikeys` DISABLE KEYS */;
-INSERT INTO `apikeys` VALUES (1,'asfwe32442dsfw3','First API Key','Type1'),(2,'hfw98efwef23dwe','Second API Key','Type2'),(3,'9d8wefwe9wf34ef','Third API Key','Type1');
-/*!40000 ALTER TABLE `apikeys` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE `account` (
+  `account_id` int(11) NOT NULL,
+  `guest_id` int(11) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `account`
+--
+
+INSERT INTO `account` (`account_id`, `guest_id`, `username`, `password`) VALUES
+(1, 1, 'pedj', 'pedj'),
+(2, 2, 'alice22', 'secureword'),
+(3, 3, 'robert88', 'p@ssw0rd'),
+(4, 4, 'emily_b', 'strongPW'),
+(5, 5, 'sophie_g', 'safePwd'),
+(31, 2574880, 'user', 'pass');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `api_keys`
+--
+
+CREATE TABLE `api_keys` (
+  `id` int(11) NOT NULL,
+  `api_key` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `type` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `api_keys`
+--
+
+INSERT INTO `api_keys` (`id`, `api_key`, `description`, `type`) VALUES
+(1, 'key1abcde', 'Access key for service A', 'Service'),
+(2, 'key2fghij', 'Key for application B', 'Application'),
+(3, 'key3klmno', 'API key for testing', 'Test'),
+(4, 'key4pqrst', 'Production key for app C', 'Production'),
+(5, 'key5uvwxy', 'Key for internal use', 'Internal'),
+(6, 'key6zabcd', 'Development key', 'Development'),
+(7, 'key7efghi', 'Key for service D', 'Service'),
+(8, 'key8jklmn', 'Backup key for app B', 'Backup'),
+(9, 'key9opqrs', 'Key for beta testing', 'Beta'),
+(10, 'key10tuvw', 'Key for mobile app', 'Mobile');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `facilities`
+--
+
+CREATE TABLE `facilities` (
+  `facility_id` int(11) NOT NULL,
+  `facility_name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `facilities`
+--
+
+INSERT INTO `facilities` (`facility_id`, `facility_name`, `description`) VALUES
+(1, 'Pool', 'Outdoor swimming pool'),
+(2, 'Gym', 'Fully equipped gymnasium'),
+(3, 'Spa', 'Relaxing spa and massage services'),
+(4, 'Fac 1', 'Fac 11111'),
+(5, 'fac 2', 'fac 2'),
+(7, 'fac 3', 'fac 3'),
+(8, 'fac 4', 'fac 4'),
+(9, 'Fac 10', 'Fac 10');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `feedback`
 --
 
-DROP TABLE IF EXISTS `feedback`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `feedback` (
-  `FeedbackID` int NOT NULL,
-  `GuestID` int DEFAULT NULL,
-  `Comment` varchar(255) DEFAULT NULL,
-  `Rating` int DEFAULT NULL,
-  PRIMARY KEY (`FeedbackID`),
-  KEY `GuestID` (`GuestID`),
-  CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`GuestID`) REFERENCES `guest` (`GuestID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `feedback_id` int(11) NOT NULL,
+  `guest_id` int(11) DEFAULT NULL,
+  `comment` varchar(255) DEFAULT NULL,
+  `rating` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `feedback`
---
-
-LOCK TABLES `feedback` WRITE;
-/*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
-INSERT INTO `feedback` VALUES (1,101,'Great service!',5),(2,102,'Room was not clean',2),(3,103,'Excellent experience',4);
-/*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `guest`
 --
 
-DROP TABLE IF EXISTS `guest`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `guest` (
-  `GuestID` int NOT NULL,
-  `LastName` varchar(255) DEFAULT NULL,
-  `FirstName` varchar(255) DEFAULT NULL,
-  `Email` varchar(255) DEFAULT NULL,
-  `Phone` varchar(255) DEFAULT NULL,
-  `Address` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`GuestID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `guest_id` int(11) NOT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `guest`
 --
 
-LOCK TABLES `guest` WRITE;
-/*!40000 ALTER TABLE `guest` DISABLE KEYS */;
-INSERT INTO `guest` VALUES (101,'Smith','John','john.smith@example.com','1234567890','123, Main Street, City'),(102,'Doe','Jane','jane.doe@example.com','9876543210','456, Park Avenue, Town'),(103,'Johnson','Robert','robert.johnson@example.com','4567891230','789, Boulevard, Village');
-/*!40000 ALTER TABLE `guest` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `guest` (`guest_id`, `last_name`, `first_name`, `email`, `phone`, `address`) VALUES
+(1, 'pedj', 'pedj', 'pedj@maill.com', '09493260753', 'pedj'),
+(2, 'Smith', 'Alice', 'alice.smith@example.com', '9876543210', '456 Elm St'),
+(3, 'Johnson', 'Robert', 'robert.johnson@example.com', '5555555555', '789 Oak St'),
+(4, 'Brown', 'Emily', 'emily.brown@example.com', '1112223333', '321 Pine St'),
+(5, 'Garcia', 'Sophia', 'sophia.garcia@example.com', '4448889999', '654 Cedar St'),
+(2574880, 'first', 'last', 'email@mail.com', '09493260753', 'add');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `housekeepingtasks`
+-- Table structure for table `inventory`
 --
 
-DROP TABLE IF EXISTS `housekeepingtasks`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `housekeepingtasks` (
-  `TaskID` int NOT NULL,
-  `TaskName` varchar(255) DEFAULT NULL,
-  `Description` text,
-  `RoomNumber` varchar(50) DEFAULT NULL,
-  `Status` enum('Pending','In Progress','Completed') DEFAULT NULL,
-  `CreatedAt` timestamp NULL DEFAULT (now()),
-  `UpdatedAt` timestamp NULL DEFAULT (now()),
-  PRIMARY KEY (`TaskID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `housekeepingtasks`
---
-
-LOCK TABLES `housekeepingtasks` WRITE;
-/*!40000 ALTER TABLE `housekeepingtasks` DISABLE KEYS */;
-INSERT INTO `housekeepingtasks` VALUES (1,'Clean room','Clean the entire room thoroughly','101','Pending','2023-10-31 12:55:46','2023-10-31 12:55:46'),(2,'Change sheets','Replace the bed sheets and pillow covers','102','In Progress','2023-10-31 12:55:46','2023-10-31 12:55:46'),(3,'Fix broken faucet','Repair the broken faucet in the bathroom','103','Completed','2023-10-31 12:55:46','2023-10-31 12:55:46');
-/*!40000 ALTER TABLE `housekeepingtasks` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `laundryitems`
---
-
-DROP TABLE IF EXISTS `laundryitems`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `laundryitems` (
-  `ItemID` int NOT NULL,
-  `OrderID` int DEFAULT NULL,
+CREATE TABLE `inventory` (
+  `ItemID` int(11) NOT NULL,
   `ItemName` varchar(255) DEFAULT NULL,
-  `Quantity` int DEFAULT NULL,
-  `Status` enum('Pending','In Progress','Completed') DEFAULT NULL,
-  `CreatedAt` timestamp NULL DEFAULT (now()),
-  `UpdatedAt` timestamp NULL DEFAULT (now()),
-  PRIMARY KEY (`ItemID`),
-  KEY `OrderID` (`OrderID`),
-  CONSTRAINT `laundryitems_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `laundryorders` (`OrderID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `laundryitems`
---
-
-LOCK TABLES `laundryitems` WRITE;
-/*!40000 ALTER TABLE `laundryitems` DISABLE KEYS */;
-INSERT INTO `laundryitems` VALUES (1,201,'Shirt',3,'Pending','2023-10-31 12:58:38','2023-10-31 12:58:38'),(2,202,'Pants',2,'In Progress','2023-10-31 12:58:38','2023-10-31 12:58:38'),(3,203,'Socks',5,'Completed','2023-10-31 12:58:38','2023-10-31 12:58:38');
-/*!40000 ALTER TABLE `laundryitems` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `laundryorders`
---
-
-DROP TABLE IF EXISTS `laundryorders`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `laundryorders` (
-  `OrderID` int NOT NULL,
-  `GuestID` int DEFAULT NULL,
-  `PickupDate` date DEFAULT NULL,
-  `DeliveryDate` date DEFAULT NULL,
-  `Status` enum('Pending','In Progress','Completed') DEFAULT NULL,
-  `CreatedAt` timestamp NULL DEFAULT (now()),
-  `UpdatedAt` timestamp NULL DEFAULT (now()),
-  PRIMARY KEY (`OrderID`),
-  KEY `GuestID` (`GuestID`),
-  CONSTRAINT `laundryorders_ibfk_1` FOREIGN KEY (`GuestID`) REFERENCES `guest` (`GuestID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `laundryorders`
---
-
-LOCK TABLES `laundryorders` WRITE;
-/*!40000 ALTER TABLE `laundryorders` DISABLE KEYS */;
-INSERT INTO `laundryorders` VALUES (201,101,'2023-11-01','2023-11-02','Pending','2023-10-31 12:55:46','2023-10-31 12:55:46'),(202,102,'2023-11-03','2023-11-04','In Progress','2023-10-31 12:55:46','2023-10-31 12:55:46'),(203,103,'2023-11-05','2023-11-06','Completed','2023-10-31 12:55:46','2023-10-31 12:55:46');
-/*!40000 ALTER TABLE `laundryorders` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `menuitems`
---
-
-DROP TABLE IF EXISTS `menuitems`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `menuitems` (
-  `ItemID` int NOT NULL,
-  `Name` varchar(255) DEFAULT NULL,
   `Description` varchar(255) DEFAULT NULL,
-  `Price` decimal(10,2) DEFAULT NULL,
-  PRIMARY KEY (`ItemID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `Quantity` int(11) DEFAULT NULL,
+  `ReorderLevel` int(11) DEFAULT NULL,
+  `UnitPrice` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `menuitems`
+-- Table structure for table `laundry_items`
 --
 
-LOCK TABLES `menuitems` WRITE;
-/*!40000 ALTER TABLE `menuitems` DISABLE KEYS */;
-INSERT INTO `menuitems` VALUES (1,'Pasta','Delicious pasta with red sauce',12.99),(2,'Steak','Tender steak with mashed potatoes',25.99),(3,'Salad','Fresh and healthy salad with vinaigrette',8.99);
-/*!40000 ALTER TABLE `menuitems` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE `laundry_items` (
+  `item_id` int(11) NOT NULL,
+  `order_id` int(11) DEFAULT NULL,
+  `item_name` varchar(255) DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `status` enum('Pending','In Progress','Completed') DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `orderitems`
 --
 
-DROP TABLE IF EXISTS `orderitems`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orderitems` (
-  `OrderItemID` int NOT NULL,
-  `OrderID` int DEFAULT NULL,
-  `ItemID` int DEFAULT NULL,
-  `Quantity` int DEFAULT NULL,
-  PRIMARY KEY (`OrderItemID`),
-  KEY `OrderID` (`OrderID`),
-  KEY `ItemID` (`ItemID`),
-  CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `orders` (`OrderID`),
-  CONSTRAINT `orderitems_ibfk_2` FOREIGN KEY (`ItemID`) REFERENCES `menuitems` (`ItemID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `OrderItemID` int(11) NOT NULL,
+  `OrderID` int(11) DEFAULT NULL,
+  `ItemID` int(11) DEFAULT NULL,
+  `Quantity` int(11) DEFAULT NULL,
+  `UnitPrice` decimal(10,2) DEFAULT NULL,
+  `TotalPrice` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `orderitems`
---
-
-LOCK TABLES `orderitems` WRITE;
-/*!40000 ALTER TABLE `orderitems` DISABLE KEYS */;
-INSERT INTO `orderitems` VALUES (1,301,1,2),(2,302,2,1),(3,303,3,3);
-/*!40000 ALTER TABLE `orderitems` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `orders`
 --
 
-DROP TABLE IF EXISTS `orders`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
-  `OrderID` int NOT NULL,
-  `GuestID` int DEFAULT NULL,
-  `OrderDate` date DEFAULT NULL,
-  `TotalPrice` decimal(10,2) DEFAULT NULL,
-  PRIMARY KEY (`OrderID`),
-  KEY `GuestID` (`GuestID`),
-  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`GuestID`) REFERENCES `guest` (`GuestID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `order_id` int(11) NOT NULL,
+  `guest_id` int(11) DEFAULT NULL,
+  `order_date` date DEFAULT NULL,
+  `total_price` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `orders`
---
-
-LOCK TABLES `orders` WRITE;
-/*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (301,101,'2023-11-01',35.97),(302,102,'2023-11-02',25.99),(303,103,'2023-11-03',35.96);
-/*!40000 ALTER TABLE `orders` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `payments`
 --
 
-DROP TABLE IF EXISTS `payments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `payments` (
-  `PaymentID` int NOT NULL,
-  `GuestID` int DEFAULT NULL,
-  `Amount` decimal(10,2) DEFAULT NULL,
-  `PaymentDate` date DEFAULT NULL,
-  PRIMARY KEY (`PaymentID`),
-  KEY `GuestID` (`GuestID`),
-  CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`GuestID`) REFERENCES `guest` (`GuestID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `payment_id` int(11) NOT NULL,
+  `guest_id` int(11) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `payment_date` date DEFAULT NULL,
+  `payment_status` enum('Paid','Unpaid','Half-Paid') DEFAULT 'Unpaid',
+  `type` enum('Room Reservation','Food Order','Other') DEFAULT 'Other',
+  `transaction_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `payments`
+-- Table structure for table `purchaseorders`
 --
 
-LOCK TABLES `payments` WRITE;
-/*!40000 ALTER TABLE `payments` DISABLE KEYS */;
-INSERT INTO `payments` VALUES (1,101,35.97,'2023-11-01'),(2,102,25.99,'2023-11-02'),(3,103,35.96,'2023-11-03');
-/*!40000 ALTER TABLE `payments` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE `purchaseorders` (
+  `OrderID` int(11) NOT NULL,
+  `SupplierID` int(11) DEFAULT NULL,
+  `OrderDate` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Table structure for table `reservation`
---
-
-DROP TABLE IF EXISTS `reservation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `reservation` (
-  `ReservationID` int NOT NULL,
-  `GuestID` int DEFAULT NULL,
-  `RoomID` int DEFAULT NULL,
-  `CheckInDate` date DEFAULT NULL,
-  `CheckOutDate` date DEFAULT NULL,
-  `TotalCost` decimal(10,2) DEFAULT NULL,
-  PRIMARY KEY (`ReservationID`),
-  KEY `GuestID` (`GuestID`),
-  KEY `RoomID` (`RoomID`),
-  CONSTRAINT `reservation_ibfk_1` FOREIGN KEY (`GuestID`) REFERENCES `guest` (`GuestID`),
-  CONSTRAINT `reservation_ibfk_2` FOREIGN KEY (`RoomID`) REFERENCES `room` (`RoomID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `reservation`
---
-
-LOCK TABLES `reservation` WRITE;
-/*!40000 ALTER TABLE `reservation` DISABLE KEYS */;
-INSERT INTO `reservation` VALUES (1,101,1,'2023-11-01','2023-11-03',150.00),(2,102,2,'2023-11-04','2023-11-06',200.00),(3,103,3,'2023-11-07','2023-11-09',250.00);
-/*!40000 ALTER TABLE `reservation` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `reservations`
---
-
-DROP TABLE IF EXISTS `reservations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `reservations` (
-  `ReservationID` int NOT NULL,
-  `GuestID` int DEFAULT NULL,
-  `TableNumber` int DEFAULT NULL,
-  `ReservationDate` datetime DEFAULT NULL,
-  PRIMARY KEY (`ReservationID`),
-  KEY `GuestID` (`GuestID`),
-  CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`GuestID`) REFERENCES `guest` (`GuestID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `reservations`
---
-
-LOCK TABLES `reservations` WRITE;
-/*!40000 ALTER TABLE `reservations` DISABLE KEYS */;
-INSERT INTO `reservations` VALUES (1,101,1,'2023-11-01 12:00:00'),(2,102,2,'2023-11-04 13:00:00'),(3,103,3,'2023-11-07 14:00:00');
-/*!40000 ALTER TABLE `reservations` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `room`
 --
 
-DROP TABLE IF EXISTS `room`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `room` (
-  `RoomID` int NOT NULL,
-  `RoomNumber` varchar(255) DEFAULT NULL,
-  `Type` varchar(255) DEFAULT NULL,
-  `Description` varchar(255) DEFAULT NULL,
-  `Price` decimal(10,2) DEFAULT NULL,
-  `IsOccupied` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`RoomID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `room_id` int(11) NOT NULL,
+  `room_number` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `is_occupied` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `room`
---
-
-LOCK TABLES `room` WRITE;
-/*!40000 ALTER TABLE `room` DISABLE KEYS */;
-INSERT INTO `room` VALUES (1,'101','Single','Single room with a single bed',80.00,0),(2,'102','Double','Double room with two beds',120.00,1),(3,'103','Suite','Luxurious suite with a view',250.00,0);
-/*!40000 ALTER TABLE `room` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `room_details`
 --
 
-DROP TABLE IF EXISTS `room_details`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `room_details` (
-  `RoomID` int NOT NULL AUTO_INCREMENT,
-  `RoomNumber` varchar(255) NOT NULL,
-  `TypeID` int NOT NULL,
-  `IsOccupied` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`RoomID`),
-  KEY `TypeID` (`TypeID`),
-  CONSTRAINT `room_details_ibfk_1` FOREIGN KEY (`TypeID`) REFERENCES `room_types` (`TypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `room_id` int(11) NOT NULL,
+  `room_number` varchar(255) NOT NULL,
+  `type_id` int(11) NOT NULL,
+  `is_occupied` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `room_details`
 --
 
-LOCK TABLES `room_details` WRITE;
-/*!40000 ALTER TABLE `room_details` DISABLE KEYS */;
-INSERT INTO `room_details` VALUES (1,'101',1,0),(2,'102',2,1),(3,'103',3,0);
-/*!40000 ALTER TABLE `room_details` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `room_details` (`room_id`, `room_number`, `type_id`, `is_occupied`) VALUES
+(1, '101', 1, 0),
+(2, '201', 2, 0),
+(3, '301', 3, 0),
+(5, '302', 3, 0),
+(6, '303', 1, 0),
+(7, '306', 3, 0),
+(8, '307', 3, 0);
 
---
--- Table structure for table `room_facilities`
---
-
-DROP TABLE IF EXISTS `room_facilities`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `room_facilities` (
-  `FacilityID` int NOT NULL AUTO_INCREMENT,
-  `FacilityName` varchar(255) NOT NULL,
-  `Description` text,
-  PRIMARY KEY (`FacilityID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `room_facilities`
---
-
-LOCK TABLES `room_facilities` WRITE;
-/*!40000 ALTER TABLE `room_facilities` DISABLE KEYS */;
-INSERT INTO `room_facilities` VALUES (1,'Wifi','High-speed internet access'),(2,'TV','Flat-screen TV with cable channels'),(3,'AC','Air conditioning in all rooms');
-/*!40000 ALTER TABLE `room_facilities` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `room_facility_mapping`
 --
 
-DROP TABLE IF EXISTS `room_facility_mapping`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `room_facility_mapping` (
-  `RoomID` int NOT NULL,
-  `FacilityID` int NOT NULL,
-  PRIMARY KEY (`RoomID`,`FacilityID`),
-  KEY `FacilityID` (`FacilityID`),
-  CONSTRAINT `room_facility_mapping_ibfk_1` FOREIGN KEY (`RoomID`) REFERENCES `room_details` (`RoomID`),
-  CONSTRAINT `room_facility_mapping_ibfk_2` FOREIGN KEY (`FacilityID`) REFERENCES `room_facilities` (`FacilityID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `room_id` int(11) NOT NULL,
+  `facility_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `room_facility_mapping`
 --
 
-LOCK TABLES `room_facility_mapping` WRITE;
-/*!40000 ALTER TABLE `room_facility_mapping` DISABLE KEYS */;
-INSERT INTO `room_facility_mapping` VALUES (1,1),(2,2),(3,3);
-/*!40000 ALTER TABLE `room_facility_mapping` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `room_facility_mapping` (`room_id`, `facility_id`) VALUES
+(1, 1),
+(2, 2),
+(3, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `room_reservations`
+--
+
+CREATE TABLE `room_reservations` (
+  `reservation_id` int(11) NOT NULL,
+  `room_id` int(11) DEFAULT NULL,
+  `guest_id` int(11) DEFAULT NULL,
+  `check_in_date` date DEFAULT NULL,
+  `check_out_date` date DEFAULT NULL,
+  `total_cost` decimal(10,2) DEFAULT NULL,
+  `status` enum('cancelled','pending','completed','checkedIn') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `room_reservations`
+--
+
+INSERT INTO `room_reservations` (`reservation_id`, `room_id`, `guest_id`, `check_in_date`, `check_out_date`, `total_cost`, `status`) VALUES
+(1, 2, 1, '2023-11-20', '2023-11-21', 200.00, 'pending'),
+(2, 2, 2, '2023-11-22', '2023-11-24', 400.00, 'pending'),
+(3, 3, 3, '2023-11-21', '2023-11-23', 600.00, 'pending'),
+(4, 1, 4, '2023-11-25', '2023-11-27', 300.00, 'pending'),
+(5, 2, 5, '2023-11-26', '2023-11-28', 350.00, 'pending'),
+(10, 1, 1, '2023-11-21', '2023-11-28', 840.00, 'pending'),
+(11, 1, 2574880, '2023-11-23', '2023-11-30', 840.00, 'pending');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `room_types`
 --
 
-DROP TABLE IF EXISTS `room_types`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `room_types` (
-  `TypeID` int NOT NULL AUTO_INCREMENT,
-  `TypeName` varchar(255) NOT NULL,
-  `Description` text,
-  `Rate` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`TypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `type_id` int(11) NOT NULL,
+  `type_name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `rate` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `room_types`
 --
 
-LOCK TABLES `room_types` WRITE;
-/*!40000 ALTER TABLE `room_types` DISABLE KEYS */;
-INSERT INTO `room_types` VALUES (1,'Single','Room with a single bed',80.00),(2,'Double','Room with two beds',120.00),(3,'Suite','Luxurious suite with extra amenities',250.00);
-/*!40000 ALTER TABLE `room_types` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `room_types` (`type_id`, `type_name`, `description`, `rate`) VALUES
+(1, 'Standard', 'Basic room', 120.00),
+(2, 'Deluxe', 'Luxurious room with amenities', 200.00),
+(3, 'Suite', 'Large suite with additional living space', 300.00),
+(4, 'Personal', 'Personal', 110.00),
+(6, 'Test', 'test ', 1000.00);
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `staff`
 --
 
-DROP TABLE IF EXISTS `staff`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `staff` (
-  `StaffID` int NOT NULL,
-  `Name` varchar(255) DEFAULT NULL,
-  `Position` varchar(255) DEFAULT NULL,
-  `Email` varchar(255) DEFAULT NULL,
-  `Phone` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`StaffID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `staff_id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `position` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `staff`
+-- Table structure for table `suppliers`
 --
 
-LOCK TABLES `staff` WRITE;
-/*!40000 ALTER TABLE `staff` DISABLE KEYS */;
-INSERT INTO `staff` VALUES (1,'Michael Johnson','Manager','michael.johnson@example.com','1234567890'),(2,'Emma Williams','Receptionist','emma.williams@example.com','9876543210'),(3,'Chris Brown','Housekeeping','chris.brown@example.com','4567891230');
-/*!40000 ALTER TABLE `staff` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+CREATE TABLE `suppliers` (
+  `SupplierID` int(11) NOT NULL,
+  `SupplierName` varchar(255) DEFAULT NULL,
+  `ContactName` varchar(255) DEFAULT NULL,
+  `ContactTitle` varchar(255) DEFAULT NULL,
+  `Address` varchar(255) DEFAULT NULL,
+  `City` varchar(255) DEFAULT NULL,
+  `Region` varchar(255) DEFAULT NULL,
+  `PostalCode` varchar(20) DEFAULT NULL,
+  `Country` varchar(255) DEFAULT NULL,
+  `Phone` varchar(20) DEFAULT NULL,
+  `Email` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `table_reservations`
+--
+
+CREATE TABLE `table_reservations` (
+  `reservation_id` int(11) NOT NULL,
+  `guest_id` int(11) DEFAULT NULL,
+  `reservation_date` date DEFAULT NULL,
+  `reservation_time` time DEFAULT NULL,
+  `num_of_guests` int(11) DEFAULT NULL,
+  `status` enum('Pending','In Progress','Completed') DEFAULT 'Pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `table_reservations`
+--
+
+INSERT INTO `table_reservations` (`reservation_id`, `guest_id`, `reservation_date`, `reservation_time`, `num_of_guests`, `status`, `created_at`, `updated_at`) VALUES
+(1, 1, '2023-11-21', '19:00:00', 4, 'Completed', '2023-11-16 15:17:10', '2023-11-16 15:17:10'),
+(2, 2, '2023-11-23', '20:00:00', 3, 'Pending', '2023-11-16 15:17:10', '2023-11-16 15:17:10'),
+(3, 3, '2023-11-25', '18:30:00', 6, 'In Progress', '2023-11-16 15:17:10', '2023-11-16 15:17:10'),
+(4, 4, '2023-11-27', '21:00:00', 2, 'Pending', '2023-11-16 15:17:10', '2023-11-16 15:17:10'),
+(5, 5, '2023-11-29', '19:30:00', 5, 'Pending', '2023-11-16 15:17:10', '2023-11-16 15:17:10');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tasks`
+--
+
+CREATE TABLE `tasks` (
+  `task_id` int(11) NOT NULL,
+  `task_name` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `room_number` varchar(50) DEFAULT NULL,
+  `status` enum('pending','inProgress','completed','cancelled') DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tasks`
+--
+
+INSERT INTO `tasks` (`task_id`, `task_name`, `description`, `room_number`, `status`, `created_at`, `updated_at`) VALUES
+(6, 'Clean Room 101', 'Vacuum and tidy up the room', '101', 'inProgress', '2023-11-23 12:43:55', '2023-11-23 04:43:55'),
+(7, 'Restock Supplies', 'Replenish toiletries in all rooms', NULL, 'pending', '2023-11-23 12:43:55', '2023-11-23 12:43:55'),
+(8, 'Fix AC in Suite', 'Repair the air conditioning in Suite room', '301', 'pending', '2023-11-23 12:43:55', '2023-11-23 12:43:55'),
+(10, 'Inspect Gym Equipment', 'Check and maintain gym machines', NULL, 'pending', '2023-11-23 12:43:55', '2023-11-23 12:43:55'),
+(449488, 'Housekeeping ', 'Housekeeping And Laundry For Room 301', '301', 'inProgress', '2023-11-23 19:10:04', '2023-11-24 03:10:00'),
+(1144625, 'task 4', 'task 4', '', 'completed', '2023-11-23 16:55:09', '2023-11-23 08:55:09'),
+(2762957, 'task1', 'desc 1', '', 'pending', '2023-11-23 16:48:06', '2023-11-23 16:48:06'),
+(10562844, 'task 2', 'desc 2', '', 'completed', '2023-11-23 16:47:18', '2023-11-23 00:47:18'),
+(12575015, 'task 6', 'task 6', '', 'pending', '2023-11-23 16:55:30', '2023-11-23 16:55:30'),
+(12609604, 'task 3', 'task 3', '', 'pending', '2023-11-23 16:54:57', '2023-11-23 16:54:57'),
+(13822432, 'task 5', 'task 5', '', 'pending', '2023-11-23 16:55:21', '2023-11-23 16:55:21'),
+(14897920, 'Task 10', 'Task 10', '', 'inProgress', '2023-11-23 17:06:23', '2023-11-23 09:06:23'),
+(16201706, 'task 11', 'task 11', '', 'inProgress', '2023-11-23 17:13:12', '2023-11-23 09:13:12'),
+(16696969, 'Task 12', 'Task 12', '', 'inProgress', '2023-11-23 17:48:09', '2023-11-23 17:48:09');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `account`
+--
+ALTER TABLE `account`
+  ADD PRIMARY KEY (`account_id`),
+  ADD KEY `guest_id` (`guest_id`);
+
+--
+-- Indexes for table `api_keys`
+--
+ALTER TABLE `api_keys`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `facilities`
+--
+ALTER TABLE `facilities`
+  ADD PRIMARY KEY (`facility_id`);
+
+--
+-- Indexes for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`feedback_id`),
+  ADD KEY `guest_id` (`guest_id`);
+
+--
+-- Indexes for table `guest`
+--
+ALTER TABLE `guest`
+  ADD PRIMARY KEY (`guest_id`);
+
+--
+-- Indexes for table `inventory`
+--
+ALTER TABLE `inventory`
+  ADD PRIMARY KEY (`ItemID`);
+
+--
+-- Indexes for table `laundry_items`
+--
+ALTER TABLE `laundry_items`
+  ADD PRIMARY KEY (`item_id`),
+  ADD KEY `order_id` (`order_id`);
+
+--
+-- Indexes for table `orderitems`
+--
+ALTER TABLE `orderitems`
+  ADD PRIMARY KEY (`OrderItemID`),
+  ADD KEY `OrderID` (`OrderID`),
+  ADD KEY `ItemID` (`ItemID`);
+
+--
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`order_id`),
+  ADD KEY `guest_id` (`guest_id`);
+
+--
+-- Indexes for table `payments`
+--
+ALTER TABLE `payments`
+  ADD PRIMARY KEY (`payment_id`),
+  ADD KEY `guest_id` (`guest_id`);
+
+--
+-- Indexes for table `purchaseorders`
+--
+ALTER TABLE `purchaseorders`
+  ADD PRIMARY KEY (`OrderID`),
+  ADD KEY `SupplierID` (`SupplierID`);
+
+--
+-- Indexes for table `room`
+--
+ALTER TABLE `room`
+  ADD PRIMARY KEY (`room_id`);
+
+--
+-- Indexes for table `room_details`
+--
+ALTER TABLE `room_details`
+  ADD PRIMARY KEY (`room_id`),
+  ADD KEY `type_id` (`type_id`);
+
+--
+-- Indexes for table `room_facility_mapping`
+--
+ALTER TABLE `room_facility_mapping`
+  ADD PRIMARY KEY (`room_id`,`facility_id`),
+  ADD KEY `facility_id` (`facility_id`);
+
+--
+-- Indexes for table `room_reservations`
+--
+ALTER TABLE `room_reservations`
+  ADD PRIMARY KEY (`reservation_id`),
+  ADD KEY `guest_id` (`guest_id`),
+  ADD KEY `room_id` (`room_id`);
+
+--
+-- Indexes for table `room_types`
+--
+ALTER TABLE `room_types`
+  ADD PRIMARY KEY (`type_id`);
+
+--
+-- Indexes for table `staff`
+--
+ALTER TABLE `staff`
+  ADD PRIMARY KEY (`staff_id`);
+
+--
+-- Indexes for table `suppliers`
+--
+ALTER TABLE `suppliers`
+  ADD PRIMARY KEY (`SupplierID`);
+
+--
+-- Indexes for table `table_reservations`
+--
+ALTER TABLE `table_reservations`
+  ADD PRIMARY KEY (`reservation_id`),
+  ADD KEY `guest_id` (`guest_id`);
+
+--
+-- Indexes for table `tasks`
+--
+ALTER TABLE `tasks`
+  ADD PRIMARY KEY (`task_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `account`
+--
+ALTER TABLE `account`
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+
+--
+-- AUTO_INCREMENT for table `api_keys`
+--
+ALTER TABLE `api_keys`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `facilities`
+--
+ALTER TABLE `facilities`
+  MODIFY `facility_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `feedback_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `guest`
+--
+ALTER TABLE `guest`
+  MODIFY `guest_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16675017;
+
+--
+-- AUTO_INCREMENT for table `laundry_items`
+--
+ALTER TABLE `laundry_items`
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `payments`
+--
+ALTER TABLE `payments`
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `room`
+--
+ALTER TABLE `room`
+  MODIFY `room_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `room_details`
+--
+ALTER TABLE `room_details`
+  MODIFY `room_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `room_reservations`
+--
+ALTER TABLE `room_reservations`
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `room_types`
+--
+ALTER TABLE `room_types`
+  MODIFY `type_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `staff`
+--
+ALTER TABLE `staff`
+  MODIFY `staff_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `table_reservations`
+--
+ALTER TABLE `table_reservations`
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `tasks`
+--
+ALTER TABLE `tasks`
+  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16696970;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `account`
+--
+ALTER TABLE `account`
+  ADD CONSTRAINT `account_ibfk_1` FOREIGN KEY (`guest_id`) REFERENCES `guest` (`guest_id`);
+
+--
+-- Constraints for table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`guest_id`) REFERENCES `guest` (`guest_id`);
+
+--
+-- Constraints for table `orderitems`
+--
+ALTER TABLE `orderitems`
+  ADD CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`OrderID`) REFERENCES `purchaseorders` (`OrderID`),
+  ADD CONSTRAINT `orderitems_ibfk_2` FOREIGN KEY (`ItemID`) REFERENCES `inventory` (`ItemID`);
+
+--
+-- Constraints for table `payments`
+--
+ALTER TABLE `payments`
+  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`guest_id`) REFERENCES `orders` (`guest_id`);
+
+--
+-- Constraints for table `purchaseorders`
+--
+ALTER TABLE `purchaseorders`
+  ADD CONSTRAINT `purchaseorders_ibfk_1` FOREIGN KEY (`SupplierID`) REFERENCES `suppliers` (`SupplierID`);
+
+--
+-- Constraints for table `room_details`
+--
+ALTER TABLE `room_details`
+  ADD CONSTRAINT `room_details_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `room_types` (`type_id`);
+
+--
+-- Constraints for table `room_facility_mapping`
+--
+ALTER TABLE `room_facility_mapping`
+  ADD CONSTRAINT `room_facility_mapping_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_details` (`room_id`),
+  ADD CONSTRAINT `room_facility_mapping_ibfk_2` FOREIGN KEY (`facility_id`) REFERENCES `facilities` (`facility_id`);
+
+--
+-- Constraints for table `room_reservations`
+--
+ALTER TABLE `room_reservations`
+  ADD CONSTRAINT `room_reservations_ibfk_1` FOREIGN KEY (`guest_id`) REFERENCES `guest` (`guest_id`),
+  ADD CONSTRAINT `room_reservations_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `room_details` (`room_id`);
+
+--
+-- Constraints for table `table_reservations`
+--
+ALTER TABLE `table_reservations`
+  ADD CONSTRAINT `table_reservations_ibfk_1` FOREIGN KEY (`guest_id`) REFERENCES `guest` (`guest_id`);
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2023-11-01 15:44:11

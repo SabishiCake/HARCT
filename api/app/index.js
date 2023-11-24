@@ -1,4 +1,6 @@
 const express = require('express');
+const cors = require('cors');
+
 const dotenv = require('dotenv');
 const fs = require('fs');
 const path = require('path');
@@ -8,6 +10,11 @@ const authenticateApiKey = require('./middleware/authenticateApiKey');
 dotenv.config(); // Load environment variables from .env file
 
 const app = express();
+app.use(
+  cors({
+    credentials: false,
+  })
+);
 app.use(express.json());
 app.use(logger);
 
@@ -41,7 +48,7 @@ routeFolders.forEach((folder) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
