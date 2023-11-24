@@ -45,6 +45,18 @@ router.get('/', (req, res) => {
   });
 });
 
+router.get('/types', (req, res) => {
+  const sql = 'SELECT * FROM room_types';
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error retrieving room types' });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
 /**
  * Route to get a room detail.
  * @name GET/rooms/:id
@@ -85,7 +97,7 @@ router.get('/:id', (req, res) => {
 });
 
 /**
- * Route to get avaiable rooms.
+ * Route to get available rooms.
  * @name GET/rooms/available
  * @function
  * @memberof module:routes/rooms
@@ -184,6 +196,25 @@ router.post('/', (req, res) => {
   });
 });
 
+router.post('/:typeId', (req, res) => {
+  const typeId = req.params.typeId;
+  const RoomNumber = req.body.RoomNumber;
+  const IsOccupied = 0;
+
+  const sql =
+    'INSERT INTO room_details ( room_number, type_id, is_occupied) VALUES (?, ?, ?)';
+  const values = [RoomNumber, typeId, IsOccupied];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error adding room detail' });
+    } else {
+      res.status(201).json({ message: 'Room detail added successfully' });
+    }
+  });
+});
+
 /**
  * Route to update a room detail.
  * @name PUT/rooms/:id
@@ -206,6 +237,23 @@ router.put('/:id', (req, res) => {
   const sql =
     'UPDATE room_details SET room_number = ?, type_id = ?, is_occupied = ? WHERE room_id = ?';
   const values = [RoomNumber, TypeID, IsOccupied, roomDetailId];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error updating room detail' });
+    } else {
+      res.status(200).json({ message: 'Room detail updated successfully' });
+    }
+  });
+});
+
+router.put('/:roomId/:typeId', (req, res) => {
+  const roomId = req.params.roomId;
+  const typeId = req.params.typeId;
+
+  const sql = 'UPDATE room_details SET type_id = ? WHERE room_id = ?';
+  const values = [typeId, roomId];
 
   db.query(sql, values, (err, result) => {
     if (err) {
