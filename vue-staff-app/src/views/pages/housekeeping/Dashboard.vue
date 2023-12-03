@@ -49,7 +49,7 @@
         <v-row>
           <v-col>
             <v-card>
-              <v-toolbar color="secondary">
+              <v-toolbar color="primary">
                 <v-toolbar-title>Pending Tasks</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
@@ -77,17 +77,22 @@
                       md="4"
                     >
                       <v-card>
-                        <v-card-title>
-                          <div class="headline">{{ task.task_name }}</div>
-                        </v-card-title>
+                        <v-toolbar color="secondary">
+                          <v-toolbar-title>
+                            {{ task.task_name }}
+                          </v-toolbar-title>
+                        </v-toolbar>
+
                         <v-card-text>
                           <div>{{ task.description }}</div>
                         </v-card-text>
+                        <v-divider></v-divider>
                         <v-card-actions>
                           <v-btn
                             color="primary"
                             text
                             prepend-icon="mdi-eye"
+                            block
                             @click="viewTask(task.task_id)"
                           >
                             view
@@ -114,14 +119,8 @@
         <v-row>
           <v-col>
             <v-card>
-              <v-toolbar color="secondary">
+              <v-toolbar color="primary">
                 <v-toolbar-title>In Progress Tasks</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-toolbar-items>
-                  <v-btn @click="refresh" icon>
-                    <v-icon>mdi-refresh</v-icon>
-                  </v-btn>
-                </v-toolbar-items>
               </v-toolbar>
               <v-card-text
                 ><v-container grid-list-xs>
@@ -142,17 +141,22 @@
                       md="4"
                     >
                       <v-card>
-                        <v-card-title>
-                          <div class="headline">{{ task.task_name }}</div>
-                        </v-card-title>
+                        <v-toolbar color="secondary">
+                          <v-toolbar-title>{{
+                            task.task_name
+                          }}</v-toolbar-title>
+                        </v-toolbar>
+
                         <v-card-text>
                           <div>{{ task.description }}</div>
                         </v-card-text>
+                        <v-divider></v-divider>
                         <v-card-actions>
                           <v-btn
                             color="primary"
                             text
                             prepend-icon="mdi-eye"
+                            block
                             @click="viewTask(task.task_id)"
                           >
                             view
@@ -188,11 +192,6 @@
           <v-toolbar color="primary">
             <v-toolbar-title>Task Details</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn @click="refresh" icon>
-                <v-icon>mdi-refresh</v-icon>
-              </v-btn>
-            </v-toolbar-items>
           </v-toolbar>
 
           <v-card-text>
@@ -233,10 +232,9 @@
               </v-row>
             </v-container>
           </v-card-text>
-
+          <v-divider></v-divider>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="secondary" text @click="dialog.nodel = false">
+            <v-btn color="error" text block="" @click="dialog.nodel = false">
               Close
             </v-btn>
           </v-card-actions>

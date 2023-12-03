@@ -106,7 +106,11 @@
                               >
                             </v-col>
                             <v-col cols="6">
-                              <v-btn color="error" @click="" text block
+                              <v-btn
+                                color="error"
+                                @click="deleteRoom(room.room_id)"
+                                text
+                                block
                                 >Delete</v-btn
                               >
                             </v-col>
@@ -136,13 +140,10 @@
       <v-dialog v-model="dialog.model" max-width="500px">
         <v-card>
           <v-toolbar color="primary">
-            <v-toolbar-title>{{ dialog.title }}</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn icon dark @click="dialog.model = false">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </v-toolbar-items>
+            <v-toolbar-title
+              >{{ dialog.title }}
+              <span> Id {{ dialog.item.room_id }}</span></v-toolbar-title
+            >
           </v-toolbar>
           <v-card-text>
             <v-container grid-list-xs>
@@ -167,6 +168,7 @@
               </v-row>
             </v-container>
           </v-card-text>
+          <v-divider></v-divider>
           <v-card-actions>
             <v-container grid-list-xs>
               <v-row>
@@ -320,6 +322,30 @@ export default {
           .catch((error) => {
             this.snackbar.model = true;
             this.snackbar.text = "Room Creation Failed";
+            this.snackbar.color = "error";
+            this.dialog.model = false;
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    deleteRoom(roomId) {
+      try {
+        if (!confirm("Are you sure you want to delete this room?")) return;
+        apiHandler
+          .delete(`rooms/${roomId}`)
+          .then((response) => {
+            console.log(response);
+            this.snackbar.model = true;
+            this.snackbar.text = "Room Deleted Successfully";
+            this.snackbar.color = "success";
+            this.dialog.model = false;
+            this.getRooms();
+          })
+          .catch((error) => {
+            this.snackbar.model = true;
+            this.snackbar.text = "Room Deletion Failed";
             this.snackbar.color = "error";
             this.dialog.model = false;
           });

@@ -84,7 +84,7 @@
                           {{ facility.description }}
                         </div>
                       </v-card-text>
-
+                      <v-divider></v-divider>
                       <v-card-actions>
                         <v-container grid-list-xs>
                           <v-row>
@@ -154,12 +154,27 @@
               dense
             ></v-textarea>
           </v-card-text>
+          <v-divider></v-divider>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="success" text @click="addOrUpdateFacility">
-              Save
-            </v-btn>
-            <v-btn color="secondary" text @click="closeDialog"> Close </v-btn>
+            <v-container grid-list-xs>
+              <v-row>
+                <v-col>
+                  <v-btn
+                    color="success"
+                    text
+                    @click="addOrUpdateFacility"
+                    block
+                  >
+                    Save
+                  </v-btn>
+                </v-col>
+                <v-col>
+                  <v-btn color="error" text @click="closeDialog" block>
+                    Close
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-container>
           </v-card-actions>
         </v-card>
       </v-dialog>

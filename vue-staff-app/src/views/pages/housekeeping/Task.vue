@@ -194,6 +194,7 @@
                           {{ textLimit(tasks.description, 50) }}
                         </div>
                       </v-card-text>
+                      <v-divider></v-divider>
                       <v-card-actions>
                         <v-container grid-list-xs>
                           <v-row>
@@ -346,15 +347,21 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-btn
-              color="success"
-              text
-              block
-              type="submit"
-              :disabled="dialog.isView || !form"
-              @click="dialog.isEdit ? updateTask() : onSubmit()"
-              >{{ dialog.isEdit ? "Update" : "Add" }}</v-btn
-            >
+            <v-container grid-list-xs>
+              <v-row>
+                <v-col>
+                  <v-btn
+                    color="success"
+                    text
+                    block
+                    type="submit"
+                    :disabled="dialog.isView || !form"
+                    @click="dialog.isEdit ? updateTask() : onSubmit()"
+                    >{{ dialog.isEdit ? "Update" : "Add" }}</v-btn
+                  >
+                </v-col>
+              </v-row>
+            </v-container>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -397,8 +404,8 @@ export default {
         names: ["pending", "inProgress", "completed", "cancelled"],
         pending: true,
         inProgress: true,
-        completed: true,
-        cancelled: true,
+        completed: false,
+        cancelled: false,
       },
 
       dialog: {
