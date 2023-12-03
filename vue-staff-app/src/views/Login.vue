@@ -91,6 +91,7 @@
                 >Vuetify</a
               >
             </div>
+            <!-- {{ test }} -->
           </v-col>
         </v-row>
       </v-container>
@@ -115,6 +116,8 @@
 <script>
 import { useLoginStore } from "@/store/auth";
 import apiHandler from "@/services/apiHandler";
+import VueCookies from "vue-cookies";
+import { useTheme } from "vuetify/lib/framework.mjs";
 
 export default {
   data() {
@@ -123,6 +126,7 @@ export default {
       username: null,
       password: null,
       loading: false,
+      test: "test",
 
       snackbar: {
         model: false,
@@ -213,12 +217,24 @@ export default {
         name: "dbSettings",
       });
     },
+
+    async setTheme() {
+      try {
+        const theme = VueCookies.get("theme");
+        const globalTheme = useTheme();
+        globalTheme.global.name = theme;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 
   async created() {
     const loginStore = useLoginStore();
 
     this.checkApiCon();
+    // await this.setTheme();
+    this.test = VueCookies.get("theme");
 
     if (loginStore.isLoggedIn) {
       try {

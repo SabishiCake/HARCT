@@ -61,16 +61,7 @@
   </div>
 
   <div>
-    <v-dialog
-      v-model="dialog.model"
-      scrollable
-      fullscreen
-      persistent
-      :overlay="true"
-      max-width="500px"
-      min-width="100px"
-      transition="dialog-top-transition"
-    >
+    <v-dialog v-model="dialog.model" max-width="500px" persistent>
       <template v-slot:default="{ isActive }">
         <v-card>
           <v-toolbar

@@ -130,13 +130,41 @@ const CustomTheme = {
         warning: "#FFA726",
       },
     },
+    yellow: {
+      light: {
+        // Yellow color palette
+        background: "#FFFDE7",
+        surface: "#FFFFFF",
+        primary: "#FBC02D",
+        "primary-darken-1": "#FFA000",
+        secondary: "#FFEB3B",
+        "secondary-darken-1": "#FFD600",
+        error: "#B00020",
+        info: "#1976D2",
+        success: "#4CAF50",
+        warning: "#FFA726",
+      },
+      dark: {
+        // Yellow dark color palette
+        background: "#FBC02D",
+        surface: "#1E1E1E",
+        primary: "#FBC02D",
+        "primary-darken-1": "#FFA000",
+        secondary: "#FFEB3B",
+        "secondary-darken-1": "#FFD600",
+        error: "#CF6679",
+        info: "#1976D2",
+        success: "#4CAF50",
+        warning: "#FFA726",
+      },
+    },
   },
 };
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
   theme: {
-    defaultTheme: "greenLight",
+    defaultTheme: "purpleLight",
     themes: {
       purpleLight: {
         dark: false,
@@ -170,6 +198,21 @@ export default createVuetify({
         dark: true,
         colors: CustomTheme.themes.blue.dark,
       },
+      yellowLight: {
+        dark: false,
+        colors: CustomTheme.themes.yellow.light,
+      },
+      yellowDark: {
+        dark: true,
+        colors: CustomTheme.themes.yellow.dark,
+      },
+    },
+  },
+
+  preferences: {
+    apiSettings: {
+      apiUrl: "http://localhost:8000/private",
+      apiKey: "key2fghij",
     },
   },
 

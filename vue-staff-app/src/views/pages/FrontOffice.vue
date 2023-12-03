@@ -47,15 +47,17 @@ export default {
           },
           color: "primary",
           disabled: false,
+          isHidden: false,
         },
         {
           id: 2,
-          name: "Booking",
+          name: "Bookings",
           route: {
             name: "frontOfficeBooking",
           },
           color: "red",
           disabled: true,
+          isHidden: true,
         },
         {
           id: 3,
@@ -65,6 +67,7 @@ export default {
           },
           color: "green",
           disabled: false,
+          isHidden: false,
         },
         {
           id: 4,
@@ -74,6 +77,7 @@ export default {
           },
           color: "blue",
           disabled: false,
+          isHidden: false,
         },
       ],
     };
