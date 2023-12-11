@@ -15,168 +15,162 @@
       </v-container>
     </div>
     <div>
-      <v-container>
-        <v-spacer ma-5></v-spacer>
-        <v-row>
-          <v-col cols="12">
-            <v-form ref="form">
-              <v-container>
-                <v-row>
-                  <v-col cols="6">
-                    <v-text-field
-                      name="FirstName"
-                      label="First Name"
-                      v-model="accountData.guestInfo.first_name"
-                      :rules="[rules.required]"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-text-field
-                      name="LastName"
-                      label="Last Name"
-                      v-model="accountData.guestInfo.last_name"
-                      :rules="[rules.required]"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="6">
-                    <v-text-field
-                      name="Email"
-                      label="Email Address"
-                      suffix="@example.com"
-                      v-model="accountData.guestInfo.email"
-                      :rules="[rules.email]"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-text-field
-                      name="Phone"
-                      label="Phone"
-                      v-model="accountData.guestInfo.phone"
-                      :rules="[rules.phone]"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12">
-                    <v-text-field
-                      name="Address"
-                      label="Address"
-                      v-model="accountData.guestInfo.address"
-                      :rules="[rules.required]"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col cols="12">
-                    <v-text-field
-                      name="Username"
-                      label="Username"
-                      v-model="accountData.accountInfo.username"
-                      :rules="[rules.required]"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <v-col cols="6">
-                    <v-text-field
-                      name="Password"
-                      label="Password"
-                      :append-inner-icon="eyeToggle ? 'mdi-eye' : 'mdi-eye-off'"
-                      @click:append-inner="eyeToggle = !eyeToggle"
-                      :type="eyeToggle ? 'text' : 'password'"
-                      v-model="accountData.accountInfo.password"
-                      :rules="[rules.required]"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-text-field
-                      :disabled="needConfirm"
-                      name="ConfirmPassword"
-                      label="Confirm Password"
-                      type="password"
-                      v-model="ConfirmPassword"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-
-                <v-spacer></v-spacer>
-
-                <v-row>
-                  <v-col cols="4">
-                    <v-btn
-                      :disabled="isTampered"
-                      color="success"
-                      class="mt-5"
-                      append-icon="mdi-content-save"
-                      block
-                      @click="validate"
-                    >
-                      Save
-                    </v-btn>
-                  </v-col>
-                  <v-col cols="4">
-                    <v-btn
-                      color="primary"
-                      class="mt-5"
-                      append-icon="mdi-undo"
-                      block
-                      @click="undo"
-                    >
-                      Reset Fields
-                    </v-btn>
-                  </v-col>
-                  <v-col cols="4">
-                    <!-- Disabled because deleting a guest account is not and never ideal -->
-                    <!-- If situation arisw that an account needs to be deleted from the Database, Contact IT -->
-                    <v-btn
-                      disabled
-                      color="error"
-                      class="mt-5"
-                      append-icon="mdi-delete"
-                      block
-                      @click="deleteAccount"
-                    >
-                      Delete
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-form>
-          </v-col>
-        </v-row>
+      <v-container grid-list-xs fluid>
         <v-row>
           <v-col>
-            <v-snackbar
-              v-model="infoVisible"
-              :color="infoColor"
-              :timeout="timeout"
-            >
-              {{ infoText }}
-              <template v-slot:actions>
-                <v-btn color="white" text @click="infoVisible = false">
-                  Close
-                </v-btn>
-              </template>
-            </v-snackbar>
-          </v-col>
-        </v-row>
+            <v-container>
+              <v-row id="0">
+                <v-col>
+                  <v-card>
+                    <v-toolbar color="primary">
+                      <v-toolbar-title>Account Information</v-toolbar-title>
+                    </v-toolbar>
+                    <v-card-text>
+                      <v-form ref="form">
+                        <v-container grid-list-xs>
+                          <v-row>
+                            <v-col>
+                              <v-text-field
+                                v-model="accountData.guestInfo.first_name"
+                                :rules="[rules.required]"
+                                class="mb-2"
+                                clearable
+                                label="Guest ID"
+                              ></v-text-field>
+                            </v-col>
+                            <v-col>
+                              <v-text-field
+                                v-model="accountData.guestInfo.last_name"
+                                :rules="[rules.required]"
+                                class="mb-2"
+                                clearable
+                                label="Guest ID"
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                          <v-row>
+                            <v-col>
+                              <v-text-field
+                                v-model="accountData.guestInfo.email"
+                                :rules="[rules.email]"
+                                class="mb-2"
+                                clearable
+                                label="Guest ID"
+                              ></v-text-field>
+                            </v-col>
+                            <v-col>
+                              <v-text-field
+                                v-model="accountData.guestInfo.phone"
+                                :rules="[rules.phone]"
+                                class="mb-2"
+                                clearable
+                                label="Guest ID"
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                          <v-row>
+                            <v-col cols="12">
+                              <v-text-field
+                                name="Username"
+                                label="Username"
+                                v-model="accountData.accountInfo.username"
+                                :rules="[rules.required]"
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
 
-        <v-spacer></v-spacer>
+                          <v-row>
+                            <v-col cols="6">
+                              <v-text-field
+                                name="Password"
+                                label="Password"
+                                :append-inner-icon="
+                                  eyeToggle ? 'mdi-eye' : 'mdi-eye-off'
+                                "
+                                @click:append-inner="eyeToggle = !eyeToggle"
+                                :type="eyeToggle ? 'text' : 'password'"
+                                v-model="accountData.accountInfo.password"
+                                :rules="[rules.required]"
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="6">
+                              <v-text-field
+                                :disabled="needConfirm"
+                                name="ConfirmPassword"
+                                label="Confirm Password"
+                                type="password"
+                                v-model="ConfirmPassword"
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
 
-        <v-spacer></v-spacer>
-
-        <v-row>
-          <v-col>
-            <RoomResTable
-              :guest_id="accountData.guestInfo.guest_id.toString()"
-              :data="accountData.room_reservations"
-            />
+                          <v-row>
+                            <v-col cols="4">
+                              <v-btn
+                                :disabled="isTampered"
+                                color="success"
+                                class="mt-5"
+                                append-icon="mdi-content-save"
+                                block
+                                @click="validate"
+                              >
+                                Save
+                              </v-btn>
+                            </v-col>
+                            <v-col cols="4">
+                              <v-btn
+                                color="primary"
+                                class="mt-5"
+                                append-icon="mdi-undo"
+                                block
+                                @click="undo"
+                              >
+                                Reset Fields
+                              </v-btn>
+                            </v-col>
+                            <v-col cols="4">
+                              <!-- Disabled because deleting a guest account is not and never ideal -->
+                              <!-- If situation arisw that an account needs to be deleted from the Database, Contact IT -->
+                              <v-btn
+                                disabled
+                                color="error"
+                                class="mt-5"
+                                append-icon="mdi-delete"
+                                block
+                                @click="deleteAccount"
+                              >
+                                Delete
+                              </v-btn>
+                            </v-col>
+                          </v-row>
+                        </v-container>
+                      </v-form>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+              <v-row id="1">
+                <v-col>
+                  <RoomResTable
+                    :guest_id="accountData.guestInfo.guest_id.toString()"
+                    :data="accountData.room_reservations"
+                    @data-changed="handleDataChange"
+                  />
+                </v-col>
+              </v-row>
+            </v-container>
           </v-col>
         </v-row>
       </v-container>
+    </div>
+
+    <div>
+      <v-snackbar v-model="infoVisible" :color="infoColor" :timeout="timeout">
+        {{ infoText }}
+        <template v-slot:actions>
+          <v-btn color="white" text @click="infoVisible = false"> Close </v-btn>
+        </template>
+      </v-snackbar>
     </div>
   </v-app>
 </template>
@@ -185,6 +179,7 @@
 import { useAccountStore } from "@/store/account";
 import apiHandler from "@/services/apiHandler";
 import RoomResTable from "@/components/frontoffice/RoomResTable2.vue";
+import NavBar from "@/components/frontoffice/foNavbar.vue";
 
 export default {
   props: {
@@ -195,6 +190,7 @@ export default {
   },
   components: {
     RoomResTable,
+    NavBar,
   },
 
   data() {
@@ -234,6 +230,43 @@ export default {
 
       ConfirmPassword: "",
 
+      navigator: {
+        model: true,
+        rail: true,
+        itemList: [
+          {
+            title: "Account Information",
+            icon: "mdi-account",
+            to: "#0",
+          },
+          {
+            title: "Room Reservations",
+            icon: "mdi-bed",
+            to: "#1",
+          },
+          {
+            title: "Table Reservations",
+            icon: "mdi-chair-school",
+            to: "#2",
+          },
+          {
+            title: "Orders",
+            icon: "mdi-food",
+            to: "#3",
+          },
+          {
+            title: "Payments",
+            icon: "mdi-cash",
+            to: "#4",
+          },
+          {
+            title: "Feedback",
+            icon: "mdi-message",
+            to: "#5",
+          },
+        ],
+      },
+
       accountData: {
         guestInfo: {
           guest_id: "",
@@ -269,8 +302,13 @@ export default {
 
   methods: {
     goBack() {
-      this.$router.go(-1);
-      this.isReady = false;
+      this.$router.push({
+        name: "frontOfficeAccounts",
+      });
+    },
+
+    async handleDataChange() {
+      await this.fetchAccountData();
     },
 
     async fetchAccountData() {

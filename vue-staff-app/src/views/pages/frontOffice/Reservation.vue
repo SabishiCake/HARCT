@@ -1,33 +1,32 @@
 <template>
   <v-app>
     <div>
-      <v-container grid-list-xs>
+      <v-container grid-list-xs fluid>
         <v-row>
-          <v-col> <h1>Reservations</h1></v-col>
+          <v-col> <h1>Reservations And Bookings</h1></v-col>
         </v-row>
       </v-container>
     </div>
     <div>
-      <v-container>
+      <v-container fluid>
         <v-row>
           <v-col>
-            <v-container grid-list-xs dense>
+            <v-container fluid>
               <v-row>
-                <v-col cols="8">
+                <v-col>
                   <v-text-field
                     v-model="roomResSearch"
                     prepend-inner-icon="mdi-magnify "
                     label="Search"
-                    single-line
                     hide-details
-                    flat
-                    variant="outlined"
                   >
                   </v-text-field>
                 </v-col>
-                <v-col>
+              </v-row>
+              <v-row>
+                <v-container grid-list-xs fluid>
                   <v-row>
-                    <v-col j>
+                    <v-col>
                       <v-btn
                         color="primary"
                         text
@@ -52,50 +51,24 @@
                       </v-btn>
                     </v-col>
                     <v-col>
+                      <v-btn color="primary" text @click="toggleRAndB" block>
+                        <v-icon>mdi-switch</v-icon>
+                        {{ getSelectedRAndBItemName }}
+                      </v-btn>
+                    </v-col>
+                    <v-col>
                       <v-btn color="primary" text block @click="refresh">
                         <v-icon>mdi-refresh</v-icon>
                         Refresh
                       </v-btn>
                     </v-col>
                   </v-row>
-                </v-col>
+                </v-container>
               </v-row>
             </v-container>
           </v-col>
         </v-row>
         <v-row>
-          <!-- <v-col>
-            <v-card>
-              <v-data-table
-                :headers="resHeaders"
-                :items="filteredData"
-                class="elevation-1"
-                item-key="reservation_id"
-                :rows-per-page-items="[5, 10, 15]"
-              >
-                <template v-slot:item.check_in_date="{ item }">
-                  {{ formatDate(item.check_in_date) }}
-                </template>
-
-                <template v-slot:item.check_out_date="{ item }">
-                  {{ formatDate(item.check_out_date) }}
-                </template>
-                <template v-slot:item.actions="{ item }">
-                  <v-btn
-                    small
-                    color="primary"
-                    @click="editRes(item)"
-                    :key="item.reservation_id"
-                    class="ma-2"
-                    text
-                  >
-                    Edit
-                  </v-btn>
-                </template>
-              </v-data-table>
-            </v-card>
-          </v-col> -->
-
           <v-col>
             <v-card>
               <v-data-table
@@ -120,6 +93,14 @@
                     {{ item.status }}
                   </v-chip>
                 </template>
+                <template v-slot:item.type="{ item }">
+                  <v-chip
+                    :color="toggle.rAndBColor(item.type)"
+                    text-color="white"
+                  >
+                    {{ item.type }}
+                  </v-chip>
+                </template>
                 <template v-slot:item.room_is_occupied="{ item }">
                   <v-chip
                     :color="toggle.occupancyColor(item.room_is_occupied)"
@@ -128,6 +109,7 @@
                     {{ item.room_is_occupied }}
                   </v-chip>
                 </template>
+
                 <template v-slot:item.actions="{ item }">
                   <v-btn
                     small
@@ -137,7 +119,7 @@
                     class="ma-2"
                     text
                   >
-                    Edit Status
+                    Edit
                   </v-btn>
                 </template>
               </v-data-table>
@@ -236,12 +218,24 @@
               </v-row>
               <v-row>
                 <v-col>
-                  <v-combobox
+                  <p>
+                    <strong>Type: </strong>
+
+                    <span>
+                      {{ dialog.reservation.type }}
+                    </span>
+                  </p>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-select
                     v-model="dialog.reservation.status"
                     :items="['pending', 'completed', 'cancelled', 'checkedIn']"
                     label="Reservation Status"
                     outlined
-                  ></v-combobox>
+                  >
+                  </v-select>
                 </v-col>
               </v-row>
             </v-container>
@@ -307,6 +301,14 @@ export default {
     toggle: {
       occupancy: false,
       today: false,
+      rAndB: {
+        items: [
+          { name: "all types", value: "all", model: false },
+          { name: "reservation", value: "reservation", model: false },
+          { name: "booking", value: "booking", model: false },
+        ],
+      },
+
       statusColor: (status) => {
         if (status === "completed") return "success";
         if (status === "checkedIn") return "success";
@@ -316,6 +318,10 @@ export default {
       occupancyColor: (status) => {
         if (status === "Yes") return "success";
         if (status === "No") return "error";
+      },
+      rAndBColor: (status) => {
+        if (status === "reservation") return "success";
+        if (status === "booking") return "error";
       },
     },
 
@@ -329,44 +335,10 @@ export default {
   }),
 
   computed: {
-    // resHeaders() {
-    //   return [
-    //     {
-    //       title: "id",
-    //       key: "reservation_id",
-    //     },
-    //     {
-    //       title: "Room",
-    //       key: "room_id",
-    //     },
-    //     {
-    //       title: "Guest",
-    //       key: "guest_id",
-    //     },
-
-    //     {
-    //       title: "Check In",
-    //       key: "check_in_date",
-    //     },
-    //     {
-    //       title: "Check Out",
-    //       key: "check_out_date",
-    //     },
-    //     {
-    //       title: "total Cost",
-    //       key: "total_cost",
-    //     },
-    //     {
-    //       title: "Actions",
-    //       key: "actions",
-    //     },
-    //   ];
-    // },
-
     resMoreHeaders() {
       return [
         {
-          title: "id",
+          title: "ID",
           key: "reservation_id",
         },
         {
@@ -408,23 +380,24 @@ export default {
           key: "room_is_occupied",
         },
         {
+          title: "Type",
+          key: "type",
+        },
+        {
           title: "Actions",
           key: "actions",
         },
       ];
     },
 
-    // filteredData() {
-    //   const searchTerm = this.roomResSearch.toLowerCase().trim();
-    //   if (!this.reservationStore || !this.reservationStore.allReservations) {
-    //     return [];
-    //   }
-    //   return this.reservationStore.allReservations.filter((reservation) =>
-    //     Object.values(reservation).some((val) =>
-    //       String(val).toLowerCase().includes(searchTerm)
-    //     )
-    //   );
-    // },
+    getSelectedRAndBItemName() {
+      const selectedItem = this.toggle.rAndB.items.find(
+        (item) => item.model === true
+      );
+      if (selectedItem) {
+        return selectedItem.name;
+      }
+    },
 
     filteredDataMore() {
       const searchTerm = this.roomResSearch.toLowerCase().trim();
@@ -463,7 +436,7 @@ export default {
   methods: {
     async editRes(reservation) {
       this.dialog.model = true;
-      this.dialog.title = "Reservation Details";
+      this.dialog.title = "Details";
       // Create a copy of the reservation data to be edited
       this.dialog.reservation = { ...reservation };
     },
@@ -506,6 +479,38 @@ export default {
         this.snackbar.text = `Showing ${
           this.toggle.today ? "today's" : "all"
         } reservations.`;
+        this.snackbar.color = "success";
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    toggleRAndB() {
+      try {
+        const selectedItem = this.toggle.rAndB.items.find(
+          (item) => item.model === true
+        );
+        if (selectedItem) {
+          selectedItem.model = false;
+        }
+        const nextIndex =
+          (selectedItem ? this.toggle.rAndB.items.indexOf(selectedItem) : -1) +
+          1;
+        const nextItem =
+          this.toggle.rAndB.items[nextIndex % this.toggle.rAndB.items.length];
+        nextItem.model = true;
+
+        this.handleSelectedRAndBItem(nextItem);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    handleSelectedRAndBItem(item) {
+      try {
+        this.getAllResMore();
+        this.snackbar.model = true;
+        this.snackbar.text = `Showing ${item.name} reservations.`;
         this.snackbar.color = "success";
       } catch (error) {
         console.log(error);
@@ -584,6 +589,19 @@ export default {
           const checkInDate = new Date(item.check_in_date).toLocaleDateString();
           if (this.toggle.occupancy && item.room.is_occupied) return;
           if (this.toggle.today && checkInDate !== today) return;
+
+          if (this.getSelectedRAndBItemName !== "all") {
+            // If it's not "All", filter by the selected type
+            if (
+              (this.getSelectedRAndBItemName === "reservation" &&
+                item.type !== "reservation") ||
+              (this.getSelectedRAndBItemName === "booking" &&
+                item.type !== "booking")
+            ) {
+              return;
+            }
+          }
+
           this.AllResMore.push({
             reservation_id: item.reservation_id,
             room_id: item.room_id,
@@ -595,6 +613,7 @@ export default {
             room_number: item.room.room_number,
             status: item.status,
             room_is_occupied: item.room.is_occupied ? "Yes" : "No",
+            type: item.type,
           });
         });
 
@@ -609,6 +628,7 @@ export default {
     this.reservationStore = useReservationStore();
     await this.getAllRes();
     await this.getAllResMore();
+    this.toggle.rAndB.items[0].model = true;
   },
 };
 </script>

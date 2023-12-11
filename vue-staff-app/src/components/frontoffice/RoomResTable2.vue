@@ -1,20 +1,36 @@
 <template>
   <div>
     <v-card>
-      <v-card-title primary-title>
+      <v-toolbar color="primary">
+        <v-toolbar-title>
+          <v-icon>mdi-calendar</v-icon>
+          Room Reservations And Bookings
+        </v-toolbar-title>
+      </v-toolbar>
+      <v-card-text>
         <v-container grid-list-xs>
-          <v-row>
+          <v-row v-if="defaultItem.reservation_id">
             <v-col>
-              <v-icon icon="mdi-calendar"></v-icon>
-              Room Reservations
-              <span v-if="defaultItem.reservation_id"
-                >| Editing Reservation With ID: {{ defaultItem.reservation_id }}
-              </span>
-              <span v-if="defaultItem.room_id">
-                and former Room ID:
-                {{ defaultItem.room_id }}
-              </span>
-              <v-spacer></v-spacer>
+              <v-card>
+                <v-card-text>
+                  <span v-if="defaultItem.reservation_id">
+                    Editing Reservation With ID:
+                    <v-chip close color="primary" text-color="primary">
+                      <v-avatar>
+                        <v-icon>mdi-calendar</v-icon>
+                      </v-avatar>
+                      {{ defaultItem.reservation_id }}
+                    </v-chip>
+                  </span>
+                  <v-divider vertical></v-divider>
+                  <span v-if="defaultItem.room_id">
+                    Former Room ID:
+                    <v-chip close color="secondary" text-color="primary">
+                      {{ defaultItem.room_id }}
+                    </v-chip>
+                  </span>
+                </v-card-text>
+              </v-card>
             </v-col>
           </v-row>
 
@@ -24,7 +40,7 @@
                 <v-container grid-list-xs>
                   <v-row>
                     <v-col>
-                      <v-combobox
+                      <!-- <v-combobox
                         label="Room"
                         v-model="selectedRoom"
                         :items="availableRooms.items"
@@ -32,7 +48,25 @@
                         item-text="room_id"
                         return-object
                       >
-                      </v-combobox>
+                      </v-combobox> -->
+                      <v-select
+                        label="Room"
+                        v-model="selectedRoom"
+                        :items="availableRooms.items"
+                        item-title="room_id"
+                        item-text="room_id"
+                        return-object
+                      >
+                      </v-select>
+                    </v-col>
+                    <v-col>
+                      <v-select
+                        label="Type"
+                        v-model="editedItem.type"
+                        :items="['reservation', 'booking']"
+                        return-object
+                      >
+                      </v-select>
                     </v-col>
                   </v-row>
                   <v-row>
@@ -90,7 +124,7 @@
                       ></v-text-field>
                     </v-col>
                     <v-col>
-                      <v-combobox
+                      <!-- <v-combobox
                         v-model="editedItem.status"
                         :items="[
                           'pending',
@@ -101,7 +135,20 @@
                         label="Status"
                         return-object
                       >
-                      </v-combobox>
+                      </v-combobox> -->
+                      <v-select
+                        v-model="editedItem.status"
+                        :items="[
+                          'pending',
+                          'completed',
+                          'cancelled',
+                          'checkedIn',
+                        ]"
+                        label="Status"
+                        readonly
+                        return-object
+                      >
+                      </v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -190,6 +237,12 @@
                   }}</v-chip>
                 </template>
 
+                <template v-slot:item.type="{ item }">
+                  <v-chip :color="toggle.typeColor(item.type)" dark small>{{
+                    item.type
+                  }}</v-chip>
+                </template>
+
                 <template v-slot:item.actions="{ item }">
                   <v-icon
                     size="small"
@@ -211,7 +264,7 @@
             </v-col>
           </v-row>
         </v-container>
-      </v-card-title>
+      </v-card-text>
     </v-card>
   </div>
   <div>
@@ -241,6 +294,7 @@ import { useRoomStore } from "@/store/room";
 import apihandler from "@/services/apiHandler";
 
 export default {
+  emits: ["data-changed"],
   props: {
     data: {
       type: Array,
@@ -275,9 +329,14 @@ export default {
           if (status === "pending") return "secondary";
           if (status === "cancelled") return "error";
         },
+        typeColor: (type) => {
+          if (type === "room_reservation") return "primary";
+          if (type === "room_booking") return "secondary";
+        },
       },
 
       selectedRoom: null,
+      selectedType: null,
 
       editedItem: {
         reservation_id: "",
@@ -287,6 +346,7 @@ export default {
         check_out_date: "",
         total_cost: "",
         status: "",
+        type: "",
       },
       defaultItem: {
         reservation_id: "",
@@ -296,6 +356,7 @@ export default {
         check_out_date: "",
         total_cost: "",
         status: "",
+        type: "",
       },
 
       roomStore: null,
@@ -327,6 +388,10 @@ export default {
       }
     },
 
+    "editedItem.type": function () {
+      console.log("Res | Type: ", this.editedItem.type);
+    },
+
     "editedItem.check_in_date": function () {
       console.log("Res | Check In Date: ", this.editedItem.check_in_date);
       this.getTotalCost();
@@ -353,11 +418,13 @@ export default {
         { title: "Check-Out Date", value: "check_out_date" },
         { title: "Total Cost", value: "total_cost" },
         { title: "Status", value: "status" },
+        { title: "Type", value: "type" },
         { title: "Actions", value: "actions", sortable: false },
       ];
     },
 
     filteredData() {
+      console.log("Res | Filtered Data: ", this.data);
       return this.data.filter((item) => {
         return Object.keys(item).some((key) =>
           String(item[key])
@@ -385,6 +452,13 @@ export default {
       return readableDate;
     },
 
+    refresh() {
+      this.emptyFields();
+      this.getAvailableRooms();
+      this.getAllRooms();
+      this.$emit("data-changed");
+    },
+
     initialData() {
       const item = 0;
       try {
@@ -401,6 +475,16 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    initTimeAndDate() {
+      const date = new Date().toLocaleDateString();
+      const time = new Date().toLocaleTimeString();
+      const dateTime = `${date} ${time}`;
+      const initDate = new Date(dateTime);
+      console.log("Res | Init Date: ", initDate);
+      this.editedItem.check_in_date = initDate;
+      this.editedItem.check_out_date = initDate;
     },
 
     async getAllRooms() {
@@ -510,17 +594,35 @@ export default {
           CheckInDate: this.editedItem.check_in_date,
           CheckOutDate: this.editedItem.check_out_date,
           TotalCost: this.editedItem.total_cost,
+          Type: this.editedItem.type,
         };
 
-        apihandler.post("roomres", data).then((response) => {
-          console.log("Res | Add Response: ", response);
+        apihandler
+          .post("roomres", data)
+          .then((response) => {
+            if (response.status === 200) {
+              console.log("Res | Add Response: ", response);
 
-          this.refresh();
-        });
-        this.snackbar.model = true;
-        this.snackbar.text = "Reservation Added Successfully";
-        this.snackbar.color = "success";
-        this.snackbar.btnColor = "success";
+              this.snackbar.model = true;
+              this.snackbar.text = response.data.message;
+              this.snackbar.color = "success";
+              this.snackbar.btnColor = "success";
+              this.refresh();
+            } else {
+              this.snackbar.model = true;
+              this.snackbar.text = response.data.error || "Conflicting Data. ";
+
+              this.snackbar.color = "error";
+              this.snackbar.btnColor = "error";
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            this.snackbar.model = true;
+            this.snackbar.text = error.message || error.response.data.message;
+            this.snackbar.color = "error";
+            this.snackbar.btnColor = "error";
+          });
       } catch (error) {
         console.log(error);
       }
@@ -530,7 +632,7 @@ export default {
       try {
         if (!confirm("Are you sure you want to update this reservation?"))
           return;
-        const status = this.editedItem.status;
+        // const status = this.editedItem.status;
         const resId = this.editedItem.reservation_id;
         const data = {
           GuestID: this.editedItem.guest_id,
@@ -538,36 +640,37 @@ export default {
           CheckInDate: this.editedItem.check_in_date,
           CheckOutDate: this.editedItem.check_out_date,
           TotalCost: this.editedItem.total_cost,
+          Status: this.editedItem.status,
+          Type: this.editedItem.type,
         };
 
         apihandler
-          .put(`roomres/${this.editedItem.reservation_id}`, data)
+          .put(`roomres/${resId}`, data)
           .then((response) => {
-            console.log("Res | Update Response: ", response);
+            if (response.status === 200) {
+              console.log("Res | Update Response: ", response);
 
-            this.refresh();
+              this.snackbar.model = true;
+              this.snackbar.text = response.data.message;
+              this.snackbar.color = "success";
+              this.snackbar.btnColor = "success";
+              this.refresh();
+            } else {
+              console.log("Res | Update Response: ", response);
+
+              this.snackbar.model = true;
+              this.snackbar.text = response.data.error || "Conflicting Data. ";
+              this.snackbar.color = "error";
+              this.snackbar.btnColor = "error";
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            this.snackbar.model = true;
+            this.snackbar.text = error.message || "Something went wrong.";
+            this.snackbar.color = "error";
+            this.snackbar.btnColor = "error";
           });
-        this.snackbar.model = true;
-        this.snackbar.text = "Reservation Updated Successfully";
-        this.snackbar.color = "success";
-        this.snackbar.btnColor = "success";
-
-        apihandler.put(`roomres/${status}/${resId}`).then((response) => {
-          console.log("Res | Update Response: ", response);
-
-          this.refresh();
-        });
-
-        // apihandler
-        //   .put(`room/unOccupy/${this.defaultItem.room_id}`)
-        //   .then((response) => {
-        //     console.log("Res | Update Response: ", response);
-        //     this.snackbar.model = true;
-        //     this.snackbar.text = "Room Unoccupied Successfully";
-        //     this.snackbar.color = "success";
-        //     this.snackbar.btnColor = "success";
-        //     this.refresh();
-        //   });
       } catch (error) {
         console.log(error);
       }
@@ -578,10 +681,32 @@ export default {
         this.editedIndex = this.data.indexOf(item);
         this.editedItem = Object.assign({}, item);
         this.defaultItem = Object.assign({}, item);
+
+        this.selectedRoom = {
+          room_id: item.room_id,
+        };
         this.updateRoomId();
         this.getRoomType();
         this.getTotalCost();
         this.isNewItem = false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    deleteReservation(item) {
+      try {
+        if (!confirm("Are you sure you want to delete this reservation?"))
+          return;
+        const id = item.reservation_id;
+        apihandler.delete(`roomres/${id}`).then((response) => {
+          console.log("Res | Delete Response: ", response);
+          this.snackbar.model = true;
+          this.snackbar.text = "Reservation Deleted Successfully";
+          this.snackbar.color = "success";
+          this.snackbar.btnColor = "success";
+          this.refresh();
+        });
       } catch (error) {
         console.log(error);
       }
@@ -614,12 +739,6 @@ export default {
       this.isNewItem = true;
     },
 
-    refresh() {
-      this.emptyFields();
-      this.getAvailableRooms();
-      this.getAllRooms();
-    },
-
     getTotalCost() {
       try {
         // formula: Total Cost = no. of days * room rate
@@ -639,11 +758,12 @@ export default {
     },
   },
 
-  async mounted() {
+  async created() {
     this.roomStore = useRoomStore();
     this.initialData();
     this.getAllRooms();
     this.getAvailableRooms();
+    this.initTimeAndDate();
   },
 };
 </script>

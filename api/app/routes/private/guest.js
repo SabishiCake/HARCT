@@ -81,6 +81,7 @@ router.post('/', (req, res) => {
                   console.log('Guest and Account added to database');
                   res.status(200).json({
                     status: 200,
+                    id: GuestID,
                     message: `Guest and Account added to database with GuestID ${GuestID}`,
                     createdGuest: guestResult,
                     createdAccount: accountResult,

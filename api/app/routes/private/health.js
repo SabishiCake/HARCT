@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../../db');
 
 router.get('/api', (req, res) => {
-  res.send('OK');
+  res.status(200).json({ message: 'API is OK' });
 });
 
 router.get('/db', (req, res) => {
@@ -11,9 +11,9 @@ router.get('/db', (req, res) => {
   db.query(sql, (err, rows) => {
     if (err) {
       console.error(err);
-      res.send('NOT OK');
+      res.status(500).json({ error: 'Error connecting to DB' });
     } else {
-      res.send('OK');
+      res.status(200).json({ message: 'DB is OK' });
     }
   });
 });

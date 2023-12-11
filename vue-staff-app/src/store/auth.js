@@ -1,7 +1,5 @@
 import { defineStore } from "pinia";
-
-const username = import.meta.env.VITE_APP_USERNAME;
-const password = import.meta.env.VITE_APP_PASSWORD;
+import apiHandler from "@/services/apiHandler";
 
 export const useLoginStore = defineStore("login", {
   state: () => ({
@@ -12,22 +10,29 @@ export const useLoginStore = defineStore("login", {
   }),
 
   actions: {
-    mockLogin(user, pass) {
-      this.loading = true;
+    // helloWorld() {
+    //   console.log("Hello World!");
+    // },
 
+    async mockLogin(user, pass) {
       try {
-        if (user === username && pass === password) {
+        const req = {
+          username: user,
+          password: pass,
+        };
+        console.log("MOCK LOGIN CALLED", user, pass);
+
+        const res = await apiHandler.post(`admin/auth`, req);
+
+        console.log(res.status);
+
+        if (res.status === 200) {
           this.isLoggedIn = true;
           this.user = user;
-          this.response = "Login successful";
-        } else {
-          this.response = "Invalid credentials";
+          this.response = res;
         }
       } catch (error) {
-        console.error("Error logging in:", error);
-        throw error;
-      } finally {
-        this.loading = false;
+        console.log(error);
       }
     },
 

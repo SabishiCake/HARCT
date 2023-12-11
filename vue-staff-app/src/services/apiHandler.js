@@ -1,7 +1,11 @@
 import axios from "axios";
+import VueCookies from "vue-cookies";
 
-const apiKey = import.meta.env.VITE_APP_API_KEY;
-const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+const apiKey = VueCookies.get("apiKey");
+const baseUrl = VueCookies.get("baseUrl");
+
+console.log("apiKey:", apiKey);
+
 const headers = {
   "x-api-key": apiKey,
 };
@@ -13,7 +17,8 @@ const apiHandler = {
       });
       return response;
     } catch (error) {
-      console.log(error);
+      console.log("API getHealth | ERROR: ", error);
+      return error.response;
     }
   },
 
@@ -24,7 +29,22 @@ const apiHandler = {
       });
       return response;
     } catch (error) {
-      console.log(error);
+      console.log("API checkApi | ERROR: ", error);
+      return error.response;
+    }
+  },
+
+  async checkApiCon(url, key) {
+    try {
+      const response = await axios.get(`${url}/health/api`, {
+        headers: {
+          "x-api-key": key,
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log("API checkApiCon | ERROR: ", error);
+      return error.response;
     }
   },
 
@@ -35,7 +55,8 @@ const apiHandler = {
       });
       return response;
     } catch (error) {
-      console.log(error);
+      console.log("API GET | ERROR: ", error);
+      return error.response;
     }
   },
 
@@ -44,9 +65,11 @@ const apiHandler = {
       const response = await axios.post(`${baseUrl}/${endpoint}`, data, {
         headers: headers,
       });
+      console.log("API HANDLER | response:", response);
       return response;
     } catch (error) {
-      console.log(error);
+      console.log("API POST | ERROR: ", error);
+      return error.response;
     }
   },
 
@@ -57,7 +80,8 @@ const apiHandler = {
       });
       return response;
     } catch (error) {
-      console.log(error);
+      console.log("API PUT | ERROR: ", error);
+      return error.response;
     }
   },
 
@@ -68,7 +92,8 @@ const apiHandler = {
       });
       return response;
     } catch (error) {
-      console;
+      console.log("API DELETE | ERROR: ", error);
+      return error.response;
     }
   },
 };

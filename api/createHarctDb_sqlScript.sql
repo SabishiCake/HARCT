@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Nov 24, 2023 at 02:54 AM
+-- Generation Time: Dec 11, 2023 at 05:26 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `harctmydb2`
 --
-CREATE DATABASE IF NOT EXISTS `harctmydb2` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `harctmydb2`;
 
 -- --------------------------------------------------------
 
@@ -46,7 +44,30 @@ INSERT INTO `account` (`account_id`, `guest_id`, `username`, `password`) VALUES
 (3, 3, 'robert88', 'p@ssw0rd'),
 (4, 4, 'emily_b', 'strongPW'),
 (5, 5, 'sophie_g', 'safePwd'),
-(31, 2574880, 'user', 'pass');
+(31, 2574880, 'user', 'pass'),
+(33, 4289300, 'test', 'test'),
+(34, 6040845, 'test2', 'test2');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_creds`
+--
+
+CREATE TABLE `admin_creds` (
+  `id` varchar(225) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `salt` varchar(225) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_creds`
+--
+
+INSERT INTO `admin_creds` (`id`, `username`, `password`, `salt`) VALUES
+('9018b9c7-2110-4af1-b01b-6990ec10eff9', 'admin', 'da7cfd7d31148f816bd255829ef15d078ef1dd12c0610988057ae855977346a9', '13a5ea12dce80dc3dbcc1c1c0bb2bde0'),
+('e65d7573-1da4-4525-8894-9a5e437b7740', 'user', '60b8ddf849a5c0d7a4f8f879602aafe5d1650feb5b85804c491800abe09665e4', '7f11425ae0028faca879ea0d041c1068');
 
 -- --------------------------------------------------------
 
@@ -136,12 +157,14 @@ CREATE TABLE `guest` (
 --
 
 INSERT INTO `guest` (`guest_id`, `last_name`, `first_name`, `email`, `phone`, `address`) VALUES
-(1, 'pedj', 'pedj', 'pedj@maill.com', '09493260753', 'pedj'),
+(1, 'pedj', 'pedj', 'pedj@maill.com', '54121141464321', 'pedj'),
 (2, 'Smith', 'Alice', 'alice.smith@example.com', '9876543210', '456 Elm St'),
 (3, 'Johnson', 'Robert', 'robert.johnson@example.com', '5555555555', '789 Oak St'),
 (4, 'Brown', 'Emily', 'emily.brown@example.com', '1112223333', '321 Pine St'),
 (5, 'Garcia', 'Sophia', 'sophia.garcia@example.com', '4448889999', '654 Cedar St'),
-(2574880, 'first', 'last', 'email@mail.com', '09493260753', 'add');
+(2574880, 'first', 'last', 'email@mail.com', '09493260753', 'add'),
+(4289300, 'test', 'test', 'test@mail.com', '09493260753', 'test'),
+(6040845, 'test2', 'test2', 'test2@mail.com', '09493260753', 'test2');
 
 -- --------------------------------------------------------
 
@@ -210,13 +233,24 @@ CREATE TABLE `orders` (
 
 CREATE TABLE `payments` (
   `payment_id` int(11) NOT NULL,
+  `created_at` date DEFAULT NULL,
+  `updated_at` date DEFAULT NULL,
   `guest_id` int(11) DEFAULT NULL,
   `amount` decimal(10,2) DEFAULT NULL,
   `payment_date` date DEFAULT NULL,
-  `payment_status` enum('Paid','Unpaid','Half-Paid') DEFAULT 'Unpaid',
-  `type` enum('Room Reservation','Food Order','Other') DEFAULT 'Other',
-  `transaction_id` int(11) NOT NULL
+  `payment_status` enum('paid','unpaid','partial') DEFAULT 'unpaid',
+  `type` varchar(225) DEFAULT 'Other',
+  `method` varchar(225) NOT NULL,
+  `reftransaction_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `payments`
+--
+
+INSERT INTO `payments` (`payment_id`, `created_at`, `updated_at`, `guest_id`, `amount`, `payment_date`, `payment_status`, `type`, `method`, `reftransaction_id`) VALUES
+(1125956, '2023-12-12', '2023-12-12', 1, 1500.00, '2023-12-11', 'partial', 'booking', 'pending', 14635890),
+(11710759, '2023-12-10', '2023-12-10', 2, 300.00, '2023-12-10', 'partial', 'booking', 'cash', 7921974);
 
 -- --------------------------------------------------------
 
@@ -228,21 +262,6 @@ CREATE TABLE `purchaseorders` (
   `OrderID` int(11) NOT NULL,
   `SupplierID` int(11) DEFAULT NULL,
   `OrderDate` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `room`
---
-
-CREATE TABLE `room` (
-  `room_id` int(11) NOT NULL,
-  `room_number` varchar(255) DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `price` decimal(10,2) DEFAULT NULL,
-  `is_occupied` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -304,21 +323,17 @@ CREATE TABLE `room_reservations` (
   `check_in_date` date DEFAULT NULL,
   `check_out_date` date DEFAULT NULL,
   `total_cost` decimal(10,2) DEFAULT NULL,
-  `status` enum('cancelled','pending','completed','checkedIn') NOT NULL
+  `status` enum('cancelled','pending','completed','checkedIn') NOT NULL,
+  `type` enum('reservation','booking') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `room_reservations`
 --
 
-INSERT INTO `room_reservations` (`reservation_id`, `room_id`, `guest_id`, `check_in_date`, `check_out_date`, `total_cost`, `status`) VALUES
-(1, 2, 1, '2023-11-20', '2023-11-21', 200.00, 'pending'),
-(2, 2, 2, '2023-11-22', '2023-11-24', 400.00, 'pending'),
-(3, 3, 3, '2023-11-21', '2023-11-23', 600.00, 'pending'),
-(4, 1, 4, '2023-11-25', '2023-11-27', 300.00, 'pending'),
-(5, 2, 5, '2023-11-26', '2023-11-28', 350.00, 'pending'),
-(10, 1, 1, '2023-11-21', '2023-11-28', 840.00, 'pending'),
-(11, 1, 2574880, '2023-11-23', '2023-11-30', 840.00, 'pending');
+INSERT INTO `room_reservations` (`reservation_id`, `room_id`, `guest_id`, `check_in_date`, `check_out_date`, `total_cost`, `status`, `type`) VALUES
+(7921974, 7, 2, '2023-12-10', '2023-12-11', 300.00, 'pending', 'booking'),
+(14635890, 7, 1, '2023-12-11', '2023-12-16', 1500.00, 'pending', 'booking');
 
 -- --------------------------------------------------------
 
@@ -342,7 +357,7 @@ INSERT INTO `room_types` (`type_id`, `type_name`, `description`, `rate`) VALUES
 (2, 'Deluxe', 'Luxurious room with amenities', 200.00),
 (3, 'Suite', 'Large suite with additional living space', 300.00),
 (4, 'Personal', 'Personal', 110.00),
-(6, 'Test', 'test ', 1000.00);
+(7, 'Test', 'Test', 1000.00);
 
 -- --------------------------------------------------------
 
@@ -454,6 +469,12 @@ ALTER TABLE `account`
   ADD KEY `guest_id` (`guest_id`);
 
 --
+-- Indexes for table `admin_creds`
+--
+ALTER TABLE `admin_creds`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `api_keys`
 --
 ALTER TABLE `api_keys`
@@ -521,12 +542,6 @@ ALTER TABLE `purchaseorders`
   ADD KEY `SupplierID` (`SupplierID`);
 
 --
--- Indexes for table `room`
---
-ALTER TABLE `room`
-  ADD PRIMARY KEY (`room_id`);
-
---
 -- Indexes for table `room_details`
 --
 ALTER TABLE `room_details`
@@ -587,7 +602,7 @@ ALTER TABLE `tasks`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `api_keys`
@@ -629,31 +644,25 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `room`
---
-ALTER TABLE `room`
-  MODIFY `room_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16646991;
 
 --
 -- AUTO_INCREMENT for table `room_details`
 --
 ALTER TABLE `room_details`
-  MODIFY `room_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `room_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `room_reservations`
 --
 ALTER TABLE `room_reservations`
-  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16743272;
 
 --
 -- AUTO_INCREMENT for table `room_types`
 --
 ALTER TABLE `room_types`
-  MODIFY `type_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `type_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `staff`
@@ -700,7 +709,7 @@ ALTER TABLE `orderitems`
 -- Constraints for table `payments`
 --
 ALTER TABLE `payments`
-  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`guest_id`) REFERENCES `orders` (`guest_id`);
+  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`guest_id`) REFERENCES `guest` (`guest_id`);
 
 --
 -- Constraints for table `purchaseorders`

@@ -11,6 +11,7 @@
           <v-avatar size="40">
             <img src="@/assets/logo.svg" alt="Logo" />
           </v-avatar>
+
           <template v-slot:append>
             <v-btn
               color="primary"
@@ -120,6 +121,10 @@ export default {
         text: "",
       },
 
+      user: {
+        name: "John Doe",
+      },
+
       itemList: [
         {
           title: "Front Office",
@@ -209,6 +214,20 @@ export default {
         this.isLoading = false;
       }
     },
+
+    async getUserName() {
+      try {
+        const loginStore = useLoginStore();
+        const user = loginStore.user;
+        this.user.name = user;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+
+  async created() {
+    this.getUserName();
   },
 };
 </script>

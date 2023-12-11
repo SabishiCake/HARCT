@@ -6,68 +6,78 @@
           <v-col>
             <v-card elevation-1>
               <v-toolbar color="primary" dark flat>
-                <v-toolbar-title>Database Connection Settings</v-toolbar-title>
+                <v-toolbar-title>API Connectivity Settings</v-toolbar-title>
                 <v-toolbar-items>
                   <v-btn color="white" @click="goBack"
                     ><v-icon>mdi-close</v-icon></v-btn
                   >
                 </v-toolbar-items>
               </v-toolbar>
-              <v-form @submit.prevent="onSubmit"> </v-form>
-              <v-container grid-list-xs>
-                <v-row>
-                  <v-col>
-                    <v-text-field
-                      name="baseUrl"
-                      label="Base URL"
-                      v-model="form.baseUrl"
-                      :rules="[rules.required]"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col>
-                    <v-text-field
-                      name="apiKey"
-                      label="API Key"
-                      v-model="form.apiKey"
-                      :rules="[rules.required]"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+              <v-form v-model="form" @submit.prevent="onSubmit">
+                <v-container grid-list-xs>
+                  <v-row>
+                    <v-col>
+                      <v-text-field
+                        name="baseUrl"
+                        label="Base URL"
+                        v-model="baseUrl"
+                        :rules="[required]"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col>
+                      <v-text-field
+                        name="apiKey"
+                        label="API Key"
+                        v-model="apiKey"
+                        :rules="[required]"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
 
-                <v-row>
-                  <v-col cols="8"> </v-col>
-                  <v-col>
-                    <v-row>
-                      <v-col>
-                        <v-btn
-                          :disabled="!form"
-                          block
-                          color="success"
-                          size="large"
-                          type="submit"
-                          variant="elevated"
-                          @click="onSubmit"
-                        >
-                          Save
-                        </v-btn>
-                      </v-col>
-                      <v-col>
-                        <v-btn
-                          block
-                          color="error"
-                          size="large"
-                          variant="elevated"
-                          @click="goBack"
-                        >
-                          Cancel
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-container>
+                  <v-row>
+                    <v-col cols="8">
+                      <v-alert
+                        v-model="alert.model"
+                        :color="alert.color"
+                        closable
+                        variant="tonal"
+                      >
+                        {{ alert.text }}
+                      </v-alert>
+                    </v-col>
+                    <v-col>
+                      <v-row>
+                        <v-col>
+                          <v-btn
+                            :disabled="!form"
+                            block
+                            color="success"
+                            size="large"
+                            type="submit"
+                            variant="elevated"
+                          >
+                            Save
+                          </v-btn>
+                        </v-col>
+                        <v-col>
+                          <v-btn
+                            block
+                            color="primary"
+                            prepend-icon="mdi-tools"
+                            size="large"
+                            variant="elevated"
+                            @click="testCon"
+                          >
+                            Test
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-form>
             </v-card>
           </v-col>
         </v-row>
@@ -106,42 +116,111 @@
       </v-container>
     </v-sheet>
   </div>
-  <div></div>
+  <div>
+    <SnackBar
+      ref="SnackBar"
+      :text="snackbar.text"
+      :color="snackbar.color"
+      :timeout="snackbar.timeout"
+    ></SnackBar>
+  </div>
 </template>
 
 <script>
 import { useTheme } from "vuetify/lib/framework.mjs";
+import apiHandler from "@/services/apiHandler";
 import VueCookies from "vue-cookies";
+import SnackBar from "@/components/SnackBar.vue";
+
 export default {
   data: () => ({
+    form: false,
+    baseUrl: null,
+    apiKey: null,
+
     globalTheme: null,
-    themStore: null,
-    form: {
-      apiKey: "",
-      baseUrl: "",
-      theme: "",
-    },
-    rules: {
-      required: (value) => !!value || "Required.",
-    },
     themeStore: null,
     themeNames: {
       name: [],
       color: [],
     },
     themes: [],
+
+    snackbar: {
+      text: "",
+      color: "",
+      timeout: 3000,
+    },
+
+    alert: {
+      model: false,
+      text: "",
+      color: "",
+      timeout: 3000,
+    },
   }),
+
+  components: {
+    SnackBar,
+  },
 
   methods: {
     goBack() {
-      this.$router.push({ name: "login" });
+      // this.$router.push({ name: "login" });
+      this.$router.go(-1);
+    },
+
+    required(v) {
+      return !!v || "Field is required";
+    },
+
+    reloadPage() {
+      window.location.reload();
+    },
+
+    async testCon() {
+      try {
+        const res = await apiHandler.checkApi(this.baseUrl, this.apiKey);
+        console.log("API CONNECTION", res);
+        if (res === undefined) {
+          this.alert.text = "API Connection failed.";
+          this.alert.color = "error";
+          this.alert.model = true;
+        } else {
+          this.alert.text = "API Connection successful.";
+          this.alert.color = "success";
+          this.alert.model = true;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async checkCredentialsExistence() {
+      try {
+        const baseUrl = VueCookies.get("baseUrl");
+        const apiKey = VueCookies.get("apiKey");
+
+        if (baseUrl && apiKey) {
+          this.snackbar.text = "API Credentials found.";
+          this.snackbar.color = "success";
+          this.$refs.SnackBar.model = true;
+        } else {
+          this.snackbar.text = "Credentials not found. Pls configure settings.";
+          this.snackbar.color = "error";
+          this.$refs.SnackBar.model = true;
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     async getDbCredentials() {
-      const apiKey = import.meta.env.VITE_APP_API_KEY;
-      const baseUrl = import.meta.env.VITE_APP_BASE_URL;
-      this.form.baseUrl = baseUrl;
-      this.form.apiKey = apiKey;
+      const apiKey = VueCookies.get("apiKey");
+      const baseUrl = VueCookies.get("baseUrl");
+
+      this.baseUrl = baseUrl;
+      this.apiKey = apiKey;
 
       // console.log(this.form);
     },
@@ -150,7 +229,14 @@ export default {
       confirm("Are you sure you want to save this settings?");
 
       try {
-        this.goBack();
+        VueCookies.set("baseUrl", this.baseUrl);
+        VueCookies.set("apiKey", this.apiKey);
+
+        this.snackbar.text = "Settings saved.";
+        this.snackbar.color = "success";
+        this.$refs.SnackBar.model = true;
+
+        this.reloadPage();
       } catch (error) {
         console.log(error);
       }
@@ -173,6 +259,9 @@ export default {
 
     async changeTheme(value) {
       try {
+        const toString = JSON.stringify(value);
+        console.log("THEME", toString);
+
         this.globalTheme.global.name = value;
         VueCookies.set("theme", value);
         console.log("NEW THEME", value);
@@ -187,15 +276,13 @@ export default {
         console.log(error);
       }
     },
-
-    async getThemes() {},
   },
 
   async mounted() {
     this.globalTheme = useTheme();
 
     await this.getThemeNames();
-    await this.getThemes();
+    await this.checkCredentialsExistence();
     await this.getDbCredentials();
   },
 };

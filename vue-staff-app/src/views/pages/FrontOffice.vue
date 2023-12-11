@@ -6,11 +6,11 @@
         <template v-slot:extension>
           <v-tabs v-model="activeTab">
             <v-tab
-              v-for="tab in tabs"
-              :key="tab.id"
+              v-for="(tab, i) in tabs"
+              :key="i"
               :to="tab.route"
               :disabled="tab.disabled"
-              exact
+              :hidden="tab.isHidden"
             >
               {{ tab.name }}
             </v-tab>
@@ -20,10 +20,11 @@
       <v-card-text>
         <v-window v-model="activeTab">
           <v-window-item
-            v-for="tab in tabs"
-            :key="tab.id"
-            :value="tab.route"
-            :color="tab.color"
+            v-for="(tab, i) in tabs"
+            :key="i"
+            :to="tab.route"
+            :disabled="tab.disabled"
+            :hidden="tab.isHidden"
           >
             <router-view> </router-view>
           </v-window-item>
@@ -40,42 +41,26 @@ export default {
       activeTab: "/dashboard/frontOffice/accounts",
       tabs: [
         {
-          id: 1,
           name: "Dashboard",
           route: {
             name: "frontOfficeDashboard",
           },
-          color: "primary",
           disabled: false,
           isHidden: false,
         },
         {
-          id: 2,
-          name: "Bookings",
-          route: {
-            name: "frontOfficeBooking",
-          },
-          color: "red",
-          disabled: true,
-          isHidden: true,
-        },
-        {
-          id: 3,
-          name: "Reservation",
+          name: "Reservation & Bookings",
           route: {
             name: "frontOfficeReservation",
           },
-          color: "green",
           disabled: false,
           isHidden: false,
         },
         {
-          id: 4,
           name: "Accounts",
           route: {
             name: "frontOfficeAccounts",
           },
-          color: "blue",
           disabled: false,
           isHidden: false,
         },

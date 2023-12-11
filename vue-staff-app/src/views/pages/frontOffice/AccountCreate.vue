@@ -244,6 +244,21 @@ export default {
             this.snackbar.model = true;
             this.snackbar.text = "Account Created";
             this.snackbar.color = "success";
+            // 5 seconds countdown display
+            let seconds = 5;
+            let timer = setInterval(() => {
+              seconds--;
+              this.snackbar.text = `Account Created. Redirecting to Account Edit Page in ${seconds} seconds`;
+              if (seconds === 0) {
+                clearInterval(timer);
+              }
+            }, 1000);
+          })
+          .then(() => {
+            this.$router.push({
+              name: "accountEdit",
+              params: { id: response.data.id },
+            });
           })
           .catch((error) => {
             console.log(error);
