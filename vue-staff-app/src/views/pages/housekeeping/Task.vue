@@ -370,8 +370,8 @@
 </template>
 
 <script>
-import { useTaskStore } from "@/store/task";
-import { useRoomStore } from "@/store/room";
+import { useTaskStore } from "@/store/app";
+import { useRoomStore } from "@/store/app";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 

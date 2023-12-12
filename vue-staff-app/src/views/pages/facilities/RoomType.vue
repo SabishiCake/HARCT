@@ -207,7 +207,7 @@
   </v-app>
 </template>
 <script>
-import { useRoomStore } from "@/store/room";
+import { useRoomStore } from "@/store/app";
 import apiHandler from "@/services/apiHandler";
 export default {
   data() {

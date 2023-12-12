@@ -276,7 +276,7 @@
 </template>
 
 <script>
-import { useReservationStore } from "@/store/reservation";
+import { useReservationStore } from "@/store/app";
 import apiHandler from "@/services/apiHandler";
 export default {
   data() {

@@ -61,6 +61,20 @@ router.get('/:id', (req, res) => {
   });
 });
 
+router.get('/refTransId/:id', (req, res) => {
+  const sql = 'SELECT * FROM payments WHERE reftransaction_id = ?';
+  db.query(sql, [req.params.id], (err, result) => {
+    if (err) {
+      console.log(err);
+      res
+        .status(500)
+        .json({ error: 'Error retrieving payment from the database' });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
 router.get('/guest/:id', (req, res) => {
   const getFullPaymentInfoSql = `
     SELECT g.guest_id, g.last_name, g.first_name, g.email, g.phone, g.address,

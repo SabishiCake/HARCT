@@ -288,8 +288,8 @@
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
-import { useAccountStore } from "@/store/account";
-import { useRoomStore } from "@/store/room";
+import { useAccountStore } from "@/store/app";
+import { useRoomStore } from "@/store/app";
 
 import apihandler from "@/services/apiHandler";
 
@@ -442,8 +442,8 @@ export default {
         year: "numeric",
         month: "numeric",
         day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
+        // hour: "numeric",
+        // minute: "numeric",
         // second: "numeric",
         // timeZoneName: "short",
       };
@@ -634,10 +634,17 @@ export default {
           return;
         // const status = this.editedItem.status;
         const resId = this.editedItem.reservation_id;
+        const check_in_date = new Date(this.editedItem.check_in_date);
+        const check_out_date = new Date(this.editedItem.check_out_date);
+
+        console.log("Res | Update Reservation: ", check_in_date);
+
+        // console.log("Res | Update Reservation: ", this.editedItem);
+
         const data = {
           GuestID: this.editedItem.guest_id,
           RoomID: this.editedItem.room_id,
-          CheckInDate: this.editedItem.check_in_date,
+          CheckInDate: check_in_date,
           CheckOutDate: this.editedItem.check_out_date,
           TotalCost: this.editedItem.total_cost,
           Status: this.editedItem.status,

@@ -196,8 +196,8 @@
   </v-app>
 </template>
 <script>
-import { useFacilityStore } from "@/store/facility";
-import { useRoomStore } from "@/store/room";
+import { useFacilityStore } from "@/store/app";
+import { useRoomStore } from "@/store/app";
 import apiHandler from "@/services/apiHandler";
 
 export default {

@@ -271,12 +271,17 @@
         </template>
       </v-snackbar>
     </div>
+    <div v-if="paymentDialog.refTransId">
+      <paymentDialog ref="payDialog" :refTransId="paymentDialog.refTransId" />
+    </div>
   </v-app>
 </template>
 
 <script>
 import apiHandler from "@/services/apiHandler";
-import { useReservationStore } from "@/store/reservation";
+import { useReservationStore } from "@/store/app";
+
+import paymentDialog from "@/components/paymentDialog.vue";
 
 export default {
   props: {
@@ -285,12 +290,21 @@ export default {
       required: false,
     },
   },
+
+  components: {
+    paymentDialog,
+  },
+
   data: () => ({
     reservationStore: null,
     roomResSearch: "",
     allReservations: [],
     AllResMore: [],
     displayedReservations: [],
+
+    paymentDialog: {
+      refTransId: null,
+    },
 
     dialog: {
       model: false,
@@ -540,10 +554,20 @@ export default {
     updateReservations() {
       try {
         const status = this.dialog.reservation.status.toLowerCase();
+        const type = this.dialog.reservation.type.toLowerCase();
         const reservation_id = this.dialog.reservation.reservation_id;
         if (!confirm("Are you sure you want to update this reservation?")) {
           return;
         }
+
+        console.log("Updating reservation...", type, status, reservation_id);
+
+        // if (status === "checkedin") {
+        //   this.paymentDialog.refTransId = toString(reservation_id);
+        //   this.$refs.payDialog.model = true;
+        // } else {
+        //   this.paymentDialog.refTransId = "";
+        // }
 
         apiHandler
           .put(`roomres/${status}/${reservation_id}}`)

@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { useLoginStore } from "@/store/auth";
+import { useLoginStore } from "@/store/app";
 export default {
   data() {
     return {

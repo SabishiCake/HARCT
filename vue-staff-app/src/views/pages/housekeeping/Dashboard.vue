@@ -245,7 +245,7 @@
 </template>
 
 <script>
-import { useTaskStore } from "@/store/task";
+import { useTaskStore } from "@/store/app";
 export default {
   data() {
     return {

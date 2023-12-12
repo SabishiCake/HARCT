@@ -176,7 +176,7 @@
 </template>
 
 <script>
-import { useAccountStore } from "@/store/account";
+import { useAccountStore } from "@/store/app";
 import apiHandler from "@/services/apiHandler";
 import RoomResTable from "@/components/frontoffice/RoomResTable2.vue";
 import NavBar from "@/components/frontoffice/foNavbar.vue";

@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { useAccountStore } from "@/store/account";
+import { useAccountStore } from "@/store/app";
 
 export default {
   data() {

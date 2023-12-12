@@ -64,6 +64,9 @@
                         @click="openDbSetting"
                       >
                         <v-icon> mdi-cog </v-icon>
+                        <v-tooltip bottom activator="parent">
+                          API Configuration Settings
+                        </v-tooltip>
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -126,11 +129,10 @@
 </template>
 
 <script>
-import { useLoginStore } from "@/store/auth";
+import { useLoginStore } from "@/store/app";
 import { useAppStore } from "@/store/app";
 import { useTheme } from "vuetify/lib/framework.mjs";
 import apiHandler from "@/services/apiHandler";
-import VueCookies from "vue-cookies";
 
 // Components
 import SnackBar from "@/components/SnackBar.vue";
@@ -216,6 +218,7 @@ export default {
         const loginStore = useLoginStore();
         // loginStore.helloWorld();
         await loginStore.mockLogin(this.username, this.password);
+        console.log(this.username, this.password);
 
         const loginState = loginStore.isLoggedIn;
         if (loginState) {

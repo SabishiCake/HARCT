@@ -206,7 +206,7 @@
 </template>
 <script>
 import apiHandler from "@/services/apiHandler";
-import { useRoomStore } from "@/store/room";
+import { useRoomStore } from "@/store/app";
 export default {
   data() {
     return {
