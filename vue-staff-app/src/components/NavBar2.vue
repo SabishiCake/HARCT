@@ -161,13 +161,15 @@ export default {
           disabled: false,
         },
         {
-          title: "Supplier and Inventory",
+          title: "Inventory And Supplier",
           icon: "mdi-truck",
-          to: "/dashboard/SupplierManagement",
+          to: {
+            name: "inventoryDashboard",
+          },
           onClick: () => {
             this.$emit("changeTitle", "Supplier Management");
           },
-          disabled: true,
+          disabled: false,
         },
 
         {

@@ -76,7 +76,13 @@ router.get('/', (req, res) => {
     if (err) {
       res.status(500).json({ error: 'Error retrieving admin from database' });
     } else {
-      res.status(200).json(result);
+      const admins = result.map((admin) => {
+        return {
+          id: admin.id,
+          username: admin.username,
+        };
+      });
+      res.status(200).json(admins);
     }
   });
 });

@@ -70,7 +70,8 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
   const id = req.params.id;
-  const { TaskName, TaskDescription, RoomNumber, Status, UpdatedAt } = req.body;
+  const { TaskName, TaskDescription, RoomNumber, Status } = req.body;
+  const UpdatedAt = new Date();
   const sql =
     'UPDATE tasks SET task_name = ?, description = ?, room_number = ?, status = ?, updated_at = ? WHERE task_id = ?';
   db.query(

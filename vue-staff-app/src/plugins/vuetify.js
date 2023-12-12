@@ -15,6 +15,7 @@ import {
 
 // Composables
 import { createVuetify } from "vuetify";
+import { VTextField } from "vuetify/lib/components/index.mjs";
 
 const CustomTheme = {
   themes: {
@@ -163,6 +164,19 @@ const CustomTheme = {
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
+  defaults: {
+    VTextField: {
+      variant: "outlined",
+      dense: true,
+      color: "primary",
+    },
+    VSelect: {
+      variant: "outlined",
+      dense: true,
+      color: "primary",
+    },
+  },
+
   theme: {
     defaultTheme: "purpleLight",
     themes: {

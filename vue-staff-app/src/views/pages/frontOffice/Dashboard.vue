@@ -276,7 +276,7 @@
 </template>
 
 <script>
-import { useReservationStore } from "@/store/app";
+import { useReservationStore, usePaymentStore } from "@/store/app";
 import apiHandler from "@/services/apiHandler";
 export default {
   data() {
@@ -405,20 +405,17 @@ export default {
 
     async checkInReservation() {
       try {
-        if (!confirm("Are you sure you want to check in this reservation?"))
-          return;
+        const type = this.dialog.item.type;
+        if (!confirm(`Are you sure you want to check in this ${type}?`)) return;
 
         const reservation = this.dialog.item;
         const reservation_id = reservation.reservation_id;
+        const paymentStore = usePaymentStore();
+        paymentStore.setRefTransactionId(reservation_id);
 
-        await apiHandler
-          .put(`roomres/checkedin/${reservation_id}`)
-          .then((res) => {
-            console.log("res", res);
-          })
-          .catch((err) => {
-            console.log("err", err);
-          });
+        this.$router.push({
+          name: "frontOfficeBilling",
+        });
 
         this.refresh();
 

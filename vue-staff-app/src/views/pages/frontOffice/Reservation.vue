@@ -238,13 +238,31 @@
                   </v-select>
                 </v-col>
               </v-row>
+              <v-row v-if="dialog.reservation.status === 'checkedIn'">
+                <v-col>
+                  Clicking
+                  <strong>Pay</strong>
+                  will redirect you to billing page.
+                </v-col>
+              </v-row>
             </v-container>
           </v-card-text>
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success darken-1" text @click="updateReservations"
+            <v-btn
+              v-if="dialog.reservation.status !== 'checkedIn'"
+              color="success darken-1"
+              text
+              @click="updateReservations"
               >Save</v-btn
+            >
+            <v-btn
+              v-if="dialog.reservation.status === 'checkedIn'"
+              color="success"
+              text
+              @click="payReservation"
+              >Pay</v-btn
             >
             <v-btn
               color="secondary darken-1"
@@ -279,7 +297,7 @@
 
 <script>
 import apiHandler from "@/services/apiHandler";
-import { useReservationStore } from "@/store/app";
+import { useReservationStore, usePaymentStore } from "@/store/app";
 
 import paymentDialog from "@/components/paymentDialog.vue";
 
@@ -562,13 +580,6 @@ export default {
 
         console.log("Updating reservation...", type, status, reservation_id);
 
-        // if (status === "checkedin") {
-        //   this.paymentDialog.refTransId = toString(reservation_id);
-        //   this.$refs.payDialog.model = true;
-        // } else {
-        //   this.paymentDialog.refTransId = "";
-        // }
-
         apiHandler
           .put(`roomres/${status}/${reservation_id}}`)
           .then((response) => {
@@ -583,6 +594,32 @@ export default {
         this.snackbar.model = true;
         this.snackbar.text = "Reservation updated.";
         this.snackbar.color = "success";
+      } catch (error) {
+        console.log(error);
+        this.snackbar.model = true;
+        this.snackbar.text = "An error occurred. Please try again.";
+        this.snackbar.color = "error";
+      }
+    },
+
+    payReservation() {
+      try {
+        const paymentStore = usePaymentStore();
+        const status = this.dialog.reservation.status.toLowerCase();
+        const type = this.dialog.reservation.type.toLowerCase();
+        const reservation_id = this.dialog.reservation.reservation_id;
+        if (
+          !confirm(`Are you sure you want to update payment of this ${type}?`)
+        ) {
+          return;
+        }
+
+        console.log("Updating reservation...", type, status, reservation_id);
+        paymentStore.setRefTransactionId(reservation_id);
+
+        this.$router.push({
+          name: "frontOfficeBilling",
+        });
       } catch (error) {
         console.log(error);
         this.snackbar.model = true;

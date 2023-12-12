@@ -242,7 +242,10 @@ export default {
       return this.allRooms.filter((room) => {
         return (
           room.room_number.toLowerCase().includes(searchTerm) ||
-          room.room_type.toLowerCase().includes(searchTerm)
+          room.type.type_name.toLowerCase().includes(searchTerm) ||
+          room.type.description.toLowerCase().includes(searchTerm) ||
+          room.type.rate.toString().includes(searchTerm) ||
+          room.is_occupied.toString().includes(searchTerm)
         );
       });
     },
@@ -277,6 +280,12 @@ export default {
           type_name: "",
         },
       };
+    },
+
+    sortRoomByRate() {
+      this.allRooms.sort((a, b) => {
+        return a.type.rate - b.type.rate;
+      });
     },
 
     addNewRoom() {

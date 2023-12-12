@@ -370,8 +370,7 @@
 </template>
 
 <script>
-import { useTaskStore } from "@/store/app";
-import { useRoomStore } from "@/store/app";
+import { useTaskStore, useRoomStore } from "@/store/app";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
@@ -451,7 +450,8 @@ export default {
 
   methods: {
     formatDate(date) {
-      const newdate = new Date(date);
+      console.log("date", date);
+      const newdate = new Date(date); // Create a date object in local time
       const options = {
         year: "numeric",
         month: "numeric",
@@ -462,7 +462,11 @@ export default {
         // timeZoneName: "short",
       };
 
-      const readableDate = newdate.toLocaleDateString("en-US", options);
+      const utcDate = new Date(
+        newdate.getTime() + newdate.getTimezoneOffset() * 60000
+      ); // Convert to UTC
+      const readableDate = utcDate.toLocaleDateString("en-US", options);
+      console.log("readableDate", readableDate);
       return readableDate;
     },
 

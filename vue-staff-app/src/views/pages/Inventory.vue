@@ -2,7 +2,7 @@
   <v-app>
     <v-card>
       <v-toolbar color="primary" pa-5 box>
-        <v-toolbar-title>Front Office</v-toolbar-title>
+        <v-toolbar-title>Supplier And Inventory Management</v-toolbar-title>
         <template v-slot:extension>
           <v-tabs v-model="activeTab">
             <v-tab
@@ -38,45 +38,28 @@
 export default {
   data() {
     return {
-      activeTab: "/dashboard/frontOffice/accounts",
+      activeTab: "/inventory/inventoryDashboard",
       tabs: [
         {
           name: "Dashboard",
           route: {
-            name: "frontOfficeDashboard",
+            name: "inventoryDashboard",
           },
           disabled: false,
           isHidden: false,
         },
         {
-          name: "Reservation & Bookings",
+          name: "Stock",
           route: {
-            name: "frontOfficeReservation",
-          },
-          disabled: false,
-          isHidden: false,
-        },
-
-        {
-          name: "Orders",
-          route: {
-            name: "frontOfficeOrders",
+            name: "inventoryStock",
           },
           disabled: false,
           isHidden: false,
         },
         {
-          name: "Billing",
+          name: "Supplier",
           route: {
-            name: "frontOfficeBilling",
-          },
-          disabled: false,
-          isHidden: false,
-        },
-        {
-          name: "Accounts",
-          route: {
-            name: "frontOfficeAccounts",
+            name: "inventorySupplier",
           },
           disabled: false,
           isHidden: false,

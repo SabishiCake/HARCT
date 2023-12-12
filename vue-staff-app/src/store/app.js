@@ -149,10 +149,27 @@ export const usePaymentStore = defineStore("payments", {
     loading: false,
     allPayments: [],
     paymentId: null,
+    refTransactionId: null,
     payment: null,
   }),
 
   actions: {
+    async setPaymentId(id) {
+      try {
+        this.paymentId = id;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async setRefTransactionId(id) {
+      try {
+        this.refTransactionId = id;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     async getPayment(id) {
       try {
         const res = apiHandler.get(`payments/${id}`);
@@ -162,8 +179,10 @@ export const usePaymentStore = defineStore("payments", {
     },
     async getPaymentByRefTransId(id) {
       try {
-        const res = apiHandler.get(`payments/refTransId/${id}`);
-        console.log(res);
+        const response = await apiHandler.get(`payments/refTransId/${id}`);
+        console.log(response);
+        this.payment = response.data;
+        console.log("Store | getPaymentByRefTransId:", this.payment);
       } catch (error) {
         console.log(error);
       }
@@ -386,6 +405,35 @@ export const useTaskStore = defineStore("task", {
           });
       } catch (error) {
         this.error = error;
+      }
+    },
+  },
+});
+
+export const useSupplierStore = defineStore("supplier", {
+  state: () => ({
+    allSuppliers: [],
+    supplierId: null,
+    supplier: {},
+  }),
+
+  actions: {
+    async getAllSuppliers() {
+      try {
+        await apiHandler
+          .get("suppliers")
+          .then((response) => {
+            this.allSuppliers = response.data;
+            console.log(
+              "Store | getAllSuppliers | Suppliers:",
+              this.allSuppliers
+            );
+          })
+          .catch((error) => {
+            this.error = error;
+          });
+      } catch (error) {
+        console.log(error);
       }
     },
   },

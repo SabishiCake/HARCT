@@ -386,7 +386,7 @@ router.put('/:reservationID', (req, res) => {
     'UPDATE payments SET updated_at = ?, amount = ?, type = ? WHERE reftransaction_id = ?';
   const checkConflictingReservationSql =
     'SELECT * FROM room_reservations WHERE room_id = ? AND reservation_id <> ? AND ((status = "pending" OR status = "checkedIn") AND ((check_in_date < ? AND check_out_date > ?) OR (check_in_date < ? AND check_out_date > ?)))';
-
+  // TODO: Fix conflicting reservation check cuz it's not working, I think. I'm not sure if it's working or not.
   db.query(
     checkConflictingReservationSql,
     [
@@ -453,18 +453,18 @@ router.put('/:reservationID', (req, res) => {
 
 router.put('/:status/:reservationID', (req, res) => {
   const reservationID = req.params.reservationID.toLowerCase();
-  const getRoomOccupancy = (roomID) => {
-    const roomSql = 'SELECT is_occupied FROM room_details WHERE room_id = ?';
-    return new Promise((resolve, reject) => {
-      db.query(roomSql, [roomID], (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result[0].is_occupied);
-        }
-      });
-    });
-  };
+  // const getRoomOccupancy = (roomID) => {
+  //   const roomSql = 'SELECT is_occupied FROM room_details WHERE room_id = ?';
+  //   return new Promise((resolve, reject) => {
+  //     db.query(roomSql, [roomID], (err, result) => {
+  //       if (err) {
+  //         reject(err);
+  //       } else {
+  //         resolve(result[0].is_occupied);
+  //       }
+  //     });
+  //   });
+  // };
 
   let IsOccupied = 0;
 
@@ -485,6 +485,7 @@ router.put('/:status/:reservationID', (req, res) => {
   };
 
   const status = determineStatus();
+
   const statusSql =
     'UPDATE room_reservations SET status = ? WHERE reservation_id = ?';
 

@@ -50,19 +50,93 @@
           <v-col>
             <v-card>
               <v-toolbar color="primary">
-                <v-toolbar-title>Pending Tasks</v-toolbar-title>
+                <v-toolbar-title>Today's Tasks</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-toolbar-items>
+                <!-- <v-toolbar-items>
                   <v-btn @click="refresh" icon>
                     <v-icon>mdi-refresh</v-icon>
                   </v-btn>
-                </v-toolbar-items>
+                </v-toolbar-items> -->
               </v-toolbar>
               <v-card-text
                 ><v-container grid-list-xs>
                   <v-row>
                     <v-col
-                      v-if="filteredPendingTasks.length === 0"
+                      v-if="todayTasks.length === 0"
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <div>No Pending Tasks</div>
+                    </v-col>
+                    <v-col
+                      v-for="(task, index) in todayTasksPagination"
+                      :key="index"
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <v-card>
+                        <v-toolbar color="secondary">
+                          <v-toolbar-title>
+                            {{ task.task_name }}
+                          </v-toolbar-title>
+                        </v-toolbar>
+
+                        <v-card-text>
+                          <div>{{ task.description }}</div>
+                          <br />
+                          <div>
+                            Status: <span>{{ task.status }}</span>
+                          </div>
+                        </v-card-text>
+                        <v-divider></v-divider>
+                        <v-card-actions>
+                          <v-btn
+                            color="primary"
+                            text
+                            prepend-icon="mdi-eye"
+                            block
+                            @click="viewTask(task.task_id)"
+                          >
+                            view
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col>
+                      <v-pagination
+                        v-model="pagination.currentPage"
+                        :length="Math.ceil(todayTasks.length / 6)"
+                        circle
+                        @input="refresh"
+                      ></v-pagination>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-card>
+              <v-toolbar color="primary">
+                <v-toolbar-title>Pending Tasks</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <!-- <v-toolbar-items>
+                  <v-btn @click="refresh" icon>
+                    <v-icon>mdi-refresh</v-icon>
+                  </v-btn>
+                </v-toolbar-items> -->
+              </v-toolbar>
+              <v-card-text
+                ><v-container grid-list-xs>
+                  <v-row>
+                    <v-col
+                      v-if="pendingTasks.length === 0"
                       cols="12"
                       sm="6"
                       md="4"
@@ -77,6 +151,24 @@
                       md="4"
                     >
                       <v-card>
+                        <!-- <v-toolbar
+                          :color="
+                            checkOverdue(task.updated_at) ? 'red' : 'secondary'
+                          "
+                        >
+                          <v-toolbar-title>
+                            {{ task.task_name }}
+                          </v-toolbar-title>
+                          <v-toolbar-items v-if="checkOverdue(task.updated_at)">
+                            <v-btn icon>
+                              <v-icon>mdi-alert-circle-outline</v-icon>
+                              <v-tooltip bottom activator="parent">
+                                Overdue
+                              </v-tooltip>
+                            </v-btn>
+                          </v-toolbar-items>
+                        </v-toolbar> -->
+
                         <v-toolbar color="secondary">
                           <v-toolbar-title>
                             {{ task.task_name }}
@@ -126,7 +218,7 @@
                 ><v-container grid-list-xs>
                   <v-row>
                     <v-col
-                      v-if="filteredInProgressTasks.length === 0"
+                      v-if="pendingTasks.length === 0"
                       cols="12"
                       sm="6"
                       md="4"
@@ -268,24 +360,10 @@ export default {
   },
 
   computed: {
-    filteredTodayTasks() {
-      return this.todayTasks.slice(
-        (this.pagination.currentPage - 1) * this.pagination.rowperPage,
-        this.pagination.currentPage * this.pagination.rowperPage
-      );
-    },
     filteredPendingTasks() {
-      return this.pendingTasks.slice(
-        (this.pagination.currentPage - 1) * this.pagination.rowperPage,
-        this.pagination.currentPage * this.pagination.rowperPage
-      );
-    },
-
-    filteredInProgressTasks() {
-      return this.inProgressTasks.slice(
-        (this.pagination.currentPage - 1) * this.pagination.rowperPage,
-        this.pagination.currentPage * this.pagination.rowperPage
-      );
+      return this.pendingTasks.filter((task) => {
+        return task.task_status.toLowerCase().includes("pending".toLowerCase());
+      });
     },
 
     pendingTasksPagination() {
@@ -312,7 +390,7 @@ export default {
 
   methods: {
     formatDate(date) {
-      const newdate = new Date(date);
+      const newdate = new Date(date); // Create a date object in local time
       const options = {
         year: "numeric",
         month: "numeric",
@@ -323,7 +401,10 @@ export default {
         // timeZoneName: "short",
       };
 
-      const readableDate = newdate.toLocaleDateString("en-US", options);
+      const utcDate = new Date(
+        newdate.getTime() + newdate.getTimezoneOffset() * 60000
+      ); // Convert to UTC
+      const readableDate = utcDate.toLocaleDateString("en-US", options);
       return readableDate;
     },
 
@@ -338,6 +419,14 @@ export default {
       await this.taskStore.getAllTasks();
     },
 
+    async checkOverdue(date) {
+      const today = new Date();
+      today.setDate(today.getDate() + 1); // Adding 1 day to today's date
+
+      const taskDate = new Date(date);
+      return today.getTime() > taskDate.getTime(); // Comparing in milliseconds
+    },
+
     async getTasks() {
       try {
         const today = new Date().toLocaleDateString();
@@ -349,10 +438,10 @@ export default {
         this.todayTasks = this.tasks.filter(
           (task) => new Date(task.updated_at).toLocaleDateString() === today
         );
-        this.pendingTasks = this.todayTasks.filter(
+        this.pendingTasks = this.tasks.filter(
           (task) => task.status === "pending"
         );
-        this.inProgressTasks = this.todayTasks.filter(
+        this.inProgressTasks = this.tasks.filter(
           (task) => task.status === "inProgress"
         );
       } catch (error) {
