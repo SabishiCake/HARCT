@@ -37,6 +37,11 @@ import iDashboard from "@/views/pages/inventory/Dashboard.vue";
 import iStock from "@/views/pages/inventory/Stock.vue";
 import iSupplier from "@/views/pages/inventory/Supplier.vue";
 
+// Relationship Management
+import relationshipPage from "@/views/pages/Relationship.vue";
+import rDashboard from "@/views/pages/relationship/Dashboard.vue";
+import rFeedback from "@/views/pages/relationship/Feedback.vue";
+
 const routes = [
   {
     path: "/",
@@ -100,9 +105,8 @@ const routes = [
             component: accountCreatePage,
           },
           {
-            path: "accountEdit/:id",
+            path: "accountEdit",
             name: "accountEdit",
-            props: true,
             component: accountEditPage,
           },
           // Tab 2
@@ -194,6 +198,31 @@ const routes = [
         ],
       },
       {
+        path: "/relationship",
+        component: relationshipPage,
+        children: [
+          {
+            path: "RelationshipDashboard",
+            name: "relationshipDashboard",
+            component: rDashboard,
+          },
+          {
+            path: "RelationshipFeedback",
+            name: "relationshipFeedback",
+            component: rFeedback,
+          },
+          {
+            path: "/:catchAll(.*)",
+            component: NotFound,
+          },
+        ],
+      },
+      {
+        path: "Settings",
+        name: "Settings",
+        component: dbSettingsPage,
+      },
+      {
         path: "/:catchAll(.*)",
         component: NotFound,
       },
@@ -207,7 +236,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 

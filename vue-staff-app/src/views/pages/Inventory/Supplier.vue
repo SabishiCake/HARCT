@@ -63,6 +63,32 @@
                             <v-card-text>
                               <div>
                                 <span>Supplier ID: </span>
+                                <br />
+                                <span
+                                  class="text-h6 font-weight-light grey--text"
+                                  >{{ supplier.supplier_id }}</span
+                                >
+                              </div>
+                              <br />
+                              <div>
+                                <span>Contact Name: </span>
+                                <br />
+                                <span
+                                  class="text-h6 font-weight-light grey--text"
+                                  >{{ supplier.contact_name }}</span
+                                >
+                              </div>
+                              <br />
+                              <div>
+                                <span>Contact Title: </span>
+                                <br />
+                                <span
+                                  class="text-h6 font-weight-light grey--text"
+                                  >{{ supplier.contact_title }}</span
+                                >
+                              </div>
+                              <!-- <div>
+                                <span>Supplier ID: </span>
                                 <span>{{ supplier.supplier_id }}</span>
                               </div>
                               <div>
@@ -72,7 +98,7 @@
                               <div>
                                 <span>Contact Title: </span>
                                 <span>{{ supplier.contact_title }}</span>
-                              </div>
+                              </div> -->
                             </v-card-text>
                             <v-divider></v-divider>
                             <v-card-actions>
@@ -279,7 +305,7 @@
                     type="submit"
                     block
                     :disabled="dialog.isView || !form"
-                    @click="dialog.isNew ? onSubmit() : updateSupplier()"
+                    @click="dialog.isNew ? addSupplier() : updateSupplier()"
                     >{{ dialog.isNew ? "Add" : "Update" }}</v-btn
                   >
                 </v-col>
@@ -333,7 +359,9 @@ export default {
         },
         postal_code: (value) => {
           if (!value) return true;
-          const pattern = /^[0-9]+$/;
+          // Pattern: [a-z0-9][a-z0-9\- ]{0,10}[a-z0-9]$ (case insensitive)
+          // This is just for sanity check, not a full validation
+          const pattern = /^[a-z0-9][a-z0-9\- ]{0,10}[a-z0-9]$/i;
           return pattern.test(value) || "Invalid postal code.";
         },
       },
@@ -440,6 +468,7 @@ export default {
     openNewSupplierDialog() {
       try {
         this.dialog.isNew = true;
+        this.dialog.isView = false;
         this.dialog.title = "Add New Supplier";
         this.dialog.model = true;
         this.supplierData = {
@@ -463,6 +492,7 @@ export default {
     openEditDialog(supplier) {
       try {
         this.dialog.isEdit = true;
+        this.dialog.isView = false;
         this.dialog.isNew = false;
         this.dialog.title = "Edit Supplier";
         this.dialog.model = true;
@@ -531,7 +561,7 @@ export default {
         };
         // const res = await apiHandler.post("suppliers", req);
 
-        const res = await apiHandler.put(
+        const res = await apiHandler.post(
           `suppliers/${this.supplierData.supplier_id}`,
           req
         );

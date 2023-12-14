@@ -26,7 +26,7 @@
 
         <v-list density="compact" nav>
           <v-list-item
-            v-for="item in itemList"
+            v-for="item in navItem"
             :key="item.title"
             :to="item.to"
             :prepend-icon="item.icon"
@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { useLoginStore } from "@/store/app";
+import { useLoginStore, useThemeStore } from "@/store/app";
 export default {
   data() {
     return {
@@ -183,16 +183,51 @@ export default {
         },
         {
           title: "Resto Analytics",
-          icon: "mdi-account-group-outline",
+          icon: "mdi-chart-bar",
           to: "/dashboard/RestoAnalytics",
           onClick: () => {
             this.$emit("changeTitle", "Resto Analytics");
           },
           disabled: true,
         },
+        {
+          title: "Relationship Management",
+          icon: "mdi-star-check",
+          to: {
+            name: "relationshipDashboard",
+          },
+          onClick: () => {
+            this.$emit("changeTitle", "Relationship Management");
+          },
+          disabled: false,
+        },
+        {
+          title: "Settings",
+          icon: "mdi-cog",
+          to: {
+            name: "Settings",
+          },
+          onClick: () => {
+            this.$emit("changeTitle", "Settings");
+            const themeStore = useThemeStore();
+            themeStore.setThemeSettings(false);
+          },
+        },
       ],
     };
   },
+  computed: {
+    navItem() {
+      return this.itemList.map((item) => {
+        return item;
+      });
+    },
+
+    activeItems() {
+      return this.itemList.filter((item) => !item.disabled);
+    },
+  },
+
   methods: {
     async logout() {
       try {

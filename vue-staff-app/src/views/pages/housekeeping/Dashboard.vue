@@ -25,6 +25,16 @@
                 <v-container grid-list-xs>
                   <v-row>
                     <v-col>
+                      <DoughnutChart
+                        :chart-data="chartData"
+                        :width="chartData.width"
+                        :height="chartData.height"
+                      >
+                      </DoughnutChart>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col>
                       <div class="text-h6">
                         Today's Tasks ({{ todayTasks.length }})
                       </div>
@@ -84,10 +94,23 @@
                         </v-toolbar>
 
                         <v-card-text>
-                          <div>{{ task.description }}</div>
+                          <div>
+                            <span>Description: </span>
+                            <br />
+                            <span
+                              class="text-h6 font-weight-light grey--text"
+                              >{{ task.description }}</span
+                            >
+                          </div>
+
                           <br />
                           <div>
-                            Status: <span>{{ task.status }}</span>
+                            <span>Description: </span>
+                            <br />
+                            <span
+                              class="text-h6 font-weight-light grey--text"
+                              >{{ task.description }}</span
+                            >
                           </div>
                         </v-card-text>
                         <v-divider></v-divider>
@@ -176,7 +199,14 @@
                         </v-toolbar>
 
                         <v-card-text>
-                          <div>{{ task.description }}</div>
+                          <div>
+                            <span>Description: </span>
+                            <br />
+                            <span
+                              class="text-h6 font-weight-light grey--text"
+                              >{{ task.description }}</span
+                            >
+                          </div>
                         </v-card-text>
                         <v-divider></v-divider>
                         <v-card-actions>
@@ -240,7 +270,14 @@
                         </v-toolbar>
 
                         <v-card-text>
-                          <div>{{ task.description }}</div>
+                          <div>
+                            <span>Description: </span>
+                            <br />
+                            <span
+                              class="text-h6 font-weight-light grey--text"
+                              >{{ task.description }}</span
+                            >
+                          </div>
                         </v-card-text>
                         <v-divider></v-divider>
                         <v-card-actions>
@@ -338,9 +375,31 @@
 
 <script>
 import { useTaskStore } from "@/store/app";
+import { DoughnutChart } from "vue-chart-3";
+import { Chart, registerables } from "chart.js";
+
+Chart.register(...registerables);
+
 export default {
+  components: {
+    DoughnutChart,
+  },
   data() {
     return {
+      chartData: {
+        labels: ["Pending", "In Progress"],
+        width: 300,
+        height: 300,
+        datasets: [
+          {
+            label: "Tasks",
+            data: [0, 0],
+            backgroundColor: ["#FF6384", "#36A2EB"],
+            hoverBackgroundColor: ["#FF6384", "#36A2EB"],
+          },
+        ],
+      },
+
       taskStore: null,
       tasks: [],
       todayTasks: [],
@@ -448,12 +507,25 @@ export default {
         console.log(error);
       }
     },
+
+    setDataChart() {
+      if (this.tasks.length === 0) {
+        this.chartData.datasets[0].data = [0, 0];
+        return;
+      }
+
+      this.chartData.datasets[0].data = [
+        this.pendingTasks.length,
+        this.inProgressTasks.length,
+      ];
+    },
   },
 
   async mounted() {
     this.taskStore = useTaskStore();
     await this.getTasks();
     await this.taskStore.getAllTasks();
+    this.setDataChart();
   },
 };
 </script>

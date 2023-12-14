@@ -8,128 +8,121 @@
 const express = require('express');
 const db = require('../../db');
 const router = express.Router();
+const intUUID = require('../../utils/intUUID');
 
-/**
- * Route to create new feedback.
- * @name POST/feedback
- * @function
- * @memberof module:routes/feedback
- * @param {Object} req - The request object.
- * @param {Object} req.body - The request body.
- * @param {number} req.body.GuestID - The ID of the guest who provided the feedback.
- * @param {string} req.body.Comment - The comment provided in the feedback.
- * @param {number} req.body.Rating - The rating provided in the feedback.
- * @param {Object} res - The response object.
- */
+router.post('/', async (req, res) => {
+  const { name, email, comment, rating } = req.body;
+  const feedback_id = intUUID();
 
-router.post('/', (req, res) => {
-  const { GuestID, Comment, Rating } = req.body;
+  if (!name || !email || !comment || !rating) {
+    return res.status(400).json({ error: 'Please enter all fields' });
+  }
+
+  if (rating < 1 || rating > 5) {
+    return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+  }
+
   const sql =
-    'INSERT INTO Feedback (guest_id, Comment, Rating) VALUES (?, ?, ?)';
-  db.query(sql, [GuestID, Comment, Rating], (err, result) => {
+    'INSERT INTO feedback (feedback_id, name, email, comment, rating) VALUES (?, ?, ?, ?, ?)';
+  db.query(sql, [feedback_id, name, email, comment, rating], (err, result) => {
     if (err) {
-      res.status(500).json({ error: 'Error adding feedback to database' });
+      console.log(err);
+      res
+        .status(500)
+        .json({ error: 'Error retrieving feedback from the database' });
     } else {
-      res.status(200).json({ message: 'Feedback added to database' });
+      res.status(200).json(result);
     }
   });
 });
 
-/**
- * Route to delete feedback by FeedbackID.
- * @name DELETE/feedback/:feedbackID
- * @function
- * @memberof module:routes/feedback
- * @param {Object} req - The request object.
- * @param {Object} req.params - The request parameters.
- * @param {string} req.params.feedbackID - The ID of the feedback to be deleted.
- * @param {Object} res - The response object.
- */
-
-router.delete('/:feedbackID', (req, res) => {
-  const feedbackID = req.params.feedbackID;
-  const sql = 'DELETE FROM Feedback WHERE feedback_id = ?';
-  db.query(sql, [feedbackID], (err, result) => {
-    if (err) {
-      res.status(500).json({ error: 'Error deleting feedback from database' });
-    } else {
-      res.status(200).json({ message: 'Feedback deleted from database' });
-    }
-  });
-});
-
-/**
- * Route to get all feedback.
- * @name GET/feedback
- * @function
- * @memberof module:routes/feedback
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- */
-
-router.get('/', (req, res) => {
-  const sql = 'SELECT * FROM Feedback';
+router.get('/', async (req, res) => {
+  const sql = 'SELECT * FROM feedback';
   db.query(sql, (err, result) => {
     if (err) {
+      console.log(err);
       res
         .status(500)
-        .json({ error: 'Error retrieving feedback from database' });
+        .json({ error: 'Error retrieving feedback from the database' });
     } else {
-      res.status(200).json(result);
+      if (result.length === 0) {
+        res.status(200).json({ message: 'No feedback found' });
+      } else {
+        console.log(result);
+        res.status(200).json(result);
+      }
     }
   });
 });
 
-/**
- * Route to get feedback by FeedbackID.
- * @name GET/feedback/:feedbackID
- * @function
- * @memberof module:routes/feedback
- * @param {Object} req - The request object.
- * @param {Object} req.params - The request parameters.
- * @param {string} req.params.feedbackID - The ID of the feedback to be retrieved.
- * @param {Object} res - The response object.
- */
-
-router.get('/:feedbackID', (req, res) => {
-  const feedbackID = req.params.feedbackID;
-  const sql = 'SELECT * FROM Feedback WHERE feedback_id = ?';
-  db.query(sql, [feedbackID], (err, result) => {
+router.get('/:feedback_id', async (req, res) => {
+  const { feedback_id } = req.params;
+  const sql = 'SELECT * FROM feedback WHERE feedback_id = ?';
+  db.query(sql, [feedback_id], (err, result) => {
     if (err) {
+      console.log(err);
       res
         .status(500)
-        .json({ error: 'Error retrieving feedback from database' });
+        .json({ error: 'Error retrieving feedback from the database' });
     } else {
-      res.status(200).json(result);
+      if (result.length === 0) {
+        res.status(200).json({ message: 'No feedback found' });
+      } else {
+        res.status(200).json(result);
+      }
     }
   });
 });
 
-/**
- * Route to update feedback by FeedbackID.
- * @name PUT/feedback/:feedbackID
- * @function
- * @memberof module:routes/feedback
- * @param {Object} req - The request object.
- * @param {Object} req.params - The request parameters.
- * @param {string} req.params.feedbackID - The ID of the feedback to be updated.
- * @param {Object} req.body - The request body.
- * @param {number} req.body.GuestID - The ID of the guest who provided the feedback.
- * @param {string} req.body.Comment - The comment provided in the feedback.
- * @param {number} req.body.Rating - The rating provided in the feedback.
- * @param {Object} res - The response object.
- */
+router.put('/:feedback_id', async (req, res) => {
+  const { name, email, comment, rating } = req.body;
+  console.log(req.body);
+  console.log(req.params);
+  const id = req.params.feedback_id;
+  if (!id) {
+    return res.status(400).json({ error: 'No id' });
+  }
+  if (!name || !email || !comment || !rating) {
+    return res.status(400).json({ error: 'Please enter all fields' });
+  }
 
-router.put('/:feedbackID', (req, res) => {
-  const feedbackID = req.params.feedbackID;
-  const { GuestID, Comment, Rating } = req.body;
+  if (rating < 1 || rating > 5) {
+    return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+  }
+
   const sql =
-    'UPDATE Feedback SET guest_id = ?, Comment = ?, Rating = ? WHERE feedback_id = ?';
-  db.query(sql, [GuestID, Comment, Rating, feedbackID], (err, result) => {
+    'UPDATE feedback SET name = ?, email = ?, comment = ?, rating = ? WHERE feedback_id = ?';
+  db.query(sql, [name, email, comment, rating, id], (err, result) => {
     if (err) {
-      res.status(500).json({ error: 'Error updating feedback in database' });
+      console.log(err);
+      res
+        .status(500)
+        .json({ error: 'Error retrieving feedback from the database' });
     } else {
-      res.status(200).json({ message: 'Feedback updated in database' });
+      if (result.length === 0) {
+        res.status(200).json({ message: 'No feedback found' });
+      } else {
+        res.status(200).json(result);
+      }
+    }
+  });
+});
+
+router.delete('/:feedback_id', async (req, res) => {
+  const { feedback_id } = req.params;
+  const sql = 'DELETE FROM feedback WHERE feedback_id = ?';
+  db.query(sql, [feedback_id], (err, result) => {
+    if (err) {
+      console.log(err);
+      res
+        .status(500)
+        .json({ error: 'Error retrieving feedback from the database' });
+    } else {
+      if (result.length === 0) {
+        res.status(200).json({ message: 'No feedback found' });
+      } else {
+        res.status(200).json(result);
+      }
     }
   });
 });

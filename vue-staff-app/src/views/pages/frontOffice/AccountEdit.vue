@@ -19,7 +19,7 @@
         <v-row>
           <v-col>
             <v-container>
-              <v-row id="0">
+              <v-row>
                 <v-col>
                   <v-card>
                     <v-toolbar color="primary">
@@ -149,7 +149,7 @@
                   </v-card>
                 </v-col>
               </v-row>
-              <v-row id="1">
+              <v-row>
                 <v-col>
                   <RoomResTable
                     :guest_id="accountData.guestInfo.guest_id.toString()"
@@ -182,12 +182,6 @@ import RoomResTable from "@/components/frontoffice/RoomResTable2.vue";
 import NavBar from "@/components/frontoffice/foNavbar.vue";
 
 export default {
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-  },
   components: {
     RoomResTable,
     NavBar,
@@ -267,6 +261,8 @@ export default {
         ],
       },
 
+      accountId: "",
+
       accountData: {
         guestInfo: {
           guest_id: "",
@@ -293,10 +289,6 @@ export default {
   computed: {
     accountStore() {
       return useAccountStore();
-    },
-
-    accountId() {
-      return this.$route.params.id;
     },
   },
 
@@ -379,12 +371,15 @@ export default {
 
     async roomResData() {
       const accountStore = useAccountStore();
-      const account = await accountStore.getAccountId(this.id);
+      const account = accountStore.getAccountId(this.id);
       return account.room_reservations;
     },
   },
 
   async created() {
+    const accountStore = useAccountStore();
+    const accountId = accountStore.accountId;
+    this.accountId = accountId;
     await this.fetchAccountData();
   },
 };

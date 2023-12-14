@@ -123,4 +123,19 @@ router.put('/:id', async (req, res) => {
   );
 });
 
+router.delete('/:id', async (req, res) => {
+  const id = req.params.id;
+  const sql = 'DELETE FROM suppliers WHERE supplier_id = ?';
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.log(err);
+      res
+        .status(500)
+        .json({ error: 'Error retrieving suppliers from the database' });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
 module.exports = router;

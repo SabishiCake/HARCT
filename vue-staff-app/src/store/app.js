@@ -5,41 +5,70 @@ export const useAppStore = defineStore("app", {
   state: () => ({
     loading: false,
     branch: "development",
-    currentTheme: null,
   }),
 
   actions: {
-    setLoading(value) {
-      this.$state.loading = value;
-    },
-
-    getLoading() {
-      return this.$state.loading;
-    },
-    setBranch(branch) {
-      this.$state.branch = branch;
-    },
-
-    async getBranch() {
-      return this.$state.branch;
+    setbranch(branch) {
+      this.branch = branch;
     },
   },
 });
 
+const getDefaultTheme = () => ({
+  currentTheme: "purpleLight",
+});
+
+const getTheme = () => {
+  const theme = localStorage.getItem("theme");
+  return theme ? theme : getDefaultTheme();
+};
+
+export const useThemeStore = defineStore(
+  "theme",
+  {
+    state: () => ({
+      currentTheme: getTheme(),
+      useThemeSettings: false,
+    }),
+
+    actions: {
+      setCurrentTheme(theme) {
+        this.currentTheme = theme;
+        console.log("Store | setCurrentTheme | Theme:", this.currentTheme);
+        localStorage.setItem("theme", theme);
+      },
+
+      setThemeSettings(value) {
+        this.useThemeSettings = value;
+        console.log(
+          "Store | setThemeSettings | useThemeSettings:",
+          this.useThemeSettings
+        );
+      },
+    },
+  },
+  { persist: true }
+);
+
+const defaultAuth = () => ({
+  isLoggedIn: false,
+});
+
+const getAuth = () => {
+  const auth = localStorage.getItem("auth");
+  return auth ? auth : defaultAuth();
+};
+
 export const useLoginStore = defineStore("login", {
   state: () => ({
     loading: false,
-    isLoggedIn: false,
+    isLoggedIn: getAuth(),
     user: null,
     response: null,
   }),
 
   actions: {
-    // helloWorld() {
-    //   console.log("Hello World!");
-    // },
-
-    async mockLogin(user, pass) {
+    async login(user, pass) {
       try {
         const req = {
           username: user,
@@ -49,12 +78,12 @@ export const useLoginStore = defineStore("login", {
 
         const res = await apiHandler.post(`admin/auth`, req);
 
-        console.log(res.status);
-
         if (res.status === 200) {
+          localStorage.setItem("auth", true);
           this.isLoggedIn = true;
           this.user = user;
           this.response = res;
+          console.log("Store | login | Response:", this.isLoggedIn);
         }
       } catch (error) {
         console.log(error);
@@ -68,18 +97,26 @@ export const useLoginStore = defineStore("login", {
   },
 });
 
+const defaultAccountId = () => ({
+  accountId: null,
+});
+
+const getAccountId = () => {
+  const accountId = localStorage.getItem("accountId");
+  return accountId ? accountId : defaultAccountId();
+};
+
 export const useAccountStore = defineStore("accounts", {
   state: () => ({
     editIsReady: false,
     createIsready: false,
     loading: false,
     accounts: [],
-    accountId: null,
+    accountId: getAccountId(),
     currentAccount: {
       guestInfo: {},
       accountInfo: {},
       room_reservations: [],
-      table_Reservations: [],
       orders: [],
       payments: [],
       feedback: [],
@@ -92,8 +129,10 @@ export const useAccountStore = defineStore("accounts", {
       this.$state.loading = true;
       try {
         const response = await apiHandler.get("guest");
-        this.$state.accounts = response.data.guests;
+        console.log(response);
+        this.$state.accounts = response.data;
         this.$state.loading = false;
+        console.log("Store | getAccounts | Accounts:", this.$state.accounts);
       } catch (error) {
         console.log(error);
         this.$state.loading = false;
@@ -104,6 +143,7 @@ export const useAccountStore = defineStore("accounts", {
       this.$state.loading = true;
       try {
         const response = await apiHandler.get(`guest/${id}`);
+        localStorage.setItem("accountId", id);
         this.$state.currentAccount = response.data.guestData;
         this.$state.loading = false;
       } catch (error) {
@@ -114,6 +154,7 @@ export const useAccountStore = defineStore("accounts", {
 
     async setAccountId(id) {
       this.$state.accountId = id;
+      console.log("Store | setAccountId | Account ID:", this.$state.accountId);
     },
 
     async setLoading(value) {
@@ -384,9 +425,19 @@ export const useRoomStore = defineStore("rooms", {
   },
 });
 
+const defaultTasks = () => ({
+  allTasks: [],
+});
+
+const getTasks = () => {
+  const tasks = localStorage.getItem("tasks");
+  const tasksArray = JSON.parse(tasks);
+  return tasksArray ? tasks : defaultTasks();
+};
+
 export const useTaskStore = defineStore("task", {
   state: () => ({
-    allTasks: [],
+    allTasks: getTasks(),
     task: {},
     loading: false,
     error: null,
@@ -399,6 +450,7 @@ export const useTaskStore = defineStore("task", {
           .get("tasks")
           .then((response) => {
             this.allTasks = response.data;
+            localStorage.setItem("tasks", JSON.stringify(this.allTasks));
           })
           .catch((error) => {
             this.error = error;
@@ -428,6 +480,61 @@ export const useSupplierStore = defineStore("supplier", {
               "Store | getAllSuppliers | Suppliers:",
               this.allSuppliers
             );
+          })
+          .catch((error) => {
+            this.error = error;
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+});
+
+export const useInventoryStore = defineStore("inventory", {
+  state: () => ({
+    allInventory: [],
+    inventoryId: null,
+    inventory: {},
+  }),
+
+  actions: {
+    async getAllInventory() {
+      try {
+        await apiHandler
+          .get("inventory")
+          .then((response) => {
+            this.allInventory = response.data;
+            console.log(
+              "Store | getAllInventory | Inventory:",
+              this.allInventory
+            );
+          })
+          .catch((error) => {
+            this.error = error;
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+});
+
+export const useFeedbackStore = defineStore("feedback", {
+  state: () => ({
+    allFeedback: [],
+    feedbackId: null,
+    feedback: {},
+  }),
+
+  actions: {
+    async getAllFeedback() {
+      try {
+        await apiHandler
+          .get("feedback")
+          .then((response) => {
+            this.allFeedback = response.data;
+            console.log("Store | getAllFeedback | Feedback:", this.allFeedback);
           })
           .catch((error) => {
             this.error = error;

@@ -8,6 +8,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../db');
+const intUUID = require('../../utils/intUUID');
 
 /**
  * Route to get all restaurant reservations.
@@ -33,118 +34,82 @@ router.get('/', (req, res) => {
   });
 });
 
-/**
- * Route to add a new restaurant reservation.
- * @name POST/tableRes
- * @function
- * @memberof module:routes/tableRes
- * @param {Object} req - The request object.
- * @param {Object} req.body - The request body.
- * @param {string} req.body.GuestID - The ID of the guest making the reservation.
- * @param {number} req.body.TableNumber - The table number for the reservation.
- * @param {string} req.body.ReservationDate - The date of the reservation.
- * @param {Object} res - The response object.
- */
+router.get('/:table_id', (req, res) => {
+  const { table_id } = req.params;
+  const fullTableInfo = `
+  SELECT
+    tr.reservation_id, tr.customer_name, tr.contact_info, tr.table_id, tr.reservation_date, tr.reservation_time, tr.num_of_guests, tr.status, tr.created_at, tr.updated_at,
+    td.table_id, td.type_id, td.is_occupied, td.capacity,
+    FROM table_reservations tr
+    INNER JOIN tables_details td
+    ON tr.table_id = td.table_id
+    WHERE tr.table_id = ?
+  `;
+
+  db.query(fullTableInfo, [table_id], (err, result) => {
+    if (err) {
+      console.error(err);
+      res
+        .status(500)
+        .json({ error: 'Error retrieving restaurant reservations' });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
 
 router.post('/', (req, res) => {
   const {
-    GuestID,
-    TableNumber,
-    ReservationDate,
-    ReservationTime,
-    NumOfGuests,
-    Status,
-    CreatedAt,
+    reservation_id,
+    customer_name,
+    contact_info,
+    table_id,
+    reservation_date,
+    reservation_time,
+    num_of_guests,
+    status,
+    created_at,
+    updated_at,
   } = req.body;
 
+  const checkIfTableExists = 'SELECT * FROM tables_details WHERE table_id = ?';
   const sql =
-    'INSERT INTO table_reservations (guest_id, table_number, reservation_date, reservation_time, num_of_guests, status, created_at) VALUES (?, ?, ?)';
-  const values = [
-    GuestID,
-    TableNumber,
-    ReservationDate,
-    ReservationTime,
-    NumOfGuests,
-    Status,
-    CreatedAt,
-  ];
+    'INSERT INTO table_reservations (reservation_id, customer_name, contact_info, table_id, reservation_date, reservation_time, num_of_guests, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-  db.query(sql, values, (err, result) => {
+  db.query(checkIfTableExists, [table_id], (err, result) => {
     if (err) {
       console.error(err);
-      res.status(500).json({ error: 'Error adding restaurant reservation' });
+      res.status(500).json({ error: 'Error checking if table exists' });
     } else {
-      res
-        .status(201)
-        .json({ message: 'Restaurant reservation added successfully' });
-    }
-  });
-});
-
-/**
- * Route to update a restaurant reservation by ID.
- * @name PUT/tableRes/:id
- * @function
- * @memberof module:routes/tableRes
- * @param {Object} req - The request object.
- * @param {Object} req.params - The request parameters.
- * @param {string} req.params.id - The ID of the reservation to be updated.
- * @param {Object} req.body - The request body.
- * @param {string} req.body.GuestID - The ID of the guest making the reservation.
- * @param {number} req.body.TableNumber - The table number for the reservation.
- * @param {string} req.body.ReservationDate - The date of the reservation.
- * @param {Object} res - The response object.
- */
-
-router.put('/:id', (req, res) => {
-  const reservationId = req.params.id;
-  const { GuestID, TableNumber, ReservationDate, UpdatedAt } = req.body;
-
-  const sql =
-    'UPDATE table_reservations SET guest_id = ?, table_number = ?, reservation_date = ?, updated_at WHERE reservation_id = ?';
-  const values = [
-    GuestID,
-    TableNumber,
-    ReservationDate,
-    reservationId,
-    UpdatedAt,
-  ];
-
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Error updating restaurant reservation' });
-    } else {
-      res
-        .status(200)
-        .json({ message: 'Restaurant reservation updated successfully' });
-    }
-  });
-});
-
-/**
- * Route to delete a restaurant reservation by ID.
- * @name DELETE/tableRes/:id
- * @function
- * @memberof module:routes/tableRes
- * @param {Object} req - The request object.
- * @param {Object} req.params - The request parameters.
- * @param {string} req.params.id - The ID of the reservation to be deleted.
- * @param {Object} res - The response object.
- */
-
-router.delete('/:id', (req, res) => {
-  const reservationId = req.params.id;
-  const sql = 'DELETE FROM table_reservations WHERE reservation_id = ?';
-
-  db.query(sql, reservationId, (err, result) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'Error deleting restaurant reservation' });
-    } else {
-      res
-        .status(200)
-        .json({ message: 'Restaurant reservation deleted successfully' });
+      if (result.length > 0) {
+        db.query(
+          sql,
+          [
+            reservation_id,
+            customer_name,
+            contact_info,
+            table_id,
+            reservation_date,
+            reservation_time,
+            num_of_guests,
+            status,
+            created_at,
+            updated_at,
+          ],
+          (err, result) => {
+            if (err) {
+              console.error(err);
+              res
+                .status(500)
+                .json({ error: 'Error adding restaurant reservation' });
+            } else {
+              res.status(200).json(result);
+            }
+          }
+        );
+      } else {
+        res.status(500).json({ error: 'Table does not exist' });
+      }
     }
   });
 });

@@ -51,7 +51,7 @@
                 name="Email"
                 label="Email"
                 v-model="data.email"
-                :rules="[rules.required, rules.email]"
+                :rules="[rules.required]"
                 id="id"
               ></v-text-field>
             </v-col>
@@ -60,7 +60,7 @@
                 name="Phone"
                 label="Phone"
                 v-model="data.phone"
-                :rules="[rules.required, rules.phone]"
+                :rules="[rules.phone]"
                 id="id"
               ></v-text-field>
             </v-col>
@@ -71,7 +71,7 @@
                 name="Username"
                 label="Username"
                 v-model="data.username"
-                :rules="[rules.required, rules.username]"
+                :rules="[rules.required]"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -167,42 +167,36 @@ export default {
 
         email: (value) => {
           const pattern = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
-          if (!pattern.test(value)) {
+          if (!pattern.test(value.toString())) {
             return "Email is invalid";
           }
         },
 
         phone: (value) => {
+          if (typeof value !== "string") {
+            return "Phone must be a string";
+          }
           const pattern = /^[0-9]+$/;
           if (!pattern.test(value)) {
             return "Phone is invalid";
-          }
-        },
-
-        address: (value) => {
-          if (!value) {
-            return "Address is required";
-          }
-          return true;
-        },
-
-        username: (value) => {
-          if (!value) {
-            return "Username is required";
           }
           return true;
         },
 
         password: (value) => {
-          const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-          if (!value) {
-            return "Password is required";
+          if (typeof value !== "string") {
+            return "Password must be a string";
+          }
+          const pattern =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-_=+{};:,<.>])[a-zA-Z\d!@#$%^&*()-_=+{};:,<.>]{8,}$/;
+          if (!pattern.test(value)) {
+            return "Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 special character, and 1 number";
           }
           return true;
         },
 
         confirmPassword: (value) => {
-          if (value !== this.data.password) {
+          if (value.toString() !== this.data.password) {
             return "Password does not match";
           }
           return true;
@@ -253,13 +247,13 @@ export default {
                 clearInterval(timer);
               }
             }, 1000);
+            this.resetFields();
           })
-          .then(() => {
-            this.$router.push({
-              name: "accountEdit",
-              params: { id: response.data.id },
-            });
-          })
+          // .then(() => {
+          //   this.$router.push({
+          //     name: "accountEdit",
+          //   });
+          // })
           .catch((error) => {
             console.log(error);
             this.snackbar.model = true;

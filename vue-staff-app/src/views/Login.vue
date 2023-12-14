@@ -129,9 +129,7 @@
 </template>
 
 <script>
-import { useLoginStore } from "@/store/app";
-import { useAppStore } from "@/store/app";
-import { useTheme } from "vuetify/lib/framework.mjs";
+import { useLoginStore, useAppStore, useThemeStore } from "@/store/app";
 import apiHandler from "@/services/apiHandler";
 
 // Components
@@ -217,7 +215,7 @@ export default {
         console.log("logging in...");
         const loginStore = useLoginStore();
         // loginStore.helloWorld();
-        await loginStore.mockLogin(this.username, this.password);
+        await loginStore.login(this.username, this.password);
         console.log(this.username, this.password);
 
         const loginState = loginStore.isLoggedIn;
@@ -246,18 +244,19 @@ export default {
     },
 
     openDbSetting() {
+      const themeStore = useThemeStore();
       this.$router.push({
         name: "dbSettings",
       });
+      themeStore.setThemeSettings(true);
     },
 
     async setTheme() {
       try {
-        const theme = useAppStore().currentTheme;
-        if (theme === null) return;
-
-        const globalTheme = useTheme();
-        globalTheme.global.name = JSON.parse(theme);
+        const themeStore = useThemeStore();
+        const theme = themeStore.currentTheme;
+        console.log(theme);
+        this.$vuetify.theme.name = theme;
       } catch (error) {
         console.log(error);
       }
@@ -265,24 +264,29 @@ export default {
   },
 
   async created() {
-    const loginStore = useLoginStore();
-    const appStore = useAppStore();
+    try {
+      const loginStore = useLoginStore();
+      const appStore = useAppStore();
 
-    this.branch = appStore.branch;
+      this.branch = appStore.branch;
 
-    this.checkApiCon();
-    // this.setTheme();
-    if (loginStore.isLoggedIn) {
-      try {
-        await this.$router.push({
-          name: "frontOfficeDashboard",
-        });
-      } catch (error) {
-        console.log(error);
-        this.$refs.SnackBar.model = true;
-        this.snackbar.text = error.message;
-        this.snackbar.color = "error";
+      await this.checkApiCon();
+      // await this.setTheme();
+      if (loginStore.isLoggedIn) {
+        console.log("logged in");
+        try {
+          this.$router.push({
+            name: "frontOfficeDashboard",
+          });
+        } catch (error) {
+          console.log(error);
+          this.$refs.SnackBar.model = true;
+          this.snackbar.text = error.message;
+          this.snackbar.color = "error";
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
   },
 };

@@ -5,6 +5,9 @@
         <v-row>
           <v-col> <h1>Dashboard</h1></v-col>
         </v-row>
+        <v-row>
+          <v-col> </v-col>
+        </v-row>
       </v-container>
     </div>
   </v-app>

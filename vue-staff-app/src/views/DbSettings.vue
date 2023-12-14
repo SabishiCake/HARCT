@@ -81,7 +81,7 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="useThemeSettings">
           <v-col>
             <v-card>
               <v-toolbar color="primary">
@@ -128,6 +128,7 @@
 
 <script>
 import { useTheme } from "vuetify/lib/framework.mjs";
+import { useThemeStore } from "@/store/app";
 import apiHandler from "@/services/apiHandler";
 import VueCookies from "vue-cookies";
 import SnackBar from "@/components/SnackBar.vue";
@@ -137,6 +138,8 @@ export default {
     form: false,
     baseUrl: null,
     apiKey: null,
+
+    useThemeSettings: false,
 
     globalTheme: null,
     themeStore: null,
@@ -166,8 +169,10 @@ export default {
 
   methods: {
     goBack() {
+      const themeStore = useThemeStore();
       // this.$router.push({ name: "login" });
       this.$router.go(-1);
+      themeStore.setThemeSettings(false);
     },
 
     required(v) {
@@ -221,8 +226,6 @@ export default {
 
       this.baseUrl = baseUrl;
       this.apiKey = apiKey;
-
-      // console.log(this.form);
     },
 
     onSubmit() {
@@ -259,12 +262,18 @@ export default {
 
     async changeTheme(value) {
       try {
-        const toString = JSON.stringify(value);
-        console.log("THEME", toString);
+        const themeStore = useThemeStore();
+        themeStore.setCurrentTheme(value);
 
-        this.globalTheme.global.name = value;
-        VueCookies.set("theme", value);
-        console.log("NEW THEME", value);
+        // const useTheme = this.globalTheme;
+        // console.log("CURRENT THEME", themeStore.currentTheme);
+        console.log("VUETIFY THEME", this.$vuetify.theme);
+
+        try {
+          this.$vuetify.theme.name = value;
+        } catch (error) {
+          console.log(error);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -272,6 +281,16 @@ export default {
 
     getPrimaryThemeColor() {
       try {
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    getThemeSettings() {
+      try {
+        const themeStore = useThemeStore();
+        this.useThemeSettings = themeStore.useThemeSettings;
+        console.log("USE THEME SETTINGS", this.useThemeSettings);
       } catch (error) {
         console.log(error);
       }
@@ -284,6 +303,7 @@ export default {
     await this.getThemeNames();
     await this.checkCredentialsExistence();
     await this.getDbCredentials();
+    this.getThemeSettings();
   },
 };
 </script>

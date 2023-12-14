@@ -20,7 +20,7 @@ export default {
     },
     timeout: {
       type: Number,
-      default: 3000,
+      default: 1000,
     },
   },
   data() {
