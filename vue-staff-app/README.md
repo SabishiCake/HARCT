@@ -1,5 +1,9 @@
 # essentials
 
+## Dependencies
+
+- [Node.js](https://nodejs.org/en/) (v14.17.0)
+
 ## Project setup
 
 ```
