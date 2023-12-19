@@ -62,7 +62,7 @@ const CustomTheme = {
       },
       dark: {
         // Red dark color palette
-        background: "#311B92",
+        background: "#121212",
         surface: "#1E1E1E",
         primary: "#D32F2F",
         "primary-darken-1": "#B71C1C",
@@ -90,7 +90,7 @@ const CustomTheme = {
       },
       dark: {
         // Green dark color palette
-        background: "#1B5E20",
+        background: "#121212",
         surface: "#1E1E1E",
         primary: "#2E7D32",
         "primary-darken-1": "#1B5E20",
@@ -118,7 +118,7 @@ const CustomTheme = {
       },
       dark: {
         // Blue dark color palette
-        background: "#0D47A1",
+        background: "#121212",
         surface: "#1E1E1E",
         primary: "#1565C0",
         "primary-darken-1": "#0D47A1",
@@ -146,7 +146,7 @@ const CustomTheme = {
       },
       dark: {
         // Yellow dark color palette
-        background: "#FBC02D",
+        background: "#121212",
         surface: "#1E1E1E",
         primary: "#FBC02D",
         "primary-darken-1": "#FFA000",
@@ -158,11 +158,76 @@ const CustomTheme = {
         warning: "#FFA726",
       },
     },
+    solaris: {
+      light: {
+        background: "#EFF7FF",
+        surface: "#FFFFFF",
+        primary: "#FFD700", // Bright yellow/gold
+        "primary-darken-1": "#FFC107", // Slightly darker yellow
+        secondary: "#00FFFF", // Cyan
+        "secondary-darken-1": "#00CED1", // Darker cyan
+        error: "#FF6347", // Tomato red
+        info: "#87CEEB", // Sky blue
+        success: "#90EE90", // Light green
+        warning: "#FFA500", // Orange
+      },
+      dark: {
+        background: "#000033", // Dark blue
+        surface: "#121212", // Darker background
+        primary: "#FFD700", // Bright yellow/gold
+        "primary-darken-1": "#FFC107", // Slightly darker yellow
+        secondary: "#00FFFF", // Cyan
+        "secondary-darken-1": "#00CED1", // Darker cyan
+        error: "#FF6347", // Tomato red
+        info: "#87CEEB", // Sky blue
+        success: "#90EE90", // Light green
+        warning: "#FFA500", // Orange
+      },
+    },
+    discord: {
+      light: {
+        primary: "#7289DA",
+        text: "#2C2F33",
+        accent: "#99AAB5",
+        background: "#FFFFFF",
+        secondaryText: "#747F8D",
+        tertiaryText: "#8E99A5",
+        link: "#7289DA",
+        error: "#ED4245",
+        success: "#57F287",
+        warning: "#FEE75C",
+      },
+      dark: {
+        primary: "#5865f2",
+        text: "#FFFFFF",
+        accent: "#99AAB5",
+        background: "#36393F",
+        secondaryText: "#8E99A5",
+        tertiaryText: "#747F8D",
+        link: "#7289DA",
+        error: "#ED4245",
+        success: "#57F287",
+        warning: "#FEE75C",
+      },
+    },
   },
 };
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
+  defaults: {
+    VTextField: {
+      variant: "outlined",
+      dense: true,
+      color: "primary",
+    },
+    VSelect: {
+      variant: "outlined",
+      dense: true,
+      color: "primary",
+    },
+  },
+
   theme: {
     defaultTheme: "purpleLight",
     themes: {
@@ -205,6 +270,22 @@ export default createVuetify({
       yellowDark: {
         dark: true,
         colors: CustomTheme.themes.yellow.dark,
+      },
+      solarisLight: {
+        dark: false,
+        colors: CustomTheme.themes.solaris.light,
+      },
+      solarisDark: {
+        dark: true,
+        colors: CustomTheme.themes.solaris.dark,
+      },
+      discordLight: {
+        dark: false,
+        colors: CustomTheme.themes.discord.light,
+      },
+      discordDark: {
+        dark: true,
+        colors: CustomTheme.themes.discord.dark,
       },
     },
   },

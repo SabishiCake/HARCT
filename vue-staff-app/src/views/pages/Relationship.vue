@@ -2,7 +2,7 @@
   <v-app>
     <v-card>
       <v-toolbar color="primary" pa-5 box>
-        <v-toolbar-title>Front Office</v-toolbar-title>
+        <v-toolbar-title>Costumer Relationship Management</v-toolbar-title>
         <template v-slot:extension>
           <v-tabs v-model="activeTab">
             <v-tab
@@ -38,45 +38,20 @@
 export default {
   data() {
     return {
-      activeTab: "/dashboard/frontOffice/accounts",
+      activeTab: "/relationship/relationshipDashboard",
       tabs: [
         {
           name: "Dashboard",
           route: {
-            name: "frontOfficeDashboard",
+            name: "relationshipDashboard",
           },
           disabled: false,
           isHidden: false,
         },
         {
-          name: "Reservation & Bookings",
+          name: "Feedback",
           route: {
-            name: "frontOfficeReservation",
-          },
-          disabled: false,
-          isHidden: false,
-        },
-
-        // {
-        //   name: "Orders",
-        //   route: {
-        //     name: "frontOfficeOrders",
-        //   },
-        //   disabled: false,
-        //   isHidden: false,
-        // },
-        {
-          name: "Billing",
-          route: {
-            name: "frontOfficeBilling",
-          },
-          disabled: false,
-          isHidden: false,
-        },
-        {
-          name: "Accounts",
-          route: {
-            name: "frontOfficeAccounts",
+            name: "relationshipFeedback",
           },
           disabled: false,
           isHidden: false,

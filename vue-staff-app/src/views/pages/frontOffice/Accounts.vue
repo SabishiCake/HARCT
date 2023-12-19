@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { useAccountStore } from "@/store/account";
+import { useAccountStore } from "@/store/app";
 
 export default {
   data() {
@@ -164,8 +164,8 @@ export default {
 
         this.$router.push({
           name: "accountEdit",
-          params: { id: accountId },
         });
+
         this.accountStore.setAccountId(accountId);
       } catch (error) {
         console.log(error);
@@ -186,7 +186,7 @@ export default {
 
   async mounted() {
     this.accountStore = useAccountStore();
-    await this.refresh();
+    await this.accountStore.getAccounts();
   },
 };
 </script>

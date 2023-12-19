@@ -13,6 +13,8 @@ import frontOfficePage from "@/views/pages/FrontOffice.vue";
 import foDashboard from "@/views/pages/frontOffice/Dashboard.vue";
 import foBookings from "@/views/pages/frontOffice/Booking.vue";
 import foReservations from "@/views/pages/frontOffice/Reservation.vue";
+import foOrders from "@/views/pages/frontOffice/Orders.vue";
+import foBilling from "@/views/pages/frontOffice/Billing.vue";
 import foAccounts from "@/views/pages/frontOffice/Accounts.vue";
 import accountCreatePage from "@/views/pages/frontOffice/AccountCreate.vue";
 import accountEditPage from "@/views/pages/frontOffice/AccountEdit.vue";
@@ -28,6 +30,17 @@ import fDashboard from "@/views/pages/facilities/Dashboard.vue";
 import facilities from "@/views/pages/facilities/Facility.vue";
 import rooms from "@/views/pages/facilities/Rooms.vue";
 import roomType from "@/views/pages/facilities/RoomType.vue";
+
+// Inventory Management
+import inventoryPage from "@/views/pages/Inventory.vue";
+import iDashboard from "@/views/pages/inventory/Dashboard.vue";
+import iStock from "@/views/pages/inventory/Stock.vue";
+import iSupplier from "@/views/pages/inventory/Supplier.vue";
+
+// Relationship Management
+import relationshipPage from "@/views/pages/Relationship.vue";
+import rDashboard from "@/views/pages/relationship/Dashboard.vue";
+import rFeedback from "@/views/pages/relationship/Feedback.vue";
 
 const routes = [
   {
@@ -67,6 +80,19 @@ const routes = [
             require: false,
             component: foReservations,
           },
+
+          {
+            path: "FrontOfficeOrders",
+            name: "frontOfficeOrders",
+            component: foOrders,
+          },
+          {
+            path: "FrontOfficeBilling",
+            name: "frontOfficeBilling",
+            props: true,
+            component: foBilling,
+          },
+
           {
             path: "FrontOfficeAccounts",
             name: "frontOfficeAccounts",
@@ -79,9 +105,8 @@ const routes = [
             component: accountCreatePage,
           },
           {
-            path: "accountEdit/:id",
+            path: "accountEdit",
             name: "accountEdit",
-            props: true,
             component: accountEditPage,
           },
           // Tab 2
@@ -148,6 +173,56 @@ const routes = [
         ],
       },
       {
+        path: "/inventory",
+        component: inventoryPage,
+        children: [
+          {
+            path: "InventoryDashboard",
+            name: "inventoryDashboard",
+            component: iDashboard,
+          },
+          {
+            path: "InventoryStock",
+            name: "inventoryStock",
+            component: iStock,
+          },
+          {
+            path: "InventorySupplier",
+            name: "inventorySupplier",
+            component: iSupplier,
+          },
+          {
+            path: "/:catchAll(.*)",
+            component: NotFound,
+          },
+        ],
+      },
+      {
+        path: "/relationship",
+        component: relationshipPage,
+        children: [
+          {
+            path: "RelationshipDashboard",
+            name: "relationshipDashboard",
+            component: rDashboard,
+          },
+          {
+            path: "RelationshipFeedback",
+            name: "relationshipFeedback",
+            component: rFeedback,
+          },
+          {
+            path: "/:catchAll(.*)",
+            component: NotFound,
+          },
+        ],
+      },
+      {
+        path: "Settings",
+        name: "Settings",
+        component: dbSettingsPage,
+      },
+      {
         path: "/:catchAll(.*)",
         component: NotFound,
       },
@@ -161,7 +236,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 

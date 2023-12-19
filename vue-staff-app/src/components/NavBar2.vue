@@ -11,6 +11,7 @@
           <v-avatar size="40">
             <img src="@/assets/logo.svg" alt="Logo" />
           </v-avatar>
+
           <template v-slot:append>
             <v-btn
               color="primary"
@@ -25,7 +26,7 @@
 
         <v-list density="compact" nav>
           <v-list-item
-            v-for="item in itemList"
+            v-for="item in navItem"
             :key="item.title"
             :to="item.to"
             :prepend-icon="item.icon"
@@ -107,7 +108,7 @@
 </template>
 
 <script>
-import { useLoginStore } from "@/store/auth";
+import { useLoginStore, useThemeStore } from "@/store/app";
 export default {
   data() {
     return {
@@ -118,6 +119,10 @@ export default {
         model: false,
         title: "Confirmation",
         text: "",
+      },
+
+      user: {
+        name: "John Doe",
       },
 
       itemList: [
@@ -156,13 +161,15 @@ export default {
           disabled: false,
         },
         {
-          title: "Supplier and Inventory",
+          title: "Inventory And Supplier",
           icon: "mdi-truck",
-          to: "/dashboard/SupplierManagement",
+          to: {
+            name: "inventoryDashboard",
+          },
           onClick: () => {
             this.$emit("changeTitle", "Supplier Management");
           },
-          disabled: true,
+          disabled: false,
         },
 
         {
@@ -176,16 +183,51 @@ export default {
         },
         {
           title: "Resto Analytics",
-          icon: "mdi-account-group-outline",
+          icon: "mdi-chart-bar",
           to: "/dashboard/RestoAnalytics",
           onClick: () => {
             this.$emit("changeTitle", "Resto Analytics");
           },
           disabled: true,
         },
+        {
+          title: "Relationship Management",
+          icon: "mdi-star-check",
+          to: {
+            name: "relationshipDashboard",
+          },
+          onClick: () => {
+            this.$emit("changeTitle", "Relationship Management");
+          },
+          disabled: false,
+        },
+        {
+          title: "Settings",
+          icon: "mdi-cog",
+          to: {
+            name: "Settings",
+          },
+          onClick: () => {
+            this.$emit("changeTitle", "Settings");
+            const themeStore = useThemeStore();
+            themeStore.setThemeSettings(false);
+          },
+        },
       ],
     };
   },
+  computed: {
+    navItem() {
+      return this.itemList.map((item) => {
+        return item;
+      });
+    },
+
+    activeItems() {
+      return this.itemList.filter((item) => !item.disabled);
+    },
+  },
+
   methods: {
     async logout() {
       try {
@@ -209,6 +251,20 @@ export default {
         this.isLoading = false;
       }
     },
+
+    async getUserName() {
+      try {
+        const loginStore = useLoginStore();
+        const user = loginStore.user;
+        this.user.name = user;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+
+  async created() {
+    this.getUserName();
   },
 };
 </script>

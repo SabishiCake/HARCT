@@ -9,56 +9,69 @@
     </div>
     <div>
       <v-container>
+        <!-- <v-row>
+          <v-col>
+            <v-alert
+              v-model="toggle.isToday"
+              border="left"
+              color="primary"
+              variant="outlined"
+              closable
+              close-label="Close Alert"
+              title="Notice"
+            >
+              Data is automatically refreshed every 5 seconds.
+            </v-alert>
+          </v-col>
+        </v-row> -->
         <v-row>
           <v-col>
             <v-card>
               <v-toolbar color="primary">
-                <v-toolbar-title>Reservations</v-toolbar-title>
+                <v-toolbar-title>Information</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-toolbar-items>
-                  <v-btn icon>
-                    <v-icon>mdi-dots-vertical</v-icon>
-                  </v-btn>
-                </v-toolbar-items>
               </v-toolbar>
-
               <v-card-text>
-                <!-- <div class="font-weight-bold text-uppercase">
-                  Today: {{ allResToday.length }}
-                </div>
-                <div class="font-weight-bold text-uppercase">
-                  More: {{ filteredReservations.length }}
-                </div> -->
-
-                <v-row>
-                  <v-col>
-                    <v-card>
-                      <v-card-title>
-                        <div class="font-weight-bold text-uppercase">
-                          Today: {{ allResToday.length }}
-                        </div>
-                      </v-card-title>
-                    </v-card>
-                  </v-col>
-                  <v-col>
-                    <v-card>
-                      <v-card-title>
-                        <div class="font-weight-bold text-uppercase">
-                          More: {{ filteredReservations.length }}
-                        </div>
-                      </v-card-title>
-                    </v-card>
-                  </v-col>
-                  <!-- <v-col>
-                    <v-card>
-                      <v-card-title>
-                        <div class="font-weight-bold text-uppercase">
-                          Total: {{ allResMore.length }}
-                        </div>
-                      </v-card-title>
-                    </v-card>
-                  </v-col> -->
-                </v-row>
+                <v-container grid-list-xs dense no-gutters>
+                  <v-row>
+                    <v-col>
+                      <v-container grid-list-xs dense no-gutters>
+                        <v-row>
+                          <v-col>
+                            <div>Today's Total Reservations:</div>
+                            <div class="font-weight-bold text-uppercase">
+                              {{
+                                filteredPendingReservations.filter((res) => {
+                                  return res.status === "pending";
+                                }).length
+                              }}
+                            </div>
+                          </v-col>
+                          <v-col>
+                            <div>Today's Total Bookings:</div>
+                            <div class="font-weight-bold text-uppercase">
+                              {{
+                                filteredPendingBookings.filter((res) => {
+                                  return res.status === "pending";
+                                }).length
+                              }}
+                            </div>
+                          </v-col>
+                          <v-col>
+                            <div>Today's Total:</div>
+                            <div class="font-weight-bold text-uppercase">
+                              {{
+                                allPendingToday.filter((res) => {
+                                  return res.status === "pending";
+                                }).length
+                              }}
+                            </div>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-card-text>
             </v-card>
           </v-col>
@@ -68,33 +81,34 @@
           <v-col>
             <v-card min-height="100px">
               <v-toolbar color="primary">
-                <v-toolbar-title>Todays Pending Reservations</v-toolbar-title>
+                <v-toolbar-title>Today's Pending </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
                   <v-btn icon @click="refresh">
                     <v-icon>mdi-refresh</v-icon>
+                    <v-tooltip bottom activator="parent"> Refresh </v-tooltip>
                   </v-btn>
                 </v-toolbar-items>
               </v-toolbar>
               <v-container grid-list-xs>
                 <v-row>
-                  <v-col v-if="allResToday.length === 0">
+                  <v-col v-if="allPendingToday.length === 0">
                     <v-card-text>
                       <div class="font-weight-bold text-uppercase">
-                        No Reservations Today
+                        No Reservations or Bookings for Today
                       </div>
                     </v-card-text>
                   </v-col>
 
                   <v-col
-                    v-for="(reservation, index) in allResToday"
+                    v-for="(reservation, index) in allPendingToday"
                     :key="index"
                     cols="auto"
                     sm="6"
                     md="4"
                   >
                     <v-card>
-                      <v-toolbar color="secondary">
+                      <v-toolbar :color="card.color(reservation.type)">
                         <v-toolbar-title>
                           <span class="font-weight-bold text-uppercase">{{
                             reservation.guest_name
@@ -128,11 +142,28 @@
                         <div>
                           Status:
                           <v-chip
-                            color="secondary"
+                            color="warning"
                             text-color="white"
                             v-if="reservation.status === 'pending'"
                           >
                             {{ reservation.status }}
+                          </v-chip>
+                        </div>
+                        <div>
+                          Type:
+                          <v-chip
+                            color="primary"
+                            text-color="white"
+                            v-if="reservation.type === 'reservation'"
+                          >
+                            {{ reservation.type }}
+                          </v-chip>
+                          <v-chip
+                            color="secondary"
+                            text-color="white"
+                            v-if="reservation.type === 'booking'"
+                          >
+                            {{ reservation.type }}
                           </v-chip>
                         </div>
                       </v-card-text>
@@ -219,6 +250,15 @@
       </v-dialog>
     </div>
     <div>
+      <v-dialog
+        v-model="paymentDialog.model"
+        max-width="500px"
+        persistent
+        @keydown.esc="paymentDialog.model = false"
+      >
+      </v-dialog>
+    </div>
+    <div>
       <v-snackbar
         :color="snackbar.color"
         :timeout="snackbar.timeout"
@@ -226,7 +266,7 @@
       >
         {{ snackbar.text }}
         <template v-slot:actions>
-          <v-btn :color="snackbar.btnColor" text @click="snackbar.model = false"
+          <v-btn color="white" text @click="snackbar.model = false"
             >Close</v-btn
           >
         </template>
@@ -236,22 +276,35 @@
 </template>
 
 <script>
-import { useReservationStore } from "@/store/reservation";
+import { useReservationStore, usePaymentStore } from "@/store/app";
 import apiHandler from "@/services/apiHandler";
 export default {
   data() {
     return {
       useResStore: null,
-      allResMore: [],
-      allResToday: [],
+      allPendingRes: [],
+      allPendingToday: [],
+      pendingReservations: [],
+      pendingBookings: [],
 
       card: {
         title: "",
         text: "",
         arrayLimit: 0,
+        color: (type) => {
+          if (type === "reservation") return "primary";
+          if (type === "booking") return "secondary";
+        },
       },
 
       dialog: {
+        item: null,
+        model: false,
+        title: "",
+        text: "",
+      },
+
+      paymentDialog: {
         item: null,
         model: false,
         title: "",
@@ -273,9 +326,31 @@ export default {
   },
 
   computed: {
-    filteredReservations() {
-      return this.allResMore.filter((res) => {
-        return res.status === "pending";
+    autoRefreshTimer() {
+      setInterval(() => {
+        this.refresh();
+      }, 5000);
+    },
+
+    filteredPendingBookings() {
+      const today = new Date().toLocaleDateString();
+      return this.allPendingRes.filter((res) => {
+        const checkInDate = new Date(res.check_in_date).toLocaleDateString();
+        const status = res.status;
+        if (this.toggle.isToday && checkInDate !== today) return;
+        if (this.toggle.isToday && status !== "pending") return;
+        return res.type === "booking";
+      });
+    },
+
+    filteredPendingReservations() {
+      const today = new Date().toLocaleDateString();
+      return this.allPendingRes.filter((res) => {
+        const checkInDate = new Date(res.check_in_date).toLocaleDateString();
+        const status = res.status;
+        if (this.toggle.isToday && checkInDate !== today) return;
+        if (this.toggle.isToday && status !== "pending") return;
+        return res.type === "reservation";
       });
     },
   },
@@ -313,8 +388,8 @@ export default {
 
     refresh() {
       try {
-        this.allResMore = [];
-        this.allResToday = [];
+        this.allPendingRes = [];
+        this.allPendingToday = [];
         this.getAllReservations();
         this.snackbar.model = true;
         this.snackbar.text = "Refreshed";
@@ -330,20 +405,17 @@ export default {
 
     async checkInReservation() {
       try {
-        if (!confirm("Are you sure you want to check in this reservation?"))
-          return;
+        const type = this.dialog.item.type;
+        if (!confirm(`Are you sure you want to check in this ${type}?`)) return;
 
         const reservation = this.dialog.item;
         const reservation_id = reservation.reservation_id;
+        const paymentStore = usePaymentStore();
+        paymentStore.setRefTransactionId(reservation_id);
 
-        await apiHandler
-          .put(`roomres/checkedin/${reservation_id}`)
-          .then((res) => {
-            console.log("res", res);
-          })
-          .catch((err) => {
-            console.log("err", err);
-          });
+        this.$router.push({
+          name: "frontOfficeBilling",
+        });
 
         this.refresh();
 
@@ -364,17 +436,24 @@ export default {
     async getAllReservations() {
       try {
         await this.useResStore.getAllReservationsMore();
-        const allResMore = this.useResStore.moreReservations;
-        this.allResMore = allResMore;
-        console.log("allResMore", allResMore);
+        const allPendingRes = this.useResStore.moreReservations;
+        this.allPendingRes = allPendingRes;
+        if (allPendingRes.length === 0) {
+          this.snackbar.model = true;
+          this.snackbar.text = "No Reservations or Bookings";
+          this.snackbar.color = "error";
+          this.snackbar.btnColor = "error";
+          return;
+        }
+        console.log("allResMore", allPendingRes);
         const today = new Date().toLocaleDateString();
 
-        allResMore.forEach((item) => {
+        allPendingRes.forEach((item) => {
           const checkInDate = new Date(item.check_in_date).toLocaleDateString();
           const status = item.status;
           if (this.toggle.isToday && checkInDate !== today) return;
           if (this.toggle.isToday && status !== "pending") return;
-          this.allResToday.push({
+          this.allPendingToday.push({
             reservation_id: item.reservation_id,
             room_id: item.room_id,
             check_in_date: item.check_in_date,
@@ -384,9 +463,11 @@ export default {
             guest_name: `${item.guest.last_name}, ${item.guest.first_name}`,
             room_number: item.room.room_number,
             status: item.status,
+            type: item.type,
             room_is_occupied: item.room.is_occupied ? "Yes" : "No",
           });
         });
+        console.log("allPendingToday", this.allPendingToday);
       } catch (error) {
         this.snackbar.model = true;
         this.snackbar.text = error;

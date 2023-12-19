@@ -8,9 +8,12 @@ import { defineConfig, loadEnv } from "vite";
 import { fileURLToPath, URL } from "node:url";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
+export default defineConfig(() => {
   return {
+    // esbuild: {
+    //   drop: ["console", "debugger"],
+    // },
+
     plugins: [
       vue({
         template: { transformAssetUrls },
@@ -33,14 +36,7 @@ export default defineConfig(({ command, mode }) => {
         },
       }),
     ],
-    define: {
-      "process.env": {
-        VITE_APP_BASE_URL: JSON.stringify(env.VITE_APP_BASE_URL),
-        VITE_APP_API_KEY: JSON.stringify(env.VITE_APP_API_KEY),
-        VITE_APP_USERNAME: JSON.stringify(env.VITE_APP_USERNAME),
-        VITE_APP_PASSWORD: JSON.stringify(env.VITE_APP_PASSWORD),
-      },
-    },
+    define: {},
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
