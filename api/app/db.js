@@ -10,6 +10,7 @@ const db = mysql.createConnection({
   password: process.env.MYSQL_PASS,
   database: process.env.MYSQL_DB,
   multipleStatements: true,
+  timezone: '+00:00',
 });
 
 db.connect((err) => {

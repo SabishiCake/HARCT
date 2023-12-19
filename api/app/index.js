@@ -21,32 +21,36 @@ app.use(logger);
 // Loop through the route folders and load the route files dynamically
 const routeFolders = ['private', 'public'];
 
-routeFolders.forEach((folder) => {
-  const routePath = path.join(__dirname, 'routes', folder);
+try {
+  routeFolders.forEach((folder) => {
+    const routePath = path.join(__dirname, 'routes', folder);
 
-  fs.readdirSync(routePath).forEach((file) => {
-    const routeFilePath = path.join(routePath, file);
-    const route = require(routeFilePath);
-    const fileName = path.parse(file).name;
+    fs.readdirSync(routePath).forEach((file) => {
+      const routeFilePath = path.join(routePath, file);
+      const route = require(routeFilePath);
+      const fileName = path.parse(file).name;
+      if (folder === 'private') {
+        app.use(`/${folder}/${fileName}`, authenticateApiKey, route);
+      } else {
+        app.use(`/${folder}/${fileName}`, route);
+      }
+    });
+
+    // Create an endpoint to list all private routes
     if (folder === 'private') {
-      app.use(`/${folder}/${fileName}`, authenticateApiKey, route);
-    } else {
-      app.use(`/${folder}/${fileName}`, route);
+      const privateRoutes = fs.readdirSync(routePath).map((file) => {
+        const routeFileName = path.parse(file).name;
+        return `/${folder}/${routeFileName}`;
+      });
+      // Create an endpoint to list all private routes
+      app.get(`/${folder}`, authenticateApiKey, (req, res) => {
+        res.json({ routes: privateRoutes });
+      });
     }
   });
-
-  // Create an endpoint to list all private routes
-  if (folder === 'private') {
-    const privateRoutes = fs.readdirSync(routePath).map((file) => {
-      const routeFileName = path.parse(file).name;
-      return `/${folder}/${routeFileName}`;
-    });
-    // Create an endpoint to list all public routes
-    app.get(`/${folder}`, (req, res) => {
-      res.json({ routes: privateRoutes });
-    });
-  }
-});
+} catch (error) {
+  console.error(error);
+}
 
 const PORT = process.env.PORT || 8000;
 

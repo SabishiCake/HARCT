@@ -81,6 +81,7 @@ router.post('/', (req, res) => {
                   console.log('Guest and Account added to database');
                   res.status(200).json({
                     status: 200,
+                    id: GuestID,
                     message: `Guest and Account added to database with GuestID ${GuestID}`,
                     createdGuest: guestResult,
                     createdAccount: accountResult,
@@ -136,15 +137,10 @@ router.get('/', (req, res) => {
   const sql = 'SELECT * FROM guest';
   db.query(sql, (err, result) => {
     if (err) {
-      res.status(500).json({
-        message: 'Error retrieving guests from database',
-        error: err,
-      });
+      console.error(err);
+      res.status(500).json({ error: 'Error retrieving guests' });
     } else {
-      res.status(200).json({
-        message: 'Guests retrieved from database',
-        guests: result,
-      });
+      res.status(200).json(result);
     }
   });
 });
@@ -166,10 +162,8 @@ router.get('/:guestId', (req, res) => {
     SELECT * FROM Guest WHERE Guest_ID = ?;
     SELECT * FROM Account WHERE Guest_ID = ?;
     SELECT * FROM Room_reservations WHERE Guest_ID = ?;
-    SELECT * FROM Table_reservations WHERE Guest_ID = ?;
     SELECT * FROM Orders WHERE guest_id = ?;
     SELECT * FROM Payments WHERE guest_id = ?;
-    SELECT * FROM Feedback WHERE guest_id = ?;
   `;
 
   db.query(
@@ -182,24 +176,15 @@ router.get('/:guestId', (req, res) => {
           .status(500)
           .json({ error: 'Error retrieving guest data from database' });
       } else {
-        const [
-          guestInfo,
-          accountInfo,
-          roomReservations,
-          tableReservations,
-          orders,
-          payments,
-          feedback,
-        ] = result;
+        const [guestInfo, accountInfo, roomReservations, orders, payments] =
+          result;
 
         const responseData = {
           guestInfo: guestInfo[0],
           accountInfo: accountInfo[0],
           room_reservations: roomReservations,
-          table_reservations: tableReservations,
           orders,
           payments,
-          feedback,
         };
 
         res.status(200).json({
@@ -279,33 +264,6 @@ router.get('/:guestId/roomres/more', (req, res) => {
 });
 
 /**
- * Route to get all Table reservations for a specific GuestID.
- * @name GET/guest/:guestId/tableRes
- * @function
- * @memberof module:routes/guest
- * @param {Object} req - The request object.
- * @param {Object} req.params - The request parameters.
- * @param {string} req.params.guestId - The ID of the guest to retrieve table reservationss for.
- * @param {Object} res - The response object.
- * @returns {Object} - The table reservationss for the specified guest.
- */
-
-router.get('/:guestId/tableRes', (req, res) => {
-  const guestId = req.params.guestId;
-  const sql = `SELECT * FROM table_reservations WHERE GuestID = ?`;
-  db.query(sql, [guestId], (err, result) => {
-    if (err) {
-      console.log(err);
-      res
-        .status(500)
-        .json({ error: 'Error retrieving guest data from database' });
-    } else {
-      res.status(200).json(result);
-    }
-  });
-});
-
-/**
  * Route to get all orders for a specific GuestID.
  * @name GET/guest/:guestId/order
  * @function
@@ -346,33 +304,6 @@ router.get('/:guestId/orders', (req, res) => {
 router.get('/:guestId/payments', (req, res) => {
   const guestId = req.params.guestId;
   const sql = `SELECT * FROM Payments WHERE GuestID = ?`;
-  db.query(sql, [guestId], (err, result) => {
-    if (err) {
-      console.log(err);
-      res
-        .status(500)
-        .json({ error: 'Error retrieving guest data from database' });
-    } else {
-      res.status(200).json(result);
-    }
-  });
-});
-
-/**
- * Route to get all feedback for a specific GuestID.
- * @name GET/guest/:guestId/feedback
- * @function
- * @memberof module:routes/guest
- * @param {Object} req - The request object.
- * @param {Object} req.params - The request parameters.
- * @param {string} req.params.guestId - The ID of the guest to retrieve feedback for.
- * @param {Object} res - The response object.
- * @returns {Object} - The feedback for the specified guest.
- */
-
-router.get('/:guestId/feedback', (req, res) => {
-  const guestId = req.params.guestId;
-  const sql = `SELECT * FROM Feedback WHERE GuestID = ?`;
   db.query(sql, [guestId], (err, result) => {
     if (err) {
       console.log(err);

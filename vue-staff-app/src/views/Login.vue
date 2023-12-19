@@ -10,7 +10,7 @@
         src="../assets/logo.png"
         width="64"
       ></v-img>
-      <h1 class="text-center mb-6 text-white">Vue Staff App</h1>
+      <h1 class="text-center mb-6 text-white">HARCT Staff App</h1>
       <v-container grid-list-xs dense>
         <v-row>
           <v-col>
@@ -42,7 +42,7 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                    <v-col cols="10">
+                    <v-col cols="8">
                       <v-btn
                         :disabled="!form"
                         :loading="loading"
@@ -55,7 +55,7 @@
                         Sign In
                       </v-btn>
                     </v-col>
-                    <v-col cols="2">
+                    <v-col>
                       <v-btn
                         block
                         color="primary"
@@ -64,6 +64,9 @@
                         @click="openDbSetting"
                       >
                         <v-icon> mdi-cog </v-icon>
+                        <v-tooltip bottom activator="parent">
+                          API Configuration Settings
+                        </v-tooltip>
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -91,33 +94,46 @@
                 >Vuetify</a
               >
             </div>
-            <!-- {{ test }} -->
           </v-col>
         </v-row>
+        <v-row justify="center" dense>
+          <v-col class="text-center subheading text-disabled text-capitalize">
+            {{ branch }} branch
+          </v-col>
+        </v-row>
+        <!-- <v-row justify="end">
+          <v-col>
+            <v-alert
+              :value="snackbar.model"
+              :color="snackbar.color"
+              closable
+              border="start"
+            >
+              <p>
+                {{ snackbar.text }}
+              </p>
+            </v-alert>
+          </v-col>
+        </v-row> -->
       </v-container>
     </v-sheet>
   </div>
   <div>
-    <!-- Notification -->
-
-    <v-snackbar
-      v-model="snackbar.model"
-      :timeout="snackbar.timeout"
+    <SnackBar
+      ref="SnackBar"
+      :text="snackbar.text"
       :color="snackbar.color"
-    >
-      {{ snackbar.text }}
-      <template v-slot:actions>
-        <v-btn color="white" text @click="snackbar.model = false">Close</v-btn>
-      </template>
-    </v-snackbar>
+      :timeout="snackbar.timeout"
+    ></SnackBar>
   </div>
 </template>
 
 <script>
-import { useLoginStore } from "@/store/auth";
+import { useLoginStore, useAppStore, useThemeStore } from "@/store/app";
 import apiHandler from "@/services/apiHandler";
-import VueCookies from "vue-cookies";
-import { useTheme } from "vuetify/lib/framework.mjs";
+
+// Components
+import SnackBar from "@/components/SnackBar.vue";
 
 export default {
   data() {
@@ -127,6 +143,14 @@ export default {
       password: null,
       loading: false,
       test: "test",
+      error: {
+        model: false,
+        timeout: 3000,
+        message: "",
+        color: "error",
+      },
+
+      branch: null,
 
       snackbar: {
         model: false,
@@ -137,6 +161,10 @@ export default {
     };
   },
 
+  components: {
+    SnackBar,
+  },
+
   computed: {
     checkApi() {
       return this.checkApiCon();
@@ -144,22 +172,26 @@ export default {
   },
 
   methods: {
+    required(v) {
+      return !!v || "Field is required";
+    },
+
     async checkApiCon() {
       try {
         const response = await apiHandler.checkApi();
         if (response.status === 200) {
-          this.snackbar.model = true;
-          this.snackbar.text = "API is running. You may now login.";
+          this.$refs.SnackBar.model = true;
+          this.snackbar.text = "API is Connected. You may Login.";
           this.snackbar.color = "success";
         } else {
-          this.snackbar.model = true;
+          this.$refs.SnackBar.model = true;
           this.snackbar.text =
-            "API is not running. Pls re-configure settings then Refresh the page.";
+            "API Disconnected or offline. Pls re-configure settings then Refresh the page.";
           this.snackbar.color = "error";
           this.form = false;
         }
       } catch (error) {
-        this.snackbar.model = true;
+        this.$refs.SnackBar.model = true;
         this.snackbar.text =
           "Something went wrong. Pls re-configure settings then Refresh the page.";
         this.snackbar.color = "error";
@@ -180,8 +212,11 @@ export default {
 
     async login() {
       try {
+        console.log("logging in...");
         const loginStore = useLoginStore();
-        loginStore.mockLogin(this.username, this.password);
+        // loginStore.helloWorld();
+        await loginStore.login(this.username, this.password);
+        console.log(this.username, this.password);
 
         const loginState = loginStore.isLoggedIn;
         if (loginState) {
@@ -190,17 +225,17 @@ export default {
               name: "frontOfficeDashboard",
             });
           } catch (error) {
-            this.snackbar.model = true;
+            this.$refs.SnackBar.model = true;
             this.snackbar.text = error.message;
             this.snackbar.color = "error";
           }
         } else {
-          this.snackbar.model = true;
+          this.$refs.SnackBar.model = true;
           this.snackbar.text = "Invalid username or password";
           this.snackbar.color = "error";
         }
       } catch (error) {
-        this.snackbar.model = true;
+        this.$refs.SnackBar.model = true;
         this.snackbar.text = error.message;
         this.snackbar.color = "error";
       } finally {
@@ -208,21 +243,20 @@ export default {
       }
     },
 
-    required(v) {
-      return !!v || "Field is required";
-    },
-
     openDbSetting() {
+      const themeStore = useThemeStore();
       this.$router.push({
         name: "dbSettings",
       });
+      themeStore.setThemeSettings(true);
     },
 
     async setTheme() {
       try {
-        const theme = VueCookies.get("theme");
-        const globalTheme = useTheme();
-        globalTheme.global.name = theme;
+        const themeStore = useThemeStore();
+        const theme = themeStore.currentTheme;
+        console.log(theme);
+        this.$vuetify.theme.name = theme;
       } catch (error) {
         console.log(error);
       }
@@ -230,23 +264,29 @@ export default {
   },
 
   async created() {
-    const loginStore = useLoginStore();
+    try {
+      const loginStore = useLoginStore();
+      const appStore = useAppStore();
 
-    this.checkApiCon();
-    // await this.setTheme();
-    this.test = VueCookies.get("theme");
+      this.branch = appStore.branch;
 
-    if (loginStore.isLoggedIn) {
-      try {
-        await this.$router.push({
-          name: "frontOfficeDashboard",
-        });
-      } catch (error) {
-        console.log(error);
-        this.snackbar.model = true;
-        this.snackbar.text = error.message;
-        this.snackbar.color = "error";
+      await this.checkApiCon();
+      // await this.setTheme();
+      if (loginStore.isLoggedIn) {
+        console.log("logged in");
+        try {
+          this.$router.push({
+            name: "frontOfficeDashboard",
+          });
+        } catch (error) {
+          console.log(error);
+          this.$refs.SnackBar.model = true;
+          this.snackbar.text = error.message;
+          this.snackbar.color = "error";
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
   },
 };

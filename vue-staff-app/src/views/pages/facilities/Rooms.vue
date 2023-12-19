@@ -17,7 +17,27 @@
               label="Search"
               single-line
               hide-details
-            ></v-text-field>
+            >
+              <!-- <template v-slot:append>
+                <v-btn icon>
+                  <v-icon>mdi-help</v-icon>
+                  <v-tooltip bottom activator="parent">
+                    <span> Search can be filered using parameters</span>
+                    <br />
+                    <span> Ex. :rate=1000 :type=Single</span>
+                  </v-tooltip>
+                </v-btn>
+              </template> -->
+              <v-tooltip bottom activator="parent">
+                <span> Search can be filtered using parameters</span>
+                <br />
+                <span> Ex. :rate=1000 :type=Single</span>
+                <br />
+                <span> rate: lower than or equal to the given rate </span>
+                <br />
+                <span> type: room type </span>
+              </v-tooltip>
+            </v-text-field>
           </v-col>
           <v-col cols="2">
             <v-btn
@@ -29,6 +49,14 @@
             >
               add New
             </v-btn>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-checkbox
+              v-model="filter.is_occupiedOnly"
+              label="Show Occupied Only"
+            ></v-checkbox>
           </v-col>
         </v-row>
         <v-row>
@@ -206,7 +234,7 @@
 </template>
 <script>
 import apiHandler from "@/services/apiHandler";
-import { useRoomStore } from "@/store/room";
+import { useRoomStore } from "@/store/app";
 export default {
   data() {
     return {
@@ -221,6 +249,9 @@ export default {
         rowPerPage: 6,
       },
 
+      filter: {
+        is_occupiedOnly: true,
+      },
       snackbar: {
         model: false,
         timeout: 3000,
@@ -237,13 +268,64 @@ export default {
     };
   },
   computed: {
+    // filteredRooms() {
+    //   const searchTerm = this.roomSearch.toLowerCase();
+    //   return this.allRooms.filter((room) => {
+    //     return (
+    //       room.room_number.toLowerCase().includes(searchTerm) ||
+    //       room.type.type_name.toLowerCase().includes(searchTerm) ||
+    //       room.type.description.toLowerCase().includes(searchTerm) ||
+    //       room.type.rate.toString().includes(searchTerm) ||
+    //       room.is_occupied.toString().includes(searchTerm)
+    //     );
+    //   });
+    // },
+
     filteredRooms() {
-      const searchTerm = this.roomSearch.toLowerCase();
+      const searchTerm = this.roomSearch.toLowerCase().trim();
+      const searchParams = searchTerm.split(" ");
+
+      if (searchParams.length === 0 || searchTerm === "") {
+        // Return all rooms if no search parameters are entered
+        return this.allRooms;
+      }
+
       return this.allRooms.filter((room) => {
-        return (
-          room.room_number.toLowerCase().includes(searchTerm) ||
-          room.room_type.toLowerCase().includes(searchTerm)
-        );
+        const roomNumber = room.room_number.toLowerCase();
+        const typeName = room.type.type_name.toLowerCase();
+        const description = room.type.description.toLowerCase();
+        const rate = room.type.rate.toString();
+        const isOccupied = room.is_occupied.toString();
+
+        const matchesSearchParams = searchParams.some((param) => {
+          const [key, value] = param.split("=");
+          if (key && value) {
+            switch (key) {
+              case ":rate":
+                return parseFloat(value) >= room.type.rate;
+              case ":type":
+                return typeName.includes(value);
+              default:
+                return (
+                  roomNumber.includes(value) ||
+                  typeName.includes(value) ||
+                  description.includes(value) ||
+                  rate.includes(value) ||
+                  isOccupied.includes(value)
+                );
+            }
+          }
+          // For normal search, check if any room details match the search term
+          return (
+            roomNumber.includes(searchTerm) ||
+            typeName.includes(searchTerm) ||
+            description.includes(searchTerm) ||
+            rate.includes(searchTerm) ||
+            isOccupied.includes(searchTerm)
+          );
+        });
+
+        return matchesSearchParams;
       });
     },
 
@@ -252,6 +334,12 @@ export default {
         (this.pagination.currentPage - 1) * this.pagination.rowPerPage;
       const end = start + this.pagination.rowPerPage;
       return this.filteredRooms.slice(start, end);
+    },
+  },
+
+  watch: {
+    "filter.is_occupiedOnly": function (val) {
+      this.getRooms();
     },
   },
 
@@ -277,6 +365,18 @@ export default {
           type_name: "",
         },
       };
+    },
+
+    sortRoomByRate() {
+      this.allRooms.sort((a, b) => {
+        return a.type.rate - b.type.rate;
+      });
+    },
+
+    toggleIsOccupiedOnly() {
+      this.filter.is_occupiedOnly = !this.filter.is_occupiedOnly;
+      console.log(this.filter.is_occupiedOnly);
+      this.getRooms();
     },
 
     addNewRoom() {
@@ -408,7 +508,18 @@ export default {
       try {
         await this.roomStore.getRooms();
         await this.roomStore.getRoomTypes();
-        this.allRooms = this.roomStore.allRooms;
+        const data = this.roomStore.allRooms;
+
+        this.allRooms = [];
+        data.forEach((rooms) => {
+          if (this.filter.is_occupiedOnly) {
+            if (!rooms.is_occupied) {
+              return;
+            }
+          }
+          this.allRooms.push(rooms);
+        });
+
         this.allRoomTypes = this.roomStore.allRoomTypes;
         this.typeNames = this.allRoomTypes.map((type) => type.type_name);
 
