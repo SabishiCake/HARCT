@@ -225,7 +225,8 @@ export default {
       const baseUrl = VueCookies.get("baseUrl");
 
       this.baseUrl = baseUrl;
-      this.apiKey = apiKey;
+      // this.apiKey = apiKey;
+      this.apiKey = "";
     },
 
     onSubmit() {

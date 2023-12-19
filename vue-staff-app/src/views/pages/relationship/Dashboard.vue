@@ -60,13 +60,15 @@ export default {
     return {
       LineChartData: {
         labels: [],
+        height: 300,
+        width: 300,
         datasets: [],
       },
 
       DoughnutChartData: {
         labels: ["One", "Two", "Three", "Four", "Five"],
-        height: 300,
-        width: 300,
+        height: 400,
+        width: 400,
         datasets: [
           {
             label: "Ratings",
@@ -229,45 +231,71 @@ export default {
       // Sorting the data based on date in case it's not already sorted
       groupedFeedbacksArray.sort((a, b) => new Date(a.date) - new Date(b.date));
 
+      const averageRatings = groupedFeedbacksArray.map((item) => {
+        const totalRatings =
+          item.ratings.one +
+          item.ratings.two +
+          item.ratings.three +
+          item.ratings.four +
+          item.ratings.five;
+
+        const averageRating =
+          (item.ratings.one +
+            item.ratings.two * 2 +
+            item.ratings.three * 3 +
+            item.ratings.four * 4 +
+            item.ratings.five * 5) /
+          totalRatings;
+
+        return averageRating;
+      });
+
       // Prepare data for the LineChart
       const lineChartData = {
         labels: groupedFeedbacksArray.map((item) => item.date),
         datasets: [
           {
-            label: "Rating 1",
-            data: groupedFeedbacksArray.map((item) => item.ratings.one),
-            backgroundColor: "rgba(255, 99, 132, 0.2)",
-            borderColor: "rgb(255, 99, 132)",
+            label: "Average Rating",
+            data: averageRatings,
+            backgroundColor: "rgba(153, 102, 255, 0.2)",
+            borderColor: "rgb(153, 102, 255)",
             borderWidth: 1,
           },
-          {
-            label: "Rating 2",
-            data: groupedFeedbacksArray.map((item) => item.ratings.two),
-            backgroundColor: "rgba(255, 159, 64, 0.2)",
-            borderColor: "rgb(255, 159, 64)",
-            borderWidth: 1,
-          },
-          {
-            label: "Rating 3",
-            data: groupedFeedbacksArray.map((item) => item.ratings.three),
-            backgroundColor: "rgba(255, 205, 86, 0.2)",
-            borderColor: "rgb(255, 205, 86)",
-            borderWidth: 1,
-          },
-          {
-            label: "Rating 4",
-            data: groupedFeedbacksArray.map((item) => item.ratings.four),
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            borderColor: "rgb(75, 192, 192)",
-            borderWidth: 1,
-          },
-          {
-            label: "Rating 5",
-            data: groupedFeedbacksArray.map((item) => item.ratings.five),
-            backgroundColor: "rgba(54, 162, 235, 0.2)",
-            borderColor: "rgb(54, 162, 235)",
-            borderWidth: 1,
-          },
+          // {
+          //   label: "Rating 1",
+          //   data: groupedFeedbacksArray.map((item) => item.ratings.one),
+          //   backgroundColor: "rgba(255, 99, 132, 0.2)",
+          //   borderColor: "rgb(255, 99, 132)",
+          //   borderWidth: 1,
+          // },
+          // {
+          //   label: "Rating 2",
+          //   data: groupedFeedbacksArray.map((item) => item.ratings.two),
+          //   backgroundColor: "rgba(255, 159, 64, 0.2)",
+          //   borderColor: "rgb(255, 159, 64)",
+          //   borderWidth: 1,
+          // },
+          // {
+          //   label: "Rating 3",
+          //   data: groupedFeedbacksArray.map((item) => item.ratings.three),
+          //   backgroundColor: "rgba(255, 205, 86, 0.2)",
+          //   borderColor: "rgb(255, 205, 86)",
+          //   borderWidth: 1,
+          // },
+          // {
+          //   label: "Rating 4",
+          //   data: groupedFeedbacksArray.map((item) => item.ratings.four),
+          //   backgroundColor: "rgba(75, 192, 192, 0.2)",
+          //   borderColor: "rgb(75, 192, 192)",
+          //   borderWidth: 1,
+          // },
+          // {
+          //   label: "Rating 5",
+          //   data: groupedFeedbacksArray.map((item) => item.ratings.five),
+          //   backgroundColor: "rgba(54, 162, 235, 0.2)",
+          //   borderColor: "rgb(54, 162, 235)",
+          //   borderWidth: 1,
+          // },
         ],
       };
 
@@ -275,7 +303,7 @@ export default {
       this.LineChartData = lineChartData;
     },
   },
-  created() {
+  async created() {
     // Code to run when the component is mounted goes here
     this.getAllFeedbacks();
   },

@@ -130,8 +130,8 @@ export default {
     return {
       chartData: {
         labels: ["Occupied", "Available"],
-        width: 300,
-        height: 300,
+        width: 400,
+        height: 400,
         datasets: [
           {
             label: "Rooms",
